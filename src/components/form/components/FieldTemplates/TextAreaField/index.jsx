@@ -62,6 +62,11 @@ const TextAreaField = ({
             setInputValue(value);
         }
     }, [value]);
+
+    useEffect(() => {
+        setInputValue(defaultValue);
+    }, [defaultValue]);
+
     useEffect(() => {
         if (errors?.[name]) {
             setError(errors[name]);

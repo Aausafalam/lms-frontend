@@ -181,6 +181,9 @@
     background-color: transparent;
     border: 1px dashed #e4e4e7;
 }
+:global(.filepond--wrapper) {
+    margin-top: -0.1rem;
+}
 :global(.filepond--root .filepond--drop-label) {
     border-radius: 5px;
     min-height: 8rem;

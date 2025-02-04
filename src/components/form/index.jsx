@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import ButtonGroup from "./components/ButtonGroup";
 import { ICON } from "./utils/icons";
 import styles from "./styles/DynamicForm.module.css";
@@ -16,8 +16,10 @@ import Button from "./components/FieldTemplates/ButtonField";
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import "./styles/root.css";
+import CustomSelectField from "./components/FieldTemplates/CustomSelectField";
+import FormUtils from "./utils";
 
-const DynamicForm = ({ formData, onSubmit, formButtons, formId = "main" }) => {
+const DynamicForm = ({ formData, onSubmit, formButtons, formId = "main", responseErrors }) => {
     const {
         formValues,
         maskedValues,
@@ -45,11 +47,11 @@ const DynamicForm = ({ formData, onSubmit, formButtons, formId = "main" }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (onSubmit && !formButtons?.[0]?.loading && (await validateFieldsOnSubmit())) {
-             onSubmit(formValues);
+            onSubmit(formValues);
         }
     };
     console.log(formValues);
-    // console.log(errors);
+    console.log(errors);
     const getGridClass = (gridValue) => {
         const gridClasses = {
             1: styles.col1,
@@ -62,6 +64,10 @@ const DynamicForm = ({ formData, onSubmit, formButtons, formId = "main" }) => {
         };
         return gridClasses[gridValue] || styles.colMd12;
     };
+
+    useEffect(() => {
+        setErrors(FormUtils.transformErrors(responseErrors));
+    }, [responseErrors]);
 
     return (
         <form className={styles.form_container} onSubmit={handleSubmit} id={`form-${formId}`}>
@@ -165,6 +171,8 @@ const DynamicForm = ({ formData, onSubmit, formButtons, formId = "main" }) => {
         switch (field.type) {
             case "select":
                 return <SelectField formField={field} formValues={formValues} dynamicOptions={dynamicOptions} errors={errors} />;
+            case "customSelect":
+                return <CustomSelectField formField={field} formValues={formValues} dynamicOptions={dynamicOptions} errors={errors} />;
             case "checkbox":
                 return <CheckBoxField formField={field} formValues={formValues} />;
             case "radio":

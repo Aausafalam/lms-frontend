@@ -1,7 +1,8 @@
 import axios from "axios";
+import apiConstants from "../utils/constants";
 
 const apiClient = axios.create({
-    baseURL: "http://localhost:8000/api", // Base API path
+    baseURL: apiConstants.BACKEND_API_BASE_URL, // Base API path
     headers: {
         "Content-Type": "application/json",
     },
@@ -9,10 +10,10 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
     (config) => {
-        // const token = localStorage.getItem("token");
-        // if (token) {
-        //   config.headers["Authorization"] = `Bearer ${JSON.parse(token)}`;
-        // }
+        const token = localStorage.getItem("institute_token");
+        if (token) {
+            config.headers["Authorization"] = `Bearer ${JSON.parse(token)}`;
+        }
         return config;
     },
     (error) => {

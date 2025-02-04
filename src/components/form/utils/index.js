@@ -18,7 +18,7 @@ class FormUtils {
             max: this.normalizeRule(validationRules.max, (value) => `Maximum value is ${value}`),
         };
         // Required check
-        if (rules.required?.value && (!valueToValidate || valueToValidate?.length === 0)) {
+        if (rules.required?.value && (valueToValidate === null || valueToValidate === undefined || valueToValidate === "" || (Array.isArray(valueToValidate) && valueToValidate.length === 0))) {
             return rules.required.message;
         }
 
@@ -86,6 +86,14 @@ class FormUtils {
             value: rule,
             message: defaultMessage,
         };
+    };
+
+    static transformErrors = (errors = []) => {
+        return errors.reduce((acc, { message, path }) => {
+            const key = path[0];
+            acc[key] = message;
+            return acc;
+        }, {});
     };
 }
 

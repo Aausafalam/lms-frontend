@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import FormUtils from "../utils";
+import { Country, State, City } from "country-state-city";
 
 export const useFormHandler = (formData, validate = null) => {
     const [formValues, setFormValues] = useState({});
@@ -15,7 +16,8 @@ export const useFormHandler = (formData, validate = null) => {
 
     useEffect(() => {
         if (!formData) return;
-
+        setFormValues({});
+        setErrors({});
         // Initialize dynamic groups for fields that have group configurations
         const initialDynamicGroups = formData.reduce((acc, field) => {
             if (field.groupFields) {
@@ -85,6 +87,17 @@ export const useFormHandler = (formData, validate = null) => {
     const fetchDynamicOptions = (fieldName) => {
         let options = [];
 
+        switch (fieldName) {
+            case "state":
+                options = State.getStatesOfCountry(formValues?.country?.split("_")[1] || "IN").map((states) => ({ label: states.name, value: `${states.name}_${states.isoCode}` }));
+                break;
+            case "city":
+                options = City.getCitiesOfState(formValues?.country?.split("_")[1] || "IN", formValues?.state?.split("_")[1] || "BR").map((states) => ({
+                    label: states.name,
+                    value: `${states.name}_${states.isoCode}`,
+                }));
+                break;
+        }
         setDynamicOptions((prevOptions) => ({
             ...prevOptions,
             [fieldName]: options,

@@ -1,0 +1,11 @@
+.previous_button_container button {
+    background-color: #eaebed !important;
+    color: rgba(128, 131, 144, 1) !important;
+}
+.previous_button_container button:disabled {
+    background-color: #f1f2f4 !important;
+    color: rgba(128, 131, 144, .5) !important;
+}
+.previous_button_container {
+    margin-right: auto;
+}

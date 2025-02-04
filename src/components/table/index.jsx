@@ -25,11 +25,13 @@ const Table = ({ tableData }) => {
     // Function to fetch paginated data
     const fetchData = useCallback(
         async (payload) => {
+            const url = tableData?.url;
+            if (!url) return;
             setIsLoading(true);
             setError(null);
             try {
                 const response = await apiClient.get(data.url, { params: payload });
-                const newData = data.getTableData(response.data);
+                const newData = tableData.getTableData(response.data);
                 setData(newData);
             } catch (err) {
                 console.error("Error fetching data:", err);
@@ -38,7 +40,7 @@ const Table = ({ tableData }) => {
                 setIsLoading(false);
             }
         },
-        [initialValues]
+        [tableData?.url]
     );
 
     // Update data when tableData changes
@@ -50,9 +52,7 @@ const Table = ({ tableData }) => {
 
     useEffect(() => {
         fetchData(initialValues);
-    }, [initialValues]);
-
-    
+    }, [initialValues, tableData?.url]);
 
     return (
         <div className={styles.table_container}>
@@ -63,17 +63,7 @@ const Table = ({ tableData }) => {
             <TableError error={error} />
 
             {/* Table View */}
-            {dataView.table && (
-                <TableView
-                    isLoading={isLoading}
-                    checkboxState={checkboxState}
-                    setCheckboxState={setCheckboxState}
-                    data={data}
-                    router={router}
-                    initialValues={initialValues}
-                    
-                />
-            )}
+            {dataView.table && <TableView isLoading={isLoading} checkboxState={checkboxState} setCheckboxState={setCheckboxState} data={data} router={router} initialValues={initialValues} />}
 
             {/* Grid View */}
             {dataView.grid && <div className={styles.grid_view_container}>{data.rows?.length > 0 ? data.gridComponent() : <DataNotFound message="Empty List" />}</div>}

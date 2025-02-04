@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./index.module.css";
-import CustomSelect from "../../SelectFieldType/CustomSelect";
+import CustomSelect from "../../SelectFieldType/Select";
 import "../../../styles/root.css";
 import FormUtils from "@/components/form/utils";
 
@@ -77,7 +77,7 @@ const SelectField = ({
     // Validation logic
     const validateInput = (valueToValidate) => {
         let validationError = FormUtils.validateField(valueToValidate, validationRules, formField);
-        // console.log("validationError", validationError);
+        console.log("validationError", validationError);
         if (!validationError && customValidation) {
             validationError = customValidation(valueToValidate);
         }

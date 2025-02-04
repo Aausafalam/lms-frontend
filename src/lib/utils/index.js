@@ -132,6 +132,123 @@ class GlobalUtils {
         }
         return { exceeded: false, overdueDays: 0 };
     }
+
+    /**
+     * Utility to detect meaningful changes between form payload and existing data
+     * Includes deep comparison, type coercion handling, and performance optimizations
+     *
+     * @param {Object} payload - New form data
+     * @param {Object} existingData - Original data to compare against
+     * @param {Object} options - Configuration options
+     * @returns {boolean} - Returns true if there are meaningful changes
+     */
+
+    static hasFormChanges(payload, existingData, options = {}) {
+        const {
+            ignoreKeys = [], // Keys to exclude from comparison
+            targetKeys = [], // Specific keys to compare (if empty, compare all keys)
+            trimStrings = true, // Trim strings before comparison
+            ignoreEmptyValues = true, // Ignore null/undefined/empty string differences
+            precisionForNumbers = 2, // Decimal precision for number comparison
+            ignoreKeyOrder = true, // Ignore object key order differences
+        } = options;
+
+        // Early return for identical references
+        if (payload === existingData) return false;
+
+        // Handle null/undefined cases
+        if (!payload || !existingData) return payload !== existingData;
+
+        // Create normalized copies to avoid modifying original data
+        const normalizeValue = (value) => {
+            if (typeof value === "string" && trimStrings) {
+                value = value.trim();
+                return ignoreEmptyValues && value === "" ? null : value;
+            }
+            if (typeof value === "number" && isFinite(value)) {
+                return Number(value.toFixed(precisionForNumbers));
+            }
+            return value;
+        };
+
+        const normalizeObject = (obj, keysToCompare = null) => {
+            const normalized = {};
+            let keys = ignoreKeyOrder ? Object.keys(obj).sort() : Object.keys(obj);
+
+            // Filter keys based on targetKeys if provided
+            if (keysToCompare) {
+                keys = keys.filter((key) => keysToCompare.includes(key));
+            }
+
+            for (const key of keys) {
+                if (ignoreKeys.includes(key)) continue;
+
+                const value = obj[key];
+
+                // Skip empty values if configured
+                if (ignoreEmptyValues && (value === null || value === undefined || value === "")) {
+                    continue;
+                }
+
+                if (Array.isArray(value)) {
+                    normalized[key] = value.map((item) => (typeof item === "object" && item !== null ? normalizeObject(item) : normalizeValue(item)));
+                } else if (typeof value === "object" && value !== null) {
+                    normalized[key] = normalizeObject(value);
+                } else {
+                    normalized[key] = normalizeValue(value);
+                }
+            }
+
+            return normalized;
+        };
+
+        // Determine which keys to compare
+        const keysToCompare = targetKeys.length > 0 ? targetKeys : Object.keys(payload);
+
+        // Normalize both objects with the same set of keys
+        const normalizedPayload = normalizeObject(payload);
+        const normalizedExisting = normalizeObject(existingData, keysToCompare);
+
+        // Use fast-deep-equal for performance
+        const isEqual = (obj1, obj2) => {
+            if (obj1 === obj2) return true;
+
+            const keys1 = Object.keys(obj1);
+            const keys2 = Object.keys(obj2);
+
+            if (keys1.length !== keys2.length) return false;
+
+            for (const key of keys1) {
+                const val1 = obj1[key];
+                const val2 = obj2[key];
+
+                if (typeof val1 === "object" && val1 !== null && typeof val2 === "object" && val2 !== null) {
+                    if (!isEqual(val1, val2)) return false;
+                } else if (val1 !== val2) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        return !isEqual(normalizedPayload, normalizedExisting);
+    }
+
+    static getFormButtons = (isLoading = false, onCancel) => [
+        {
+            label: "Cancel",
+            onClick: onCancel,
+            variant: "dark",
+            flat: true,
+            outlined: true,
+        },
+        {
+            label: "Submit",
+            type: "Submit",
+            loading: isLoading,
+        },
+    ];
 }
 
 export default GlobalUtils;

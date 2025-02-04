@@ -31,6 +31,9 @@
     width: 18px;
     height: 18px;
 }
+.button:disabled {
+    cursor: not-allowed;
+}
 .button.primary {
     box-shadow: 0 2px 6px rgba(var(--primary-rgb), 0.3);
     background-color: rgb(var(--primary-rgb));
@@ -237,6 +240,38 @@
 }
 .button.danger.tonal:hover {
     background-color: rgba(var(--danger-rgb), 0.4);
+}
+
+.button.dark {
+    box-shadow: 0 2px 6px rgba(var(--dark-rgb), 0.3);
+    background-color: rgb(var(--dark-rgb));
+    color: var(--dark-text-color);
+}
+.button.dark.outlined {
+    border: 1px solid rgb(var(--dark-rgb));
+    color: rgb(var(--dark-rgb));
+}
+.button.dark.outlined:hover {
+    background-color: rgba(var(--dark-rgb), 0.1) !important;
+}
+.button.dark.text {
+    color: rgb(var(--dark-rgb)) !important;
+}
+.button.dark.text:hover {
+    background-color: rgba(var(--dark-rgb), 0.1) !important;
+}
+.button.dark.plain {
+    color: rgb(var(--dark-rgb), 0.7) !important;
+}
+.button.dark.plain:hover {
+    color: rgba(var(--dark-rgb), 1) !important;
+}
+.button.dark.tonal {
+    color: rgb(var(--dark-rgb)) !important;
+    background-color: rgba(var(--dark-rgb), 0.15);
+}
+.button.dark.tonal:hover {
+    background-color: rgba(var(--dark-rgb), 0.4);
 }
 .button.iconOnly {
     padding-inline: 0.5rem !important;
