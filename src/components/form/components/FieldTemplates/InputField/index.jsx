@@ -50,12 +50,11 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
         autoSuggestion = {
             initialData: [],
             autoSuggestionUrl: "",
-            minChars: 2,
+            minChars: 1,
             maxSuggestions: 10,
             debounceMs: 300,
         },
     } = formField;
-    // console.log(autoSuggestion);
     // Internal state
     const [inputValue, setInputValue] = useState(groupFieldDefaultValue || maskedValues?.[name] || value || "");
     const [error, setError] = useState("");
@@ -88,15 +87,17 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
     }, []);
 
     useEffect(() => {
-        setSuggestions(autoSuggestion.initialData);
-    }, [autoSuggestion]);
+        if (autoSuggestion?.initialData?.length > 0) {
+            setSuggestions(autoSuggestion.initialData);
+        }
+    }, [autoSuggestion.initialData]);
 
     // Update value when prop changes
     useEffect(() => {
-        if (value !== undefined) {
-            setInputValue(value);
+        if (value !== undefined || maskedValues?.[name] !== undefined || groupFieldDefaultValue !== undefined) {
+            setInputValue(groupFieldDefaultValue || maskedValues?.[name] || value);
         }
-    }, [value]);
+    }, [groupFieldDefaultValue || maskedValues?.[name] || value]);
 
     useEffect(() => {
         if (errors?.[name]) {
@@ -150,7 +151,6 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
     // Validation logic
     const validateInput = (valueToValidate) => {
         let validationError = FormUtils.validateField(valueToValidate, validationRules, formField);
-        // console.log("validationError", validationError);
         if (!validationError && customValidation) {
             validationError = customValidation(valueToValidate);
         }

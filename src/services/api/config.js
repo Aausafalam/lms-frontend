@@ -10,10 +10,10 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("institute_token");
-        if (token) {
-            config.headers["Authorization"] = `Bearer ${JSON.parse(token)}`;
-        }
+        // const token = localStorage.getItem("institute_token");
+        // if (token) {
+        //     config.headers["Authorization"] = `Bearer ${JSON.parse(token)}`;
+        // }
         return config;
     },
     (error) => {

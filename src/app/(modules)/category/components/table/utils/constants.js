@@ -49,10 +49,9 @@ const categoryTableConstants = {
             options: FILTER_OPTIONS[key],
             placeholder: `Select ${key.replace(/([A-Z])/g, " $1").trim()}`,
         })),
-        parentPayloadKey: `[search][filters]`,
     },
     TABLE_SORTING: {
-        initialSort: "Asset ID",
+        initialSort: "Category ID",
         initialSortOrder: "asc",
     },
 };

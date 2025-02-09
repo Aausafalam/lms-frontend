@@ -1,7 +1,7 @@
 .table_container {
     background-color: var(--table-background-color);
     box-sizing: border-box;
-    border-radius: 0.5rem;
+    border-radius: 0.3rem;
     width: 100%;
     margin: 0;
     box-shadow: var(--table-box-shadow);

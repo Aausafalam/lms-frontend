@@ -1,0 +1,17 @@
+.status {
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.3rem;
+    font-size: 13px;
+}
+.status.published {
+    background-color: #dcf9e7;
+    color: rgb(40, 199, 111);
+}
+.status.archived {
+    background-color: #eaebed;
+    color: rgb(128, 131, 144);
+}
+.status.draft {
+    background-color: rgb(255, 159, 67, 0.2);
+    color: rgb(255, 159, 67);
+}

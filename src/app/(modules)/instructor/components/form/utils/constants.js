@@ -1,0 +1,46 @@
+const instructorFormConstants = {
+    isActiveOptions: [
+        { label: "Active", value: true },
+        { label: "Inactive", value: false },
+    ],
+    gender: [
+        { label: "Male", value: "male" },
+        { label: "Female", value: "female" },
+    ],
+    formChangesValidateOptions: {
+        targetKeys: [
+            "name",
+            "email",
+            "mobile",
+            "designation",
+            "gender",
+            "rating",
+            "isActive",
+            "languageCode",
+            "qualification",
+            "experience",
+            "bio",
+            "profileImageUrl",
+            "linkedin",
+            "facebook",
+            "twitter",
+        ],
+        trimStrings: true,
+        precisionForNumbers: 2,
+        ignoreEmptyValues: true,
+    },
+    instructorTypeOptions: [
+        { label: "Electronics", value: "electronics" },
+        { label: "Furniture", value: "furniture" },
+        { label: "Books", value: "books" },
+        { label: "Clothing", value: "clothing" },
+        { label: "Food", value: "food" },
+        { label: "Toys", value: "toys" },
+        { label: "Health", value: "health" },
+        { label: "Automobile", value: "automobile" },
+        { label: "Jewelry", value: "jewelry" },
+        { label: "Sports", value: "sports" },
+    ],
+    DEFAULT_GRID: 3,
+};
+export default instructorFormConstants;

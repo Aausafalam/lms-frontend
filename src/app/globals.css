@@ -86,4 +86,12 @@ body {
     --disabled-text-color: #a0a0a0;
 
     --white-color: #ffffff;
+
+    --theme-error: 255, 76, 81;
+    --theme-success: 40, 199, 111;
+    --theme-orange: 255, 159, 67;
+    --theme-green: 40, 199, 111;
+    --theme-violet: 115, 103, 240;
+    --theme-red: 255, 76, 81;
+    --theme-primary: 245 134 52;
 }

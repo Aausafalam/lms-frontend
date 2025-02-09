@@ -19,7 +19,7 @@ import "./styles/root.css";
 import CustomSelectField from "./components/FieldTemplates/CustomSelectField";
 import FormUtils from "./utils";
 
-const DynamicForm = ({ formData, onSubmit, formButtons, formId = "main", responseErrors }) => {
+const DynamicForm = ({ formData, onSubmit, formButtons, formId, responseErrors, formCache = true }) => {
     const {
         formValues,
         maskedValues,
@@ -40,7 +40,7 @@ const DynamicForm = ({ formData, onSubmit, formButtons, formId = "main", respons
         errors,
         setErrors,
         validateFieldsOnSubmit,
-    } = useFormHandler(formData);
+    } = useFormHandler(formData, formId, formCache);
 
     const { isDragging, handleFileDelete, handleDragOver, handleDragLeave, handleDrop } = useFileUploadHandler(handleInputChange, setGroupPreviewUrls, previewUrl, setPreviewUrl, setFormValues);
 
@@ -50,8 +50,6 @@ const DynamicForm = ({ formData, onSubmit, formButtons, formId = "main", respons
             onSubmit(formValues);
         }
     };
-    console.log(formValues);
-    console.log(errors);
     const getGridClass = (gridValue) => {
         const gridClasses = {
             1: styles.col1,
@@ -68,6 +66,10 @@ const DynamicForm = ({ formData, onSubmit, formButtons, formId = "main", respons
     useEffect(() => {
         setErrors(FormUtils.transformErrors(responseErrors));
     }, [responseErrors]);
+
+    if (!formId) {
+        return <h1>Provide Form ID</h1>;
+    }
 
     return (
         <form className={styles.form_container} onSubmit={handleSubmit} id={`form-${formId}`}>
@@ -182,7 +184,7 @@ const DynamicForm = ({ formData, onSubmit, formButtons, formId = "main", respons
             case "file":
                 return <FileUploadField formField={field} groupPreviewUrls={groupPreviewUrls} previewUrl={previewUrl} errors={errors} />;
             case "rowHeader":
-                return RowHeaderField(field.label);
+                return <RowHeaderField formField={field} />;
             default:
                 return <InputField errors={errors} setErrors={setErrors} formField={field} formValues={formValues} maskedValues={maskedValues} />;
         }

@@ -1,3 +1,4 @@
+import ConfirmationAlert from "@/components/ConfirmationAlert";
 import axios from "axios";
 
 class GlobalUtils {
@@ -249,6 +250,51 @@ class GlobalUtils {
             loading: isLoading,
         },
     ];
+    static formatDate(isoString) {
+        return new Intl.DateTimeFormat("en-CA").format(new Date(isoString));
+    }
+    static tablePagination(data) {
+        return {
+            totalPage: data.totalPages || "0",
+            totalItemCount: data.totalDocuments || "0",
+        };
+    }
+    static async handleDelete({ recordId, onShowDetails, deleteAction, toggleRefreshData }) {
+        ConfirmationAlert.showDeleteConfirmation({
+            title: "Delete Item",
+            text: "Are you sure you want to delete this item?",
+            onConfirm: async () => {
+                try {
+                    if (recordId) {
+                        await deleteAction.execute({
+                            dynamicRoute: recordId,
+                            options: { showNotification: true },
+                        });
+
+                        ConfirmationAlert.showSuccess({
+                            title: "Deleted!",
+                            text: "Your item has been deleted successfully.",
+                        });
+
+                        onShowDetails?.(null);
+                        toggleRefreshData((prev) => !prev);
+                    } else {
+                        console.error("Invalid record ID for deletion");
+                    }
+                } catch (error) {
+                    ConfirmationAlert.showError({
+                        title: "Deletion Failed",
+                        text: error.message || "An unexpected error occurred.",
+                    });
+                }
+            },
+            onCancel: () => {
+                onShowDetails?.((prev) => ({ ...prev, delete: false }));
+            },
+        });
+    }
+
+    static;
 }
 
 export default GlobalUtils;

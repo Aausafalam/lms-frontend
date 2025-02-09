@@ -58,10 +58,10 @@ const TextAreaField = ({
 
     // Update value when prop changes
     useEffect(() => {
-        if (value !== undefined) {
-            setInputValue(value);
+        if (value !== undefined || groupFieldDefaultValue !== undefined || formValues[name] !== undefined) {
+            setInputValue(formValues[name] || groupFieldDefaultValue || value);
         }
-    }, [value]);
+    }, [groupFieldDefaultValue, value, formValues[name]]);
 
     useEffect(() => {
         setInputValue(defaultValue);

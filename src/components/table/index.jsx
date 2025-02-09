@@ -27,11 +27,11 @@ const Table = ({ tableData }) => {
         async (payload) => {
             const url = tableData?.url;
             if (!url) return;
-            setIsLoading(true);
+            //  setIsLoading(true);
             setError(null);
             try {
                 const response = await apiClient.get(data.url, { params: payload });
-                const newData = tableData.getTableData(response.data);
+                const newData = tableData.formatTableData(response.data);
                 setData(newData);
             } catch (err) {
                 console.error("Error fetching data:", err);
@@ -43,7 +43,6 @@ const Table = ({ tableData }) => {
         [tableData?.url]
     );
 
-    // Update data when tableData changes
     useEffect(() => {
         if (tableData) {
             setData(tableData);
@@ -52,7 +51,7 @@ const Table = ({ tableData }) => {
 
     useEffect(() => {
         fetchData(initialValues);
-    }, [initialValues, tableData?.url]);
+    }, [initialValues, tableData?.url, tableData?.refreshTable]);
 
     return (
         <div className={styles.table_container}>

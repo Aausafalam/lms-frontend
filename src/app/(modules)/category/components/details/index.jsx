@@ -1,18 +1,16 @@
 import React from "react";
-import styles from "./index.module.css";
-import DetailsGridItem from "./components/detailsGridItem";
-import { sampleFormatData } from "./utils/seeds";
+import styles from "./styles/index.module.css";
+import "./styles/index.css";
+import useCategoryDetails from "./hooks/useCategoryDetails";
+import Details from "@/components/details";
 
-const Details = () => {
+const CategoryDetails = ({ data }) => {
+    const { categoryDetailsConfig } = useCategoryDetails(data);
     return (
         <div className={styles.container}>
-            <div className={styles.grid}>
-                {sampleFormatData.map((item, index) => (
-                    <DetailsGridItem key={index} data={item} grid={item.grid} />
-                ))}
-            </div>
+            <Details data={categoryDetailsConfig} />
         </div>
     );
 };
 
-export default Details;
+export default CategoryDetails;

@@ -163,7 +163,6 @@ const UserTable = () => {
                 placeholder: "Select Status",
             },
         ],
-        parentPayloadKey: `[search][filters]`,
     };
 
     const tableHeader = {
@@ -208,7 +207,7 @@ const UserTable = () => {
         ],
     };
 
-    function getTableData(data) {
+    function formatTableData(data) {
         return {
             title: "Active Employees List",
             rows: data?.data?.map((item) => {
@@ -254,7 +253,7 @@ const UserTable = () => {
                 {
                     name: "View",
                     functions: (row) => {
-                        console.log("hg", row["Id"].value);
+        
                     },
                     label: "View  Details",
                     Id: "Id",
@@ -264,7 +263,6 @@ const UserTable = () => {
                     functions: (row) => {
                         setUserDetails(data?.data?.find((item) => row["Id"].value === item._id));
                         setShow({ edit: true, add: false, remove: false });
-                        // console.log("hg", row["Id"].value);
                     },
                     label: "Edit Details",
                     Id: "Id",
@@ -274,7 +272,6 @@ const UserTable = () => {
                     functions: (row) => {
                         setUserDetails(data?.data?.find((item) => row["Id"].value === item._id));
                         setShow({ edit: true, add: false, remove: false });
-                        // console.log("hg", row["Id"].value);
                     },
                     label: "Duplicate User",
                     Id: "Id",
@@ -289,7 +286,7 @@ const UserTable = () => {
                 initialSort: "User",
                 initialSortOrder: "asc",
             },
-            getTableData: getTableData,
+            formatTableData: formatTableData,
             rowClickHandler: (row) => {
                 console.log(row);
             },
@@ -299,7 +296,7 @@ const UserTable = () => {
         };
     }
 
-    const tableData = React.useMemo(() => getTableData(initializeTableData), []);
+    const tableData = React.useMemo(() => formatTableData(initializeTableData), []);
 
     return (
         <div>

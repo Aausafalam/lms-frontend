@@ -66,11 +66,14 @@ const TableFilter = ({ data, initialValues, router }) => {
 
         return [...updatedInitialButtons, ...additionalButtons];
     };
-    console.log(formValues);
+
     return (
         <div className={styles.container}>
             <div className={styles.heading}>
-                <h2>{data.title || "Filters"}</h2>
+                <h2>
+                    <span>{data.icon ? data.icon : data.icon === false ? "" : ICON.LIST}</span>
+                    {data.title || "Filters"}
+                </h2>
                 <div className={styles.filters_icon} onClick={() => setIsBodyVisible((prev) => !prev)}>
                     {ICON.FILTERS}
                 </div>
@@ -78,7 +81,6 @@ const TableFilter = ({ data, initialValues, router }) => {
             <div className={`${styles.body} ${isBodyVisible ? styles.show : ""}`}>
                 <DynamicForm
                     onSubmit={(formData) => {
-                        console.log(formData);
                         const params = new URLSearchParams();
                         Object.entries(formData).forEach(([key, value]) => {
                             if (value) params.set(key, value);
@@ -88,6 +90,8 @@ const TableFilter = ({ data, initialValues, router }) => {
                     }}
                     formData={getFormData(data)}
                     formButtons={getFormButtons(data)}
+                    formId={"tableFilters"}
+                    formCache={false}
                 />
             </div>
         </div>

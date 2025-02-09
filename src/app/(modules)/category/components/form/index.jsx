@@ -17,6 +17,7 @@ const CategoryForm = () => {
                 formButtons={GlobalUtils.getFormButtons(isCategoryFormLoading, onCancel)}
                 onSubmit={handleCategoryFormSubmit}
                 responseErrors={addCategoryFormErrors}
+                formId={"categoryForm"}
             />
         </div>
     );

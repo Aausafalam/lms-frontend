@@ -27,6 +27,8 @@ const ButtonGroup = ({ buttons, style = null }) => {
                         disabled={button.disabled}
                         buttonContainerClassName={button.buttonContainerClassName}
                         loading={button.loading}
+                        href={button.href}
+                        target={button.target}
                     >
                         <span>{button.label}</span>
                     </Button>

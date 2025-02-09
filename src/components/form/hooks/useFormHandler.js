@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import FormUtils from "../utils";
 import { Country, State, City } from "country-state-city";
+import { formStorageManager } from "@/lib/utils/formStorageManager";
 
-export const useFormHandler = (formData, validate = null) => {
+export const useFormHandler = (formData, formId, formCache) => {
     const [formValues, setFormValues] = useState({});
     const [maskedValues, setMaskedValues] = useState({});
     const [previewUrl, setPreviewUrl] = useState(null);
@@ -13,6 +14,19 @@ export const useFormHandler = (formData, validate = null) => {
     const [removingGroups, setRemovingGroups] = useState({});
     var [groupPreviewUrls, setGroupPreviewUrls] = useState({});
     const [errors, setErrors] = useState({});
+
+    const getCacheFieldValue = (name) => {
+        if (formCache) {
+            return formStorageManager.getFormField(formId, name);
+        }
+        return undefined;
+    };
+
+    const updateCacheFieldValue = (name, value) => {
+        if (formCache) {
+            formStorageManager.updateField(formId, name, value);
+        }
+    };
 
     useEffect(() => {
         if (!formData) return;
@@ -29,7 +43,7 @@ export const useFormHandler = (formData, validate = null) => {
         // Helper function to initialize form values
         const initialValues = formData.reduce((acc, field) => {
             if (field.type === "select" && field.multiple) {
-                acc[field.name] = field.defaultValue || [];
+                acc[field.name] = getCacheFieldValue(field.name) || field.defaultValue || [];
             } else if (field.groupFields) {
                 acc[field.name] = (field?.defaultGroups || [{}])?.map((item) =>
                     item.reduce((innerAcc, innerField) => {
@@ -38,21 +52,21 @@ export const useFormHandler = (formData, validate = null) => {
                     }, {})
                 );
             } else {
-                acc[field.name] = field.defaultValue;
+                acc[field.name] = getCacheFieldValue(field.name) || field.defaultValue;
             }
             return acc;
         }, {});
 
         // Helper function to initialize masked values
         const initialMaskedValues = formData.reduce((acc, field) => {
-            acc[field.name] = field.maskedValue || field.defaultValue || "";
+            acc[field.name] = getCacheFieldValue(field.name) || field.maskedValue || field.defaultValue || "";
             return acc;
         }, {});
 
         // Helper function to initialize custom field state
         const initialCustomFieldState = formData.reduce((acc, field) => {
             if (field.allowCustom) {
-                acc[field.name] = { isCustom: field?.defaultValue ? (field.options?.some((option) => option.value === field.defaultValue) ? false : true) : false };
+                acc[field.name] = getCacheFieldValue(field.name) || { isCustom: field?.defaultValue ? (field.options?.some((option) => option.value === field.defaultValue) ? false : true) : false };
             }
             return acc;
         }, {});
@@ -229,7 +243,7 @@ export const useFormHandler = (formData, validate = null) => {
                     fetchDynamicOptions(field.name, field.dynamicOptions);
                 }
             });
-
+            updateCacheFieldValue(name, value);
             // Clean up object URL for file uploads
             return () => {
                 if (type === "file") {

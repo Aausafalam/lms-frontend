@@ -80,7 +80,7 @@ const FileUploadField = ({ formField, errors }) => {
                 type: "local",
                 metadata: {
                     isDefault: true,
-                    poster: value.mime_type.startsWith("image/") ? fileUrl : null,
+                    poster: value?.mime_type?.startsWith("image/") ? fileUrl : null,
                 },
                 file: {
                     name: value.original_name,

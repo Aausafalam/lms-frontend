@@ -139,7 +139,6 @@ const TableRow = ({ data, setCheckboxState, checkboxState, onRowClick, onActionC
             </tbody>
         );
     }
-    console.log(checkboxState);
     return (
         <tbody className={styles.container}>
             {data.rows.map((row, rowIndex) => (

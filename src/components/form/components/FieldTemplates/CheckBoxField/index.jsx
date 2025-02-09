@@ -5,7 +5,6 @@ import styles from "./index.module.css";
 const CheckBoxField = ({ formField, formValues, error }) => {
     const { id, name, label, required, onChange, disabled, readonly, style, className } = formField;
     const [isChecked, setIsChecked] = useState(formValues?.[name] || false);
-    // console.log(formValues, name);
 
     const handleChange = useCallback(
         (e) => {

@@ -1,2 +1,2 @@
-const endPointsICONS = {};
-export default endPointsICONS;
+const categoryICONS = {};
+export default categoryICONS;

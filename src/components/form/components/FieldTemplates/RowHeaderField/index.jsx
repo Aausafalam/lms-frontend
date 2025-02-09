@@ -1,13 +1,18 @@
-import styles from "../../../styles/DynamicForm.module.css";
+import React from "react";
+import styles from "./index.module.css";
 
-const RowHeaderField = (label) => {
+const RowHeaderField = ({ formField }) => {
+    const { label, fontSize = "15px", className = "", icon = "", description = "" } = formField;
     return (
-        <>
-            <p className={styles.rowHeader} style={{ fontSize: "17px" }}>
-                {label}
-            </p>
-            <hr className={styles.divider} />
-        </>
+        <div className={`${styles.container} ${className}`}>
+            <div className={styles.icon}>{icon}</div>
+            <div className={styles.header_wrapper}>
+                <p className={styles.rowHeader} style={{ fontSize }}>
+                    {label}
+                </p>
+                <p className={styles.description}>{description}</p>
+            </div>
+        </div>
     );
 };
 

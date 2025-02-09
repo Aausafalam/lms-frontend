@@ -1,4 +1,6 @@
+import apiConstants from "@/services/utils/constants";
 import axios from "axios";
+import TableICON from "./icon";
 
 class TableUtils {
     static capitalizeEachWord = (name) => {
@@ -139,6 +141,31 @@ class TableUtils {
                 })
             )
             .flat();
+    }
+
+    static getExportButton({ url, token, flat, icon, label, href, target, className, ...restProps }) {
+        const defaultToken = JSON.parse(localStorage.getItem("user"));
+        const userToken = token || defaultToken;
+
+        // Construct the URL safely
+        const baseUrl = `${apiConstants.BACKEND_API_BASE_URL}${url}`;
+        const urlObj = new URL(baseUrl, window.location.origin);
+
+        // Append token only if it's present
+        if (userToken) {
+            urlObj.searchParams.set("token", userToken);
+        }
+
+        return {
+            variant: "secondary",
+            flat: flat ?? true,
+            icon: icon || TableICON.EXPORT,
+            label: label || "Exports",
+            className: className || "export",
+            href: href || urlObj.toString(),
+            target: target || "_blank",
+            ...restProps,
+        };
     }
 }
 

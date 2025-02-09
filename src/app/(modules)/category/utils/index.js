@@ -1,2 +1,2 @@
-class categoryUtils {}
-export default categoryUtils;
+class CategoryUtils {}
+export default CategoryUtils;

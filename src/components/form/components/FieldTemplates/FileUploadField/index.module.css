@@ -183,6 +183,7 @@
 }
 :global(.filepond--wrapper) {
     margin-top: -0.1rem;
+    margin-bottom: -0.7rem;
 }
 :global(.filepond--root .filepond--drop-label) {
     border-radius: 5px;

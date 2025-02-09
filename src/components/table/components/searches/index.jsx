@@ -6,6 +6,7 @@ import Button from "@/components/form/components/FieldTemplates/ButtonField";
 import ICON from "../../utils/icon";
 import { useSearchParams } from "next/navigation";
 import DynamicForm from "@/components/form";
+import "./index.css";
 
 const TableSearch = ({ data, initialValues, router }) => {
     const [formValues, setFormValues] = useState(initialValues);
@@ -67,7 +68,7 @@ const TableSearch = ({ data, initialValues, router }) => {
             </div>
 
             <div>
-                <DynamicForm formData={getFormData(data)} formButtons={[]} />
+                <DynamicForm formId={"tableSearch"} formCache={false} formData={getFormData(data)} formButtons={[]} />
                 {data?.actionButtons?.map((button) => (
                     <Button
                         key={button.label}
@@ -76,6 +77,20 @@ const TableSearch = ({ data, initialValues, router }) => {
                         flat={button.flat}
                         className={`${styles?.[button.label?.toLowerCase()]} ${button.className}`}
                         icon={button.icon}
+                        outlined={button.outlined}
+                        rounded={button.rounded}
+                        text={button.text}
+                        plain={button.plain}
+                        tonal={button.tonal}
+                        iconOnly={button.iconOnly}
+                        fullWidth={button.fullWidth}
+                        type={button.type || "button"}
+                        iconPosition={button.iconPosition}
+                        disabled={button.disabled}
+                        buttonContainerClassName={button.buttonContainerClassName}
+                        loading={button.loading}
+                        href={button.href}
+                        target={button.target}
                     >
                         {button.label}
                     </Button>
