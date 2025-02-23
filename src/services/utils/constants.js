@@ -21,6 +21,22 @@ const apiConstants = {
         DELETE_COURSE: "/delete-course",
         GET_COURSE_STATS: "/get-course-stats",
     },
+    permissionGroup: {
+        BASE_ROUTE: "/permission-group",
+        CREATE_PERMISSION_GROUP: "/create-permission-group",
+        UPDATE_PERMISSION_GROUP: "/update-permission-group",
+        GET_PERMISSION_GROUP_DETAILS: "/get-permission-group-details",
+        DELETE_PERMISSION_GROUP: "/delete-permission-group",
+        GET_PERMISSION_GROUP_STATS: "/get-permission-group-stats",
+    },
+    permission: {
+        BASE_ROUTE: "/permission",
+        CREATE_PERMISSION: "/create-permission",
+        UPDATE_PERMISSION: "/update-permission",
+        GET_PERMISSION_DETAILS: "/get-permission-details",
+        DELETE_PERMISSION: "/delete-permission",
+        GET_PERMISSION_STATS: "/get-permission-stats",
+    },
     loadingStateKeys: {
         CREATE_INSTRUCTOR: "createInstructor",
         UPDATE_INSTRUCTOR: "updateInstructor",
@@ -33,6 +49,18 @@ const apiConstants = {
         GET_COURSE_DETAILS: "getCourseDetails",
         GET_COURSE_STATS: "getCourseStats",
         DELETE_COURSE: "deleteCourse",
+
+        CREATE_PERMISSION_GROUP: "createPermissionGroup",
+        UPDATE_PERMISSION_GROUP: "updatePermissionGroup",
+        GET_PERMISSION_GROUP_DETAILS: "getPermissionGroupDetails",
+        GET_PERMISSION_GROUP_STATS: "getPermissionGroupStats",
+        DELETE_PERMISSION_GROUP: "deletePermissionGroup",
+
+        CREATE_PERMISSION: "createPermission",
+        UPDATE_PERMISSION: "updatePermission",
+        GET_PERMISSION_DETAILS: "getPermissionDetails",
+        GET_PERMISSION_STATS: "getPermissionStats",
+        DELETE_PERMISSION: "deletePermission",
 
         SIGN_UP: "signup",
         VERIFY_EMAIL: "verifyEmail",

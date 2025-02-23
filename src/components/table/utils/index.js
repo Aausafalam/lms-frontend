@@ -143,7 +143,7 @@ class TableUtils {
             .flat();
     }
 
-    static getExportButton({ url, token, flat, icon, label, href, target, className, ...restProps }) {
+    static getExportButton({ url, token, flat, icon, label, href, target, className, tonal, outlined, ...restProps }) {
         const defaultToken = JSON.parse(localStorage.getItem("user"));
         const userToken = token || defaultToken;
 
@@ -157,8 +157,9 @@ class TableUtils {
         }
 
         return {
-            variant: "secondary",
+            outlined: outlined ?? true,
             flat: flat ?? true,
+            tonal: tonal ?? true,
             icon: icon || TableICON.EXPORT,
             label: label || "Exports",
             className: className || "export",

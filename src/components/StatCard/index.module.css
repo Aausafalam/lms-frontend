@@ -89,8 +89,12 @@
     transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     transition-property: width, height;
     vertical-align: middle;
-    border-radius: 0.5rem;
+    border-radius: 1.5rem;
     padding: 0.5rem;
+}
+.icon_container svg {
+    width: 20px;
+    height: 20px;
 }
 
 .violet {

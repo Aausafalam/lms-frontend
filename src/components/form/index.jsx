@@ -1,10 +1,9 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ButtonGroup from "./components/ButtonGroup";
 import { ICON } from "./utils/icons";
 import styles from "./styles/DynamicForm.module.css";
 import { useFormHandler } from "./hooks/useFormHandler";
-import { useFileUploadHandler } from "./hooks/useFileUpload";
 import CheckBoxField from "./components/FieldTemplates/CheckBoxField";
 import RadioField from "./components/FieldTemplates/RadioField";
 import TextAreaField from "./components/FieldTemplates/TextAreaField";
@@ -18,8 +17,10 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import "./styles/root.css";
 import CustomSelectField from "./components/FieldTemplates/CustomSelectField";
 import FormUtils from "./utils";
+import { useFormSubmission } from "./hooks/useFormSubmission";
+import SuccessText from "../SuccessText";
 
-const DynamicForm = ({ formData, onSubmit, formButtons, formId, responseErrors, formCache = true }) => {
+const DynamicForm = ({ formData, onSubmit, onSuccess, onError, formButtons, formId, responseErrors, formCache = true }) => {
     const {
         formValues,
         maskedValues,
@@ -30,23 +31,40 @@ const DynamicForm = ({ formData, onSubmit, formButtons, formId, responseErrors, 
         removingGroups,
         handleInputChange,
         groupPreviewUrls,
-        setGroupPreviewUrls,
         previewUrl,
-        setPreviewUrl,
         handleLabelClick,
         addGroup,
         deleteGroup,
-        setFormValues,
         errors,
         setErrors,
         validateFieldsOnSubmit,
     } = useFormHandler(formData, formId, formCache);
 
-    const { isDragging, handleFileDelete, handleDragOver, handleDragLeave, handleDrop } = useFileUploadHandler(handleInputChange, setGroupPreviewUrls, previewUrl, setPreviewUrl, setFormValues);
+    const { formSubmission } = useFormSubmission(formId);
+    const [buttonGroup, setButtonGroup] = useState(formButtons);
+
+    useEffect(() => {
+        setButtonGroup(formButtons);
+    }, [formButtons]);
+
+    useEffect(() => {
+        setButtonGroup((prev) => prev.map((button) => (button.type === "Submit" ? { ...button, loading: formSubmission.isLoading } : button)));
+    }, [formSubmission.isLoading]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (onSubmit && !formButtons?.[0]?.loading && (await validateFieldsOnSubmit())) {
+        const submitButton = buttonGroup.find((button) => button.type === "Submit");
+        if (submitButton?.action) {
+            formSubmission.execute({
+                payload: formValues,
+                route: submitButton.action?.route || "",
+                params: submitButton.action?.params || {},
+                options: submitButton.action?.options || {},
+                onSuccess,
+                onError,
+            });
+        }
+        if (onSubmit && !buttonGroup?.[0]?.loading && (await validateFieldsOnSubmit())) {
             onSubmit(formValues);
         }
     };
@@ -64,8 +82,8 @@ const DynamicForm = ({ formData, onSubmit, formButtons, formId, responseErrors, 
     };
 
     useEffect(() => {
-        setErrors(FormUtils.transformErrors(responseErrors));
-    }, [responseErrors]);
+        setErrors(FormUtils.transformErrors(formSubmission.errorMessages || responseErrors));
+    }, [responseErrors, formSubmission.errorMessages]);
 
     if (!formId) {
         return <h1>Provide Form ID</h1>;
@@ -92,7 +110,8 @@ const DynamicForm = ({ formData, onSubmit, formButtons, formId, responseErrors, 
                     );
                 })}
             </div>
-            {formButtons && <ButtonGroup buttons={formButtons} />}
+            {buttonGroup && <ButtonGroup buttons={buttonGroup} />}
+            <SuccessText message={formSubmission.successMessages} />
         </form>
     );
 

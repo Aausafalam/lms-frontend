@@ -3,6 +3,8 @@ import { InstructorProvider } from "./instructor";
 import { LoadingProvider } from "./loading";
 import { TemplateProvider } from "./template";
 import { CourseProvider } from "./course";
+import { PermissionGroupProvider } from "./permissionGroup";
+import { PermissionProvider } from "./permission";
 
 const ContextProviders = ({ children }) => {
     return (
@@ -10,7 +12,11 @@ const ContextProviders = ({ children }) => {
             <NotificationProvider>
                 <TemplateProvider>
                     <InstructorProvider>
-                        <CourseProvider>{children}</CourseProvider>
+                        <PermissionGroupProvider>
+                            <PermissionProvider>
+                                <CourseProvider>{children}</CourseProvider>
+                            </PermissionProvider>
+                        </PermissionGroupProvider>
                     </InstructorProvider>
                 </TemplateProvider>
             </NotificationProvider>

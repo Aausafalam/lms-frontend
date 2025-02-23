@@ -1,0 +1,35 @@
+.assign_to_container {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+.assign_to {
+    padding: 0.25rem 0.7rem;
+    border-radius: 0.3rem;
+    font-size: 13px;
+}
+.assign_to.administrator {
+    background: rgb(var(--theme-primary), 0.2);
+    color: rgb(var(--theme-primary));
+}
+.assign_to.users {
+    background-color: rgb(var(--theme-success), 0.2);
+    color: rgb(var(--theme-success));
+}
+.assign_to.archived {
+    background-color: #eaebed;
+    color: rgb(128, 131, 144);
+}
+.assign_to.manager {
+    background-color: rgb(var(--theme-orange), 0.2);
+    color: rgb(var(--theme-orange));
+}
+.assign_to.restricted_user {
+    background-color: rgb(var(--theme-error), 0.2);
+    color: rgb(var(--theme-error));
+}
+.assign_to.support {
+    background-color: rgb(var(--theme-info), 0.2);
+    color: rgb(var(--theme-info));
+}

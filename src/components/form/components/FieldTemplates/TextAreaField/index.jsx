@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./index.module.css";
 import "../../../styles/root.css";
 import FormUtils from "@/components/form/utils";
+import CkEditor from "./components/ckeEditor";
 
 const TextAreaField = ({
     // Base props
@@ -50,6 +51,7 @@ const TextAreaField = ({
         // Additional content
         labelChild,
         contentChild,
+        editorType,
     } = formField;
     // Internal state
     const [inputValue, setInputValue] = useState(groupFieldDefaultValue || defaultValue || value || "");
@@ -101,14 +103,14 @@ const TextAreaField = ({
 
     const handleBlur = (e) => {
         setTouched(true);
+        console.log(e);
+        // if (validateOnBlur) {
+        //     validateInput(e.target.value);
+        // }
 
-        if (validateOnBlur) {
-            validateInput(e.target.value);
-        }
-
-        if (onBlur) {
-            onBlur(e);
-        }
+        // if (onBlur) {
+        //     onBlur(e);
+        // }
     };
 
     // Class names
@@ -124,6 +126,8 @@ const TextAreaField = ({
     ${labelClassName}
   `.trim();
 
+    const Comp = editorType === "rich" ? CkEditor : "textarea";
+
     return (
         <div className={formGroupClasses} style={style}>
             <div className={styles.inputWrapper}>
@@ -134,7 +138,7 @@ const TextAreaField = ({
                         {labelChild}
                     </label>
                 )}
-                <textarea
+                <Comp
                     id={id}
                     type={type}
                     name={name}
@@ -149,7 +153,7 @@ const TextAreaField = ({
                     aria-invalid={!!error}
                     aria-describedby={error ? `${id}-error` : undefined}
                     {...restProps}
-                ></textarea>
+                ></Comp>
 
                 {contentChild}
             </div>

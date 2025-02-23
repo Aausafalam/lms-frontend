@@ -105,6 +105,7 @@ const generalInformationSection = [
         label: "Description",
         grid: 2,
         placeholder: "Provide a detailed course description...",
+        editorType: "rich",
         validationRules: { required: true },
         validateOnChange: true,
     },

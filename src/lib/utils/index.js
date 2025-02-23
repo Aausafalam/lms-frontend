@@ -236,7 +236,7 @@ class GlobalUtils {
         return !isEqual(normalizedPayload, normalizedExisting);
     }
 
-    static getFormButtons = (isLoading = false, onCancel) => [
+    static getFormButtons = (isLoading = false, onCancel, action) => [
         {
             label: "Cancel",
             onClick: onCancel,
@@ -248,6 +248,7 @@ class GlobalUtils {
             label: "Submit",
             type: "Submit",
             loading: isLoading,
+            action: action,
         },
     ];
     static formatDate(isoString) {

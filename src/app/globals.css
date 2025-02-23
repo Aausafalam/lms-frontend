@@ -93,5 +93,6 @@ body {
     --theme-green: 40, 199, 111;
     --theme-violet: 115, 103, 240;
     --theme-red: 255, 76, 81;
-    --theme-primary: 245 134 52;
+    --theme-primary: 115, 103, 240;
+    --theme-info: 0, 186, 209;
 }

@@ -37,6 +37,7 @@ const mediaAndContentDetailsSection = [
         label: "Syllabus",
         grid: 1,
         placeholder: "Write the course syllabus...",
+        editorType: "rich",
         validationRules: { required: false },
         validateOnChange: true,
     },

@@ -26,6 +26,7 @@ const certificationAndCompletionSection = [
         label: "Certificate Criteria",
         grid: 1,
         placeholder: "Define certificate eligibility criteria...",
+        editorType: "rich",
         validationRules: { required: false },
         validateOnChange: true,
     },
