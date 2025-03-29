@@ -5,6 +5,7 @@ import ICON from "../../utils/icon";
 import Dropdown from "@/components/DropDown";
 import CheckBoxField from "@/components/form/components/FieldTemplates/CheckBoxField";
 import Utils from "../../utils";
+import Link from "next/link";
 
 const TableRow = ({ data, setCheckboxState, checkboxState, onRowClick, onActionClick, customCellRenderer, loadingState = false, initialValues }) => {
     // Memoize action filtering
@@ -73,6 +74,13 @@ const TableRow = ({ data, setCheckboxState, checkboxState, onRowClick, onActionC
                             </a>
                         );
                 }
+            }
+            if (cell.url) {
+                return (
+                    <Link onClick={(e) => e.stopPropagation()} className={styles.cell_url} href={cell.url}>
+                        {cell.value}
+                    </Link>
+                );
             }
 
             return cell.value;

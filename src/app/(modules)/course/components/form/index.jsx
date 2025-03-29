@@ -11,6 +11,7 @@ const CourseForm = ({ data, onSuccess, onCancel, formId }) => {
     return (
         <div className={styles.container}>
             <DynamicForm
+                key={formId}
                 formData={courseFormConfig}
                 formButtons={GlobalUtils.getFormButtons(isCourseFormLoading, onCancel)}
                 onSubmit={handleCourseFormSubmit}

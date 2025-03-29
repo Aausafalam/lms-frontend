@@ -4,8 +4,8 @@
     --initial-border-color: #dfdfdf;
     --hover-border-color: #9b9b9b;
 
-    --active-color: #7367ed;
-    --active-border-color: #7367ed;
+    --active-color: rgb(113, 60, 232);
+    --active-border-color: rgb(113, 60, 232);
     --active-box-shadow: 0 3px 10px 0 rgba(34, 41, 47, 0.1);
     --text-color: rgb(47, 43, 61, 0.9);
 

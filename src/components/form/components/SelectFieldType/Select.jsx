@@ -91,7 +91,7 @@ const getStyles = (style, error) => {
         }),
         option: (provided, state) => ({
             ...provided,
-            backgroundColor: state.isSelected ? "rgb(115, 103, 240, .15)" : state.isFocused ? "#f5f5f5" : "white",
+            backgroundColor: state.isSelected ? "rgb(113, 60, 232, .15)" : state.isFocused ? "#f5f5f5" : "white",
             color: state.isSelected ? "var(--active-color)" : "rgb(47, 43, 61, 1)",
             fontSize: "var(--input-font-size)",
             padding: "0.55rem 0.75rem",

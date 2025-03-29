@@ -31,7 +31,7 @@ const Table = ({ tableData }) => {
             setError(null);
             try {
                 const response = await apiClient.get(data.url, { params: payload });
-                const newData = tableData.formatTableData(response.data);
+                const newData = tableData.formatTableData(response.data.data);
                 setData(newData);
             } catch (err) {
                 console.error("Error fetching data:", err);
@@ -57,7 +57,7 @@ const Table = ({ tableData }) => {
         <div className={styles.table_container}>
             {/* Filters and Search */}
             <TableFilter router={router} initialValues={initialValues} data={data.externalFilters} />
-            <TableSearch initialValues={initialValues} router={router} data={data.tableHeader} />
+            <TableSearch dataView={dataView} showDataViewButton={data.customView} setDataView={setDataView} initialValues={initialValues} router={router} data={data.tableHeader} />
 
             <TableError error={error} />
 
@@ -65,10 +65,7 @@ const Table = ({ tableData }) => {
             {dataView.table && <TableView isLoading={isLoading} checkboxState={checkboxState} setCheckboxState={setCheckboxState} data={data} router={router} initialValues={initialValues} />}
 
             {/* Grid View */}
-            {dataView.grid && <div className={styles.grid_view_container}>{data.rows?.length > 0 ? data.gridComponent() : <DataNotFound message="Empty List" />}</div>}
-
-            {/* Kanban View */}
-            {dataView.kanban && <div className={styles.grid_view_container}>{data.rows?.length > 0 ? data.kanbanComponent() : <DataNotFound message="Empty List" />}</div>}
+            {dataView.customView && <div className={styles.grid_view_container}>{data.rows?.length > 0 ? data.customView() : <DataNotFound message="Empty List" />}</div>}
 
             {/* Pagination */}
             <TablePagination data={data} router={router} initialValues={initialValues} />

@@ -130,7 +130,7 @@ const UserForm = ({ data, onCancel }) => {
 
     return (
         <div>
-            <DynamicForm formCache={false} formId={"userForm"} formData={formData} formButtons={formButtons} onSubmit={handleSubmit} />
+            <DynamicForm key={"useForm"} formCache={false} formId={"userForm"} formData={formData} formButtons={formButtons} onSubmit={handleSubmit} />
         </div>
     );
 };

@@ -19,6 +19,7 @@ import CustomSelectField from "./components/FieldTemplates/CustomSelectField";
 import FormUtils from "./utils";
 import { useFormSubmission } from "./hooks/useFormSubmission";
 import SuccessText from "../SuccessText";
+import ErrorText from "../ErrorText";
 
 const DynamicForm = ({ formData, onSubmit, onSuccess, onError, formButtons, formId, responseErrors, formCache = true }) => {
     const {
@@ -41,6 +42,7 @@ const DynamicForm = ({ formData, onSubmit, onSuccess, onError, formButtons, form
     } = useFormHandler(formData, formId, formCache);
 
     const { formSubmission } = useFormSubmission(formId);
+    console.log("formId", formId);
     const [buttonGroup, setButtonGroup] = useState(formButtons);
 
     useEffect(() => {
@@ -56,12 +58,13 @@ const DynamicForm = ({ formData, onSubmit, onSuccess, onError, formButtons, form
         const submitButton = buttonGroup.find((button) => button.type === "Submit");
         if (submitButton?.action) {
             formSubmission.execute({
-                payload: formValues,
+                payload: { ...formValues, ...(submitButton.action?.body || {}) },
                 route: submitButton.action?.route || "",
                 params: submitButton.action?.params || {},
                 options: submitButton.action?.options || {},
                 onSuccess,
                 onError,
+                method: submitButton.action?.method,
             });
         }
         if (onSubmit && !buttonGroup?.[0]?.loading && (await validateFieldsOnSubmit())) {
@@ -112,6 +115,7 @@ const DynamicForm = ({ formData, onSubmit, onSuccess, onError, formButtons, form
             </div>
             {buttonGroup && <ButtonGroup buttons={buttonGroup} />}
             <SuccessText message={formSubmission.successMessages} />
+            <ErrorText message={formSubmission.errorMessages} />
         </form>
     );
 

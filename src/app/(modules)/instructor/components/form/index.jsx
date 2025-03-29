@@ -11,6 +11,7 @@ const InstructorForm = ({ data, onSuccess, onCancel, formId }) => {
     return (
         <div className={styles.container}>
             <DynamicForm
+                key={formId}
                 formData={instructorFormConfig}
                 formButtons={GlobalUtils.getFormButtons(isInstructorFormLoading, onCancel)}
                 onSubmit={handleInstructorFormSubmit}

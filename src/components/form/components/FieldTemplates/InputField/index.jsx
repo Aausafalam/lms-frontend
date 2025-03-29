@@ -10,6 +10,7 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
         label,
         type = "text",
         placeholder = "",
+        icon,
 
         // Form handling
         value,
@@ -45,6 +46,7 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
         // Additional content
         labelChild,
         contentChild,
+        showIndicator,
 
         // New auto-suggestion props
         autoSuggestion = {
@@ -59,6 +61,8 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
     const [inputValue, setInputValue] = useState(groupFieldDefaultValue || maskedValues?.[name] || value || "");
     const [error, setError] = useState("");
     const [touched, setTouched] = useState(false);
+    const [passwordStrength, setPasswordStrength] = useState(0);
+    const [passwordError, setPasswordError] = useState("");
 
     // state for auto-suggestions
     const [suggestions, setSuggestions] = useState([]);
@@ -233,6 +237,12 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
         }
     };
 
+    const getStrengthColor = () => {
+        if (passwordStrength <= 1) return "bg-red-500";
+        if (passwordStrength <= 3) return "bg-yellow-500";
+        return "bg-green-500";
+    };
+
     // Class names
     const formGroupClasses = `
         ${styles.formGroup}
@@ -246,6 +256,59 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
         ${labelClassName}
     `.trim();
 
+    const handlePasswordStrength = (password) => {
+        if (!password) {
+            setPasswordStrength(0);
+            setPasswordError("");
+            return;
+        }
+
+        let strength = 0;
+        const feedback = [];
+
+        // Length check
+        if (password.length >= 8) {
+            strength += 1;
+        } else {
+            feedback.push("Password should be at least 8 characters");
+        }
+
+        // Uppercase check
+        if (/[A-Z]/.test(password)) {
+            strength += 1;
+        } else {
+            feedback.push("Add an uppercase letter");
+        }
+
+        // Lowercase check
+        if (/[a-z]/.test(password)) {
+            strength += 1;
+        } else {
+            feedback.push("Add a lowercase letter");
+        }
+
+        // Number check
+        if (/[0-9]/.test(password)) {
+            strength += 1;
+        } else {
+            feedback.push("Add a number");
+        }
+
+        // Special character check
+        if (/[^A-Za-z0-9]/.test(password)) {
+            strength += 1;
+        } else {
+            feedback.push("Add a special character");
+        }
+
+        setPasswordStrength(strength);
+        setPasswordError(feedback.join(", "));
+    };
+
+    useEffect(() => {
+        handlePasswordStrength(inputValue);
+    }, [inputValue]);
+
     return (
         <div className={formGroupClasses} style={style}>
             <div className={styles.inputWrapper}>
@@ -257,6 +320,7 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
                     </label>
                 )}
                 <div className={styles.autoSuggestContainer}>
+                    {icon && <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${styles.icon_container}`}>{icon}</div>}
                     <input
                         ref={inputRef}
                         id={id}
@@ -270,7 +334,7 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
                         disabled={disabled}
                         readOnly={readOnly}
                         placeholder={placeholder}
-                        className={`${styles.formControl} ${touched && error ? styles.inputError : ""}`}
+                        className={`${styles.formControl} ${touched && error ? styles.inputError : ""} ${icon ? styles.input_icon : ""}`}
                         style={inputStyle}
                         aria-invalid={!!error}
                         aria-describedby={error ? `${id}-error` : undefined}
@@ -299,6 +363,19 @@ const InputField = ({ formField, formValues, maskedValues, errors, ...restProps 
                                 ))
                             )}
                         </ul>
+                    )}
+
+                    {inputValue && showIndicator && (
+                        <div className="mt-2">
+                            <div className="flex items-center justify-between mb-1">
+                                <span className="text-xs text-gray-500">Password strength:</span>
+                                <span className="text-xs font-medium">{passwordStrength <= 1 ? "Weak" : passwordStrength <= 3 ? "Medium" : "Strong"}</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-1.5">
+                                <div className={`h-1.5 rounded-full ${getStrengthColor()}`} style={{ width: `${(passwordStrength / 5) * 100}%` }}></div>
+                            </div>
+                            {passwordError && <p className="mt-1 text-xs text-red-500">{passwordError}</p>}
+                        </div>
                     )}
                 </div>
                 {contentChild}

@@ -34,8 +34,9 @@ class GlobalUtils {
         return formattedDate;
     };
 
-    static getFormattedDateWithTime = (timestamp) => {
-        const dateObj = new Date(timestamp * 1000);
+    static getFormattedDateWithTime = (input) => {
+        const dateObj = typeof input === "string" ? new Date(input) : new Date(input * 1000);
+
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
         let day = dateObj.getDate();
@@ -294,8 +295,6 @@ class GlobalUtils {
             },
         });
     }
-
-    static;
 }
 
 export default GlobalUtils;

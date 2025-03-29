@@ -3,6 +3,8 @@ import styles from "./index.module.css";
 import CustomSelect from "../../SelectFieldType/Select";
 import "../../../styles/root.css";
 import FormUtils from "@/components/form/utils";
+import apiClient from "@/services/api/config";
+import GlobalUtils from "@/lib/utils";
 
 const SelectField = ({
     // Base props
@@ -16,7 +18,7 @@ const SelectField = ({
         id,
         name,
         label,
-        options,
+        optionsUrl,
         type = "text",
         multiple,
         placeholder = "",
@@ -61,6 +63,7 @@ const SelectField = ({
     const [inputValue, setInputValue] = useState(groupFieldDefaultValue || defaultValue || value || "");
     const [error, setError] = useState("");
     const [touched, setTouched] = useState(false);
+    const [options, setOptions] = useState(formField.options || []);
 
     // Update value when prop changes
     useEffect(() => {
@@ -98,6 +101,23 @@ const SelectField = ({
     ${labelClassName}
     ${error ? styles.inputError : ""}
   `.trim();
+
+    const fetchOptionData = () => {
+        apiClient
+            .get(optionsUrl.url)
+            .then((response) => {
+                setOptions(response.data?.data?.map((data) => ({ value: data?.[optionsUrl.valueKey || "_id"], label: GlobalUtils.capitalizeEachWord(data?.[optionsUrl.labelKey || "name"]) })));
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    useEffect(() => {
+        if (optionsUrl) {
+            fetchOptionData();
+        }
+    }, [optionsUrl]);
 
     return (
         <div className={formGroupClasses} style={style}>

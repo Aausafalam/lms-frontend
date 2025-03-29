@@ -3,7 +3,7 @@ import { useLoading } from "@/services/context/loading";
 import { useNotification } from "@/services/context/notification";
 import { useCallback } from "react";
 
-export const useFormSubmission = ({ formId }) => {
+export const useFormSubmission = (formId) => {
     const { showErrorNotification, showSuccessNotification, successMessages, errorMessages } = useNotification();
     const { isLoading, setLoading } = useLoading();
     const FORM_KEY = formId;
@@ -23,9 +23,10 @@ export const useFormSubmission = ({ formId }) => {
                 onSuccess?.(data);
                 return data;
             } catch (error) {
+                console.log(error);
                 showErrorNotification({
                     key: FORM_KEY,
-                    value: error?.message || "Failed to create course",
+                    value: error,
                 });
                 onError?.(error);
                 throw error;
@@ -52,6 +53,6 @@ async function postData(route, payload, params, signal) {
 }
 
 async function patchData(route, payload, params, signal) {
-    const response = await apiClient.post(route, payload, { params, signal });
+    const response = await apiClient.put(route, payload, { params, signal });
     return response.data;
 }

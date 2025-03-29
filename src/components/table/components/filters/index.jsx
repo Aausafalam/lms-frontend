@@ -22,9 +22,10 @@ const TableFilter = ({ data, initialValues, router }) => {
     const getFormData = (data) => {
         return data.filterFields?.map((item) =>
             data.filterOnSubmit
-                ? { ...item, clearOption: true, defaultValue: formValues?.[item.name] }
+                ? { ...item, name: `filterBy[${item.name}]`, clearOption: true, defaultValue: formValues?.[item.name] }
                 : {
                       ...item,
+                      name: `filterBy[${item.name}]`,
                       clearOption: true,
                       customOnChange: (event) => {
                           const { name, value } = event.target;

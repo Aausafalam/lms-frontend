@@ -126,7 +126,7 @@ const Sidebar = ({ userRole = "admin" }) => {
             if (!isItemVisible(item)) return null;
 
             if (item.child) {
-                const isGroupExpanded = isSidebarOpen && !isChildMenu && (expandedGroups[item.name] ?? false);
+                const isGroupExpanded = isSidebarOpen && !isChildMenu && (!expandedGroups[item.name] ?? false);
                 const isGroupActive = isItemActive(item);
 
                 return (
@@ -189,7 +189,7 @@ const Sidebar = ({ userRole = "admin" }) => {
                     <Image src={logo} alt="Logo" width={35} height={25} />
                     {isSidebarOpen && (
                         <span onClick={toggleSidebar} className={styles.logoText}>
-                            Vuexy {ICONS.CIRCLE_DOT}
+                            LMS {ICONS.CIRCLE_DOT}
                         </span>
                     )}
                 </div>

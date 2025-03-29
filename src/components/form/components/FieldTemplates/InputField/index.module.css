@@ -27,6 +27,9 @@
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     width: 100%;
 }
+.inputWrapper input.input_icon {
+    padding-left: 2.5rem;
+}
 .inputWrapper input:hover {
     border: 1px solid var(--hover-border-color);
 }
@@ -117,7 +120,7 @@
     cursor: pointer;
     transition: background-color 0.2s;
     border-radius: 0.37rem;
-    font-size: .9375rem;
+    font-size: 0.9375rem;
     color: rgb(47, 43, 61, 1);
 }
 
@@ -130,4 +133,13 @@
     padding: 8px 12px;
     color: #666;
     font-style: italic;
+}
+.icon_container {
+    height: fit-content;
+    margin-top: 0.65rem;
+}
+.icon_container svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: rgb(156 163 175 / var(--tw-text-opacity, 1));
 }

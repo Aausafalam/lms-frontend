@@ -10,9 +10,9 @@ export default function UserList() {
     return (
         <div>
             <UserTable />
-            <MarkDownEditor />
+            {/* <MarkDownEditor />
 
-            <CkEditor value={content} setValue={setContent} placeholder="Write your text here..." />
+            <CkEditor value={content} setValue={setContent} placeholder="Write your text here..." /> */}
         </div>
     );
 }

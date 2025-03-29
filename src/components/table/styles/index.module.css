@@ -12,3 +12,6 @@
     width: 100%;
     border-collapse: collapse;
 }
+.grid_view_container {
+    background-color: var(--backgroundColor);
+}

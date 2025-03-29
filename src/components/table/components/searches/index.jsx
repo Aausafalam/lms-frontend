@@ -3,12 +3,12 @@ import styles from "./index.module.css";
 import SelectField from "@/components/form/components/FieldTemplates/SelectField";
 import InputField from "@/components/form/components/FieldTemplates/InputField";
 import Button from "@/components/form/components/FieldTemplates/ButtonField";
-import ICON from "../../utils/icon";
+import ICON, { TableICON } from "../../utils/icon";
 import { useSearchParams } from "next/navigation";
 import DynamicForm from "@/components/form";
 import "./index.css";
 
-const TableSearch = ({ data, initialValues, router }) => {
+const TableSearch = ({ showDataViewButton, dataView, setDataView, data, initialValues, router }) => {
     const [formValues, setFormValues] = useState(initialValues);
     const searchParams = useSearchParams();
 
@@ -20,18 +20,6 @@ const TableSearch = ({ data, initialValues, router }) => {
             params.delete(key);
         }
         router.replace(`?${params.toString()}`);
-    };
-    const generateOptions = (limitConfig) => {
-        const options = [];
-        const start = parseInt(limitConfig?.limitStart || 10, 10);
-        const end = parseInt(limitConfig?.limitEnd || 50, 10);
-        const step = parseInt(limitConfig?.multipleOf || 10, 10);
-
-        for (let i = start; i <= end; i += step) {
-            options.push({ label: i.toString(), value: i.toString() });
-        }
-
-        return options;
     };
 
     const getFormData = (data) => {
@@ -50,25 +38,9 @@ const TableSearch = ({ data, initialValues, router }) => {
     return (
         <div className={styles.container}>
             <div>
-                {data.limit && (
-                    <SelectField
-                        formField={{
-                            id: "limit",
-                            name: "limit",
-                            options: generateOptions(data.limit),
-                            defaultValue: formValues?.["limit"] || data.limit?.defaultValue || "10",
-                            onChange: (event) => {
-                                const { name, value } = event.target;
-                                setFormValues((prev) => ({ ...prev, [name]: value }));
-                                setQueryParam(name, value);
-                            },
-                        }}
-                    />
-                )}
-            </div>
-
-            <div>
                 <DynamicForm formId={"tableSearch"} formCache={false} formData={getFormData(data)} formButtons={[]} />
+            </div>
+            <div className={styles.action_button_container}>
                 {data?.actionButtons?.map((button) => (
                     <Button
                         key={button.label}
@@ -95,6 +67,26 @@ const TableSearch = ({ data, initialValues, router }) => {
                         {button.label}
                     </Button>
                 ))}
+                {showDataViewButton && (
+                    <Button
+                        key={"data-view"}
+                        onClick={() => {
+                            setDataView((prev) => {
+                                if (prev.table) {
+                                    return { customView: true };
+                                } else {
+                                    return { table: true, customView: false };
+                                }
+                            });
+                        }}
+                        // tonal={true}
+                        icon={dataView.table ? TableICON.CUSTOM : TableICON.TABLE}
+                        iconOnly={true}
+                        tooltip={dataView.table ? "Custom View" : "Table View"}
+                    >
+                        {dataView.table ? "Custom View" : "Table View"}
+                    </Button>
+                )}
             </div>
         </div>
     );

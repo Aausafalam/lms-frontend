@@ -19,7 +19,7 @@ class PermissionGroupApiService {
      * @returns {Promise<Object>} Created permissionGroup
      */
     async create(payload, params, signal) {
-        const response = await this._apiClient.post(endpoints.CREATE_COURSE, payload, { params, signal });
+        const response = await this._apiClient.post(endpoints.CREATE_PERMISSION_GROUP, payload, { params, signal });
         return response.data;
     }
 
@@ -31,7 +31,7 @@ class PermissionGroupApiService {
      * @returns {Promise<Object>} Update status
      */
     async update(dynamicRoute, payload, params, signal) {
-        const response = await this._apiClient.post(`${endpoints.UPDATE_COURSE}/${dynamicRoute}`, payload, { params, signal });
+        const response = await this._apiClient.post(`${endpoints.UPDATE_PERMISSION_GROUP}/${dynamicRoute}`, payload, { params, signal });
         return response.data;
     }
 
@@ -42,7 +42,7 @@ class PermissionGroupApiService {
      * @returns {Promise<Object>} PermissionGroup details
      */
     async getDetails(dynamicRoute, params, signal) {
-        const response = await this._apiClient.get(`${endpoints.GET_COURSE_DETAILS}/${dynamicRoute}`, { params, signal });
+        const response = await this._apiClient.get(`${endpoints.GET_PERMISSION_GROUP_DETAILS}/${dynamicRoute}`, { params, signal });
         return response.data;
     }
 
@@ -53,7 +53,7 @@ class PermissionGroupApiService {
      * @returns {Promise<Object>} Deletion status
      */
     async delete(dynamicRoute, params, signal) {
-        const response = await this._apiClient.delete(`${endpoints.DELETE_COURSE}/${dynamicRoute}`, { params, signal });
+        const response = await this._apiClient.delete(`${endpoints.DELETE_PERMISSION_GROUP}/${dynamicRoute}`, { params, signal });
         return response.data;
     }
 
@@ -64,7 +64,7 @@ class PermissionGroupApiService {
      * @returns {Promise<Object>} PermissionGroup statistics
      */
     async getStats(params, signal) {
-        const response = await this._apiClient.get(endpoints.GET_COURSE_STATS, { params, signal });
+        const response = await this._apiClient.get(endpoints.GET_PERMISSION_GROUP_STATS, { params, signal });
         return response.data;
     }
 }

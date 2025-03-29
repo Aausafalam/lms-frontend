@@ -28,6 +28,34 @@
         ]
     },
     {
+        "name": "user",
+        "link": "/user/list",
+        "icon": "user"
+    },
+    {
+        "name": "Roles & Permissions",
+        "link": "/Roles-Permissions",
+        "icon": "lock",
+        "child": [
+            {
+                "name": "Roles",
+                "link": "/roles"
+            },
+            {
+                "name": "Permission Group",
+                "link": "/permissions-group"
+            },
+            {
+                "name": "Permission",
+                "link": "/permissions"
+            },
+            {
+                "name": "API Routes",
+                "link": "/routes"
+            }
+        ]
+    },
+    {
         "name": "Front Pages",
         "link": "/user",
         "icon": "front",
@@ -132,36 +160,7 @@
             }
         ]
     },
-    {
-        "name": "user",
-        "link": "/user",
-        "icon": "user",
-        "child": [
-            {
-                "name": "view",
-                "link": "#"
-            },
-            {
-                "name": "list",
-                "link": "/user/list"
-            }
-        ]
-    },
-    {
-        "name": "Roles & Permissions",
-        "link": "/Roles-Permissions",
-        "icon": "lock",
-        "child": [
-            {
-                "name": "Roles",
-                "link": "#"
-            },
-            {
-                "name": "Permission",
-                "link": "#"
-            }
-        ]
-    },
+
     {
         "name": "Access Control",
         "link": "/access-control",

@@ -5,27 +5,29 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 }
 .container > div {
     display: flex;
     align-content: center;
     gap: 1rem;
-    margin-bottom: -0.25rem;
 }
-.container > div:nth-child(2) {
-    width: calc(100% - 7rem);
-    justify-content: end;
+.container > div:nth-child(1) {
+    width: calc(100% - 0rem);
+    /* justify-content: end; */
 }
-.container > div:nth-child(2) > form:first-of-type {
+.container > div:nth-child(1) > form:first-of-type {
     width: 50%;
     margin-right: 0.4rem;
-    
+    margin-bottom: -0.25rem;
 }
-.container > div:nth-child(2) > form > div
-{
-    justify-content: end;
+.container > div:nth-child(1) > form > div {
+    /* justify-content: end; */
 }
-.container > div:nth-child(2) > form > div > div {
-    padding-right: 0.2rem !important;
-    margin-left: auto;
+.container > div:nth-child(1) > form > div > div {
+    /* padding-right: 0.2rem !important; */
+    /* margin-left: auto; */
+}
+.action_button_container {
+    margin-top: -1rem;
 }

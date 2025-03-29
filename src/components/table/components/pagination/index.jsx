@@ -3,12 +3,13 @@ import ReactPaginate from "react-paginate";
 import styles from "./index.module.css";
 import ICON from "../../utils/icon";
 import { useSearchParams } from "next/navigation";
+import SelectField from "@/components/form/components/FieldTemplates/SelectField";
 
 const TablePagination = ({ initialValues, router, data }) => {
     const searchParams = useSearchParams();
     const urlPage = Number(searchParams.get("page")) || initialValues?.page || 1;
     const itemsPerPage = initialValues?.limit || 10;
-
+    const [formValues, setFormValues] = useState(initialValues);
     const [pagination, setPagination] = useState({
         page: urlPage,
     });
@@ -61,12 +62,44 @@ const TablePagination = ({ initialValues, router, data }) => {
 
     if (!data?.pagination) return null;
 
+    const generateOptions = (limitConfig) => {
+        const options = [];
+        const start = parseInt(limitConfig?.limitStart || 10, 10);
+        const end = parseInt(limitConfig?.limitEnd || 50, 10);
+        const step = parseInt(limitConfig?.multipleOf || 10, 10);
+
+        for (let i = start; i <= end; i += step) {
+            options.push({ label: i.toString(), value: i.toString() });
+        }
+
+        return options;
+    };
+
     return (
         <div className={styles.container}>
-            <div>
-                <p>
-                    Showing {itemRange} of {data?.pagination?.totalItemCount} entries
-                </p>
+            <div className="flex gap-4 align-middle justify-center">
+                <div className={styles.limit}>
+                    {data.tableHeader.limit && (
+                        <SelectField
+                            formField={{
+                                id: "limit",
+                                name: "limit",
+                                options: generateOptions(data.tableHeader.limit),
+                                defaultValue: formValues?.["limit"] || data.tableHeader?.limit?.defaultValue || "10",
+                                onChange: (event) => {
+                                    const { name, value } = event.target;
+                                    setFormValues((prev) => ({ ...prev, [name]: value }));
+                                    setQueryParam(name, value);
+                                },
+                            }}
+                        />
+                    )}
+                </div>
+                <div>
+                    <p>
+                        Showing {itemRange} of {data?.pagination?.totalItemCount} entries
+                    </p>
+                </div>
             </div>
             <div>
                 <button onClick={handleFirstPage} className={`pagination_arrow ${pagination.page === 1 ? "disabled" : ""}`} disabled={pagination.page === 1}>

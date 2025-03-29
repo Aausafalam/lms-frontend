@@ -9,6 +9,7 @@ import TableUtils from "@/components/table/utils";
 import UserICONS from "@/app/(modules)/user/utils/icons";
 import UserForm from "../userForm";
 import Modal from "@/components/Popup/Popup";
+import GlobalUtils from "@/lib/utils";
 
 const UserTable = () => {
     const [show, setShow] = useState({});
@@ -122,47 +123,9 @@ const UserTable = () => {
         ],
     };
     const externalFilters = {
-        title: "Users Filters",
+        title: "Users List",
         // filterOnSubmit: true,
-        filterFields: [
-            {
-                type: "select",
-                name: "role",
-                grid: 3,
-                options: [
-                    { label: "Admin", value: "admin" },
-                    { label: "Author", value: "author" },
-                    { label: "Editor", value: "editor" },
-                    { label: "Maintainer", value: "Maintainer" },
-                    { label: "Subscriber", value: "subscriber" },
-                ],
-                placeholder: "Select Role",
-            },
-            {
-                type: "select",
-                name: "plan",
-                grid: 3,
-                options: [
-                    { label: "Basic", value: "basic" },
-                    { label: "Company", value: "company" },
-                    { label: "Enterprise", value: "enterprise" },
-                    { label: "Maintainer", value: "Maintainer" },
-                    { label: "Subscriber", value: "subscriber" },
-                ],
-                placeholder: "Select Plan",
-            },
-            {
-                type: "select",
-                name: "status",
-                grid: 3,
-                options: [
-                    { label: "Pending", value: "pending" },
-                    { label: "Inactive", value: "inactive" },
-                    { label: "Active", value: "active" },
-                ],
-                placeholder: "Select Status",
-            },
-        ],
+        filterFields: [],
     };
 
     const tableHeader = {
@@ -176,20 +139,13 @@ const UserTable = () => {
             {
                 variant: "primary",
                 icon: ICON.PLUS,
-                label: "Add New User",
+                label: "Add  User",
                 onClick: () => {
                     setShow({ add: true });
                     console.log("user clicked add user button");
                 },
             },
-            {
-                variant: "secondary",
-                flat: true,
-                className: styles.export,
-                icon: ICON.EXPORT,
-                label: "Export",
-                onClick: () => console.log("user clicked export button"),
-            },
+            TableUtils.getExportButton({ url: "/export" }),
         ],
         filters: [
             {
@@ -252,9 +208,7 @@ const UserTable = () => {
                 },
                 {
                     name: "View",
-                    functions: (row) => {
-        
-                    },
+                    functions: (row) => {},
                     label: "View  Details",
                     Id: "Id",
                 },

@@ -45,7 +45,7 @@ export const useErrorNotification = () => {
 
             setErrorMessages((prevMessages) => ({
                 ...prevMessages,
-                [key]: value?.response?.data?.errors || [],
+                [key]: Array.isArray(value?.response?.data?.errors) ? value?.response?.data?.errors : notificationMessage || [],
             }));
 
             if (!hideNotification && notificationMessage !== "Validation Failed") {

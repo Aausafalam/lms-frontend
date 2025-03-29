@@ -5,6 +5,8 @@ import { TemplateProvider } from "./template";
 import { CourseProvider } from "./course";
 import { PermissionGroupProvider } from "./permissionGroup";
 import { PermissionProvider } from "./permission";
+import { RoutesProvider } from "./routes";
+import { RolesProvider } from "./roles";
 
 const ContextProviders = ({ children }) => {
     return (
@@ -12,11 +14,15 @@ const ContextProviders = ({ children }) => {
             <NotificationProvider>
                 <TemplateProvider>
                     <InstructorProvider>
-                        <PermissionGroupProvider>
-                            <PermissionProvider>
-                                <CourseProvider>{children}</CourseProvider>
-                            </PermissionProvider>
-                        </PermissionGroupProvider>
+                        <RoutesProvider>
+                            <PermissionGroupProvider>
+                                <PermissionProvider>
+                                    <RolesProvider>
+                                        <CourseProvider>{children}</CourseProvider>
+                                    </RolesProvider>
+                                </PermissionProvider>
+                            </PermissionGroupProvider>
+                        </RoutesProvider>
                     </InstructorProvider>
                 </TemplateProvider>
             </NotificationProvider>

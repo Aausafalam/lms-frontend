@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -5,6 +6,8 @@ import styles from "./index.module.css";
 import profileIcon from "./assets/profileIcon.png";
 import Dropdown from "@/components/DropDown";
 import ICONS from "@/lib/utils/icons";
+import Button from "@/components/form/components/FieldTemplates/ButtonField";
+import apiConstants from "@/services/utils/constants";
 
 const Navbar = () => {
     return (
@@ -65,7 +68,18 @@ const Navbar = () => {
                             trigger={<Image src={profileIcon} alt="" />}
                             content={
                                 <div>
-                                    <div className={styles.menuLinksContainer}>Profile Info</div>
+                                    <div className={styles.menuLinksContainer}>
+                                        <Button
+                                            onClick={() => {
+                                                localStorage.removeItem(apiConstants.TOKEN_KEY);
+                                                window.location.href = "/auth/login";
+                                            }}
+                                            variant="danger"
+                                            fullWidth={true}
+                                        >
+                                            Logout
+                                        </Button>
+                                    </div>
                                 </div>
                             }
                         />

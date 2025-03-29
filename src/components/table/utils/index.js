@@ -161,7 +161,7 @@ class TableUtils {
             flat: flat ?? true,
             tonal: tonal ?? true,
             icon: icon || TableICON.EXPORT,
-            label: label || "Exports",
+            label: label || "Export",
             className: className || "export",
             href: href || urlObj.toString(),
             target: target || "_blank",

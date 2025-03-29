@@ -13,6 +13,7 @@ const CategoryForm = () => {
     return (
         <div className={styles.container}>
             <DynamicForm
+                key={formId}
                 formData={categoryFormConfig}
                 formButtons={GlobalUtils.getFormButtons(isCategoryFormLoading, onCancel)}
                 onSubmit={handleCategoryFormSubmit}

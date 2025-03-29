@@ -89,11 +89,14 @@ class FormUtils {
     };
 
     static transformErrors = (errors = []) => {
-        return errors.reduce((acc, { message, path }) => {
-            const key = path[0];
-            acc[key] = message;
-            return acc;
-        }, {});
+        return (
+            Array.isArray(errors) &&
+            errors.reduce((acc, { message, path }) => {
+                const key = path[0];
+                acc[key] = message;
+                return acc;
+            }, {})
+        );
     };
 }
 

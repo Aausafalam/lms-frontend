@@ -38,3 +38,9 @@
 .checkbox label:first-of-type:hover {
     background-color: rgba(226, 224, 224, 0.27);
 }
+.cell_url {
+    color: var(--table-active-color);
+}
+.cell_url:hover {
+    text-decoration: underline;
+}

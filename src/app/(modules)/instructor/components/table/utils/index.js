@@ -16,7 +16,7 @@ class InstructorTableUtils {
             actionButtons: [
                 {
                     icon: TableIcon.PLUS,
-                    label: "Add New Instructor",
+                    label: "Add  Instructor",
                     onClick: () => setModalState("add"),
                 },
                 TableUtils.getExportButton({ url: "/instructor" }),
