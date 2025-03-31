@@ -12,7 +12,7 @@ const RolesTable = ({ setSelectedRoles, setModalState, refreshTable }) => {
     /* Function to format data for the table */
     const formatTableData = (data) => {
         const actionData = RolesTableUtils.getTableActions({ data, setModalState, setSelectedRoles });
-        const rows =  RolesTableUtils.getTableRows({ data, styles })
+        const rows = RolesTableUtils.getTableRows({ data, styles });
         return {
             rows,
             actionData,
@@ -24,7 +24,7 @@ const RolesTable = ({ setSelectedRoles, setModalState, refreshTable }) => {
             tableHeader: RolesTableUtils.getTableHeader({ data, setModalState, styles }),
             checkbox: true,
             refreshTable: refreshTable || false,
-            customView: () => <RolesGridView actionData={actionData} data={data.records} rows={rows}/>,
+            customView: () => <RolesGridView actionData={actionData} data={data.records} rows={rows} />,
             formatTableData,
         };
     };
@@ -34,7 +34,7 @@ const RolesTable = ({ setSelectedRoles, setModalState, refreshTable }) => {
 
     return (
         <div className={styles.container}>
-            <Table tableData={tableData} />
+            <Table key={"role-table"} tableData={tableData} />
         </div>
     );
 };

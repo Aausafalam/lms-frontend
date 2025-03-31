@@ -219,3 +219,43 @@ export const usePermissionGetStats = () => {
         },
     };
 };
+
+/**
+ * Custom hook to fetch Permission statistics
+ */
+export const usePermissionList = () => {
+    const [list, setList] = useState([]);
+    const { showErrorNotification } = useNotification();
+    const { isLoading, setLoading } = useLoading();
+    const GET_PERMISSION_LIST_KEY = apiConstants.loadingStateKeys.GET_PERMISSION_LIST;
+
+    const fetchList = useCallback(
+        async ({ onSuccess, onError, params }) => {
+            setLoading(GET_PERMISSION_LIST_KEY, true);
+            const controller = new AbortController();
+
+            try {
+                const data = await permissionApiService.list(params, controller.signal);
+                setList(data.data);
+                onSuccess?.(data.data);
+            } catch (error) {
+                showErrorNotification({
+                    key: GET_PERMISSION_LIST_KEY,
+                    value: error?.message || "Failed to fetch permission list",
+                });
+                onError?.(error);
+            } finally {
+                setLoading(GET_PERMISSION_LIST_KEY, false);
+            }
+        },
+        [GET_PERMISSION_LIST_KEY, showErrorNotification, setLoading]
+    );
+
+    return {
+        permissionList: {
+            data: list,
+            fetch: fetchList,
+            isLoading: isLoading(GET_PERMISSION_LIST_KEY),
+        },
+    };
+};

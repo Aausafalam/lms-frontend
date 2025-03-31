@@ -219,3 +219,43 @@ export const usePermissionGroupGetStats = () => {
         },
     };
 };
+
+/**
+ * Custom hook to fetch PermissionGroup List
+ */
+export const usePermissionGroupGetList = () => {
+    const [list, setList] = useState([]);
+    const { showErrorNotification } = useNotification();
+    const { isLoading, setLoading } = useLoading();
+    const GET_PERMISSION_GROUP_LIST_KEY = apiConstants.loadingStateKeys.GET_PERMISSION_GROUP_LIST;
+
+    const fetchList = useCallback(
+        async ({ onSuccess, onError, params }) => {
+            setLoading(GET_PERMISSION_GROUP_LIST_KEY, true);
+            const controller = new AbortController();
+
+            try {
+                const data = await permissionGroupApiService.list(params, controller.signal);
+                setList(data.data);
+                onSuccess?.(data.data);
+            } catch (error) {
+                showErrorNotification({
+                    key: GET_PERMISSION_GROUP_LIST_KEY,
+                    value: error?.message || "Failed to fetch permissionGroup stats",
+                });
+                onError?.(error);
+            } finally {
+                setLoading(GET_PERMISSION_GROUP_LIST_KEY, false);
+            }
+        },
+        [GET_PERMISSION_GROUP_LIST_KEY, showErrorNotification, setLoading]
+    );
+
+    return {
+        permissionGroupList: {
+            data: list,
+            fetch: fetchList,
+            isLoading: isLoading(GET_PERMISSION_GROUP_LIST_KEY),
+        },
+    };
+};

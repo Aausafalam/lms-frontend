@@ -7,20 +7,20 @@ import { useCallback, useState } from "react";
 /**
  * Custom hook to handle Roles creation
  */
-export const useRolesCreate = () => {
+export const useRolesAttachPermissions = () => {
     const { showErrorNotification, showSuccessNotification, successMessages, errorMessages } = useNotification();
     const { isLoading, setLoading } = useLoading();
-    const CREATE_ROLES_KEY = apiConstants.loadingStateKeys.CREATE_ROLES;
+    const ATTACH_PERMISSION_ROLES_KEY = apiConstants.loadingStateKeys.ATTACH_PERMISSION_ROLES;
 
-    const executeRolesCreate = useCallback(
-        async ({ payload, onSuccess, onError, options }, params) => {
-            setLoading(CREATE_ROLES_KEY, true);
+    const executeRolesAttachPermissions = useCallback(
+        async ({ payload, onSuccess, onError, options, params }) => {
+            setLoading(ATTACH_PERMISSION_ROLES_KEY, true);
             const controller = new AbortController();
 
             try {
-                const data = await rolesApiService.create(payload, params, controller.signal);
+                const data = await rolesApiService.attachPrivileges(payload, params, controller.signal);
                 showSuccessNotification({
-                    key: CREATE_ROLES_KEY,
+                    key: ATTACH_PERMISSION_ROLES_KEY,
                     value: data,
                     hideNotification: !options?.showNotification,
                 });
@@ -28,24 +28,67 @@ export const useRolesCreate = () => {
                 return data;
             } catch (error) {
                 showErrorNotification({
-                    key: CREATE_ROLES_KEY,
+                    key: ATTACH_PERMISSION_ROLES_KEY,
                     value: error?.message || "Failed to create permission Group",
                 });
                 onError?.(error);
                 throw error;
             } finally {
-                setLoading(CREATE_ROLES_KEY, false);
+                setLoading(ATTACH_PERMISSION_ROLES_KEY, false);
             }
         },
-        [CREATE_ROLES_KEY, showErrorNotification, showSuccessNotification, setLoading]
+        [ATTACH_PERMISSION_ROLES_KEY, showErrorNotification, showSuccessNotification, setLoading]
     );
 
     return {
-        rolesCreate: {
-            execute: executeRolesCreate,
-            isLoading: isLoading(CREATE_ROLES_KEY),
-            successMessages: successMessages?.[CREATE_ROLES_KEY],
-            errorMessages: errorMessages?.[CREATE_ROLES_KEY],
+        rolesAttachPermissions: {
+            execute: executeRolesAttachPermissions,
+            isLoading: isLoading(ATTACH_PERMISSION_ROLES_KEY),
+            successMessages: successMessages?.[ATTACH_PERMISSION_ROLES_KEY],
+            errorMessages: errorMessages?.[ATTACH_PERMISSION_ROLES_KEY],
+        },
+    };
+};
+
+export const useRolesAssignUsers = () => {
+    const { showErrorNotification, showSuccessNotification, successMessages, errorMessages } = useNotification();
+    const { isLoading, setLoading } = useLoading();
+    const ASSIGN_USERS_ROLES_KEY = apiConstants.loadingStateKeys.ASSIGN_USERS_ROLES;
+
+    const executeRolesAssignUsers = useCallback(
+        async ({ payload, onSuccess, onError, options, params }) => {
+            setLoading(ASSIGN_USERS_ROLES_KEY, true);
+            const controller = new AbortController();
+
+            try {
+                const data = await rolesApiService.assignUsers(payload, params, controller.signal);
+                showSuccessNotification({
+                    key: ASSIGN_USERS_ROLES_KEY,
+                    value: data,
+                    hideNotification: !options?.showNotification,
+                });
+                onSuccess?.(data);
+                return data;
+            } catch (error) {
+                showErrorNotification({
+                    key: ASSIGN_USERS_ROLES_KEY,
+                    value: error?.message || "Failed to create permission Group",
+                });
+                onError?.(error);
+                throw error;
+            } finally {
+                setLoading(ASSIGN_USERS_ROLES_KEY, false);
+            }
+        },
+        [ASSIGN_USERS_ROLES_KEY, showErrorNotification, showSuccessNotification, setLoading]
+    );
+
+    return {
+        rolesAssignUsers: {
+            execute: executeRolesAssignUsers,
+            isLoading: isLoading(ASSIGN_USERS_ROLES_KEY),
+            successMessages: successMessages?.[ASSIGN_USERS_ROLES_KEY],
+            errorMessages: errorMessages?.[ASSIGN_USERS_ROLES_KEY],
         },
     };
 };

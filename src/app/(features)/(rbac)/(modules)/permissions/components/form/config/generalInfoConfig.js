@@ -29,7 +29,7 @@ const generalInformationSection = () => {
             validationRules: { required: true },
             validateOnChange: true,
             optionsUrl: {
-                url: "/privilege-group/dropdown",
+                url: "/privilege-group?responseType=dropdown",
                 labelKey: "name",
                 valueKey: "id",
             },

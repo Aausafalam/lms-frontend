@@ -7,6 +7,7 @@ import { PermissionGroupProvider } from "./permissionGroup";
 import { PermissionProvider } from "./permission";
 import { RoutesProvider } from "./routes";
 import { RolesProvider } from "./roles";
+import { UsersProvider } from "./users";
 
 const ContextProviders = ({ children }) => {
     return (
@@ -18,7 +19,9 @@ const ContextProviders = ({ children }) => {
                             <PermissionGroupProvider>
                                 <PermissionProvider>
                                     <RolesProvider>
-                                        <CourseProvider>{children}</CourseProvider>
+                                        <UsersProvider>
+                                            <CourseProvider>{children}</CourseProvider>
+                                        </UsersProvider>
                                     </RolesProvider>
                                 </PermissionProvider>
                             </PermissionGroupProvider>

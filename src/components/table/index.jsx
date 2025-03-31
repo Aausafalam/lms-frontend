@@ -50,11 +50,21 @@ const Table = ({ tableData }) => {
     }, [tableData]);
 
     useEffect(() => {
+        tableData.setSelectedRow?.(
+            Object.values(checkboxState || {})
+                .map((row) => (row === true ? false : row))
+                .filter(Boolean)
+        );
+    }, [checkboxState, tableData]);
+
+    useEffect(() => {
         fetchData(initialValues);
     }, [initialValues, tableData?.url, tableData?.refreshTable]);
 
+    console.log("checkboxState", checkboxState);
+
     return (
-        <div className={styles.table_container}>
+        <div key={tableData?.url} className={styles.table_container}>
             {/* Filters and Search */}
             <TableFilter router={router} initialValues={initialValues} data={data.externalFilters} />
             <TableSearch dataView={dataView} showDataViewButton={data.customView} setDataView={setDataView} initialValues={initialValues} router={router} data={data.tableHeader} />

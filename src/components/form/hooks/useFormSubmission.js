@@ -14,7 +14,7 @@ export const useFormSubmission = (formId) => {
             const controller = new AbortController();
 
             try {
-                const data = method === "patch" ? await patchData(route, payload, params, controller.signal) : await postData(route, payload, params, controller.signal);
+                const data = method === "put" ? await putData(route, payload, params, controller.signal) : await postData(route, payload, params, controller.signal);
                 showSuccessNotification({
                     key: FORM_KEY,
                     value: data,
@@ -52,7 +52,7 @@ async function postData(route, payload, params, signal) {
     return response.data;
 }
 
-async function patchData(route, payload, params, signal) {
+async function putData(route, payload, params, signal) {
     const response = await apiClient.put(route, payload, { params, signal });
     return response.data;
 }

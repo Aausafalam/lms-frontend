@@ -155,13 +155,13 @@ const TableRow = ({ data, setCheckboxState, checkboxState, onRowClick, onActionC
                         <td className={styles.checkbox_cell} onClick={(e) => e.stopPropagation()}>
                             <CheckBoxField
                                 formField={{
-                                    id: `row${initialValues.page || "1"}${rowIndex + 1}`,
-                                    name: `row${initialValues.page || "1"}${rowIndex + 1}`,
+                                    id: `${data.url}_row${initialValues.page || "1"}${rowIndex + 1}`,
+                                    name: `${data.url}_row${initialValues.page || "1"}${rowIndex + 1}`,
                                     onChange: (event) => {
                                         const { name, value } = event.target;
                                         setCheckboxState((prev) => ({
                                             ...prev,
-                                            [name]: value,
+                                            [name]: value ? row.Id?.value || value : value,
                                         }));
                                     },
                                     className: styles.checkbox,

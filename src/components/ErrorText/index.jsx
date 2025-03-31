@@ -4,7 +4,7 @@ const ErrorText = ({ message }) => {
     return (
         message && (
             <div className={styles.container}>
-                <p>{message}</p>
+                <p>{typeof message === "string" ? message : JSON.stringify(message)}</p>
             </div>
         )
     );

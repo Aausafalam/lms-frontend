@@ -67,6 +67,11 @@ class PermissionGroupApiService {
         const response = await this._apiClient.get(endpoints.GET_PERMISSION_GROUP_STATS, { params, signal });
         return response.data;
     }
+
+    async list(params, signal) {
+        const response = await this._apiClient.get(endpoints.GET_PERMISSION_GROUP_LIST, { params, signal });
+        return response.data;
+    }
 }
 
 export const permissionGroupApiService = new PermissionGroupApiService();

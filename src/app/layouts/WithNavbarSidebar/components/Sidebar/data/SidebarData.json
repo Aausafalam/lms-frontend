@@ -29,7 +29,7 @@
     },
     {
         "name": "user",
-        "link": "/user/list",
+        "link": "/users",
         "icon": "user"
     },
     {

@@ -18,8 +18,13 @@ class RolesApiService {
      * @param {AbortSignal} [signal] - Request cancellation
      * @returns {Promise<Object>} Created roles
      */
-    async create(payload, params, signal) {
-        const response = await this._apiClient.post(endpoints.CREATE_ROLES, payload, { params, signal });
+    async attachPrivileges(payload, params, signal) {
+        const response = await this._apiClient.post(endpoints.ATTACH_PRIVILEGES, payload, { params, signal });
+        return response.data;
+    }
+
+    async assignUsers(payload, params, signal) {
+        const response = await this._apiClient.post(endpoints.ASSIGN_USERS, payload, { params, signal });
         return response.data;
     }
 

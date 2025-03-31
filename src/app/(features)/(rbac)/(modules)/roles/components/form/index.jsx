@@ -3,14 +3,17 @@
 import React, { useMemo } from "react";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Search, AlertCircle, CheckCircle, X, ChevronRight, SparklesIcon, Shield, User, Layers2 } from "lucide-react";
 import Tabs from "@/components/tab";
 import GeneralInformation from "./components/generalInformationForm";
 import GeneralRoleInformation from "./components/generalInformationForm";
+import PermissionForm from "./components/permissionsForm";
+import UsersTable from "../../../users/components/table";
+import AssignUsersForm from "./components/assignUsersForm";
 
 // Components
-const Button = ({ children, type = "button", variant = "primary", size = "md", className = "", disabled = false, onClick }) => {
+export const Button = ({ children, type = "button", variant = "primary", size = "md", className = "", disabled = false, onClick }) => {
     const baseStyles =
         "inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-purple-500 disabled:opacity-50 disabled:pointer-events-none";
 
@@ -36,7 +39,7 @@ const Button = ({ children, type = "button", variant = "primary", size = "md", c
     );
 };
 
-const Input = ({ id, value, onChange, placeholder, className = "", type = "text", required = false }) => {
+export const Input = ({ id, value, onChange, placeholder, className = "", type = "text", required = false }) => {
     return (
         <input
             id={id}
@@ -50,7 +53,7 @@ const Input = ({ id, value, onChange, placeholder, className = "", type = "text"
     );
 };
 
-const Textarea = ({ id, value, onChange, placeholder, rows = 3, className = "" }) => {
+export const Textarea = ({ id, value, onChange, placeholder, rows = 3, className = "" }) => {
     return (
         <textarea
             id={id}
@@ -63,7 +66,7 @@ const Textarea = ({ id, value, onChange, placeholder, rows = 3, className = "" }
     );
 };
 
-const Checkbox = ({ checked, onCheckedChange, className = "" }) => {
+export const Checkbox = ({ checked, onCheckedChange, className = "" }) => {
     return (
         <div
             className={`flex h-5 w-5 items-center justify-center rounded border border-gray-300 ${checked ? "bg-purple-600 border-purple-600" : "bg-white"} ${className}`}
@@ -81,7 +84,7 @@ const Checkbox = ({ checked, onCheckedChange, className = "" }) => {
     );
 };
 
-const Badge = ({ children, variant = "default", className = "" }) => {
+export const Badge = ({ children, variant = "default", className = "" }) => {
     const variantStyles = {
         default: "bg-purple-100 text-purple-800",
         outline: "bg-white border border-gray-300 text-gray-700",
@@ -91,7 +94,7 @@ const Badge = ({ children, variant = "default", className = "" }) => {
     return <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${variantStyles[variant]} ${className}`}>{children}</span>;
 };
 
-const Avatar = ({ src, alt, fallback, className = "" }) => {
+export const Avatar = ({ src, alt, fallback, className = "" }) => {
     const [imgError, setImgError] = useState(false);
 
     return (
@@ -105,7 +108,7 @@ const Avatar = ({ src, alt, fallback, className = "" }) => {
     );
 };
 
-const Progress = ({ value = 0, className = "" }) => {
+export const Progress = ({ value = 0, className = "" }) => {
     return (
         <div className={`h-2 w-full bg-gray-200 rounded-full overflow-hidden ${className}`}>
             <div className="h-full bg-gradient-to-r from-purple-600 to-indigo-600 transition-all duration-300 ease-in-out" style={{ width: `${value}%` }} />
@@ -113,7 +116,7 @@ const Progress = ({ value = 0, className = "" }) => {
     );
 };
 
-const Alert = ({ children, variant = "default", className = "" }) => {
+export const Alert = ({ children, variant = "default", className = "" }) => {
     const variantStyles = {
         default: "bg-blue-50 border-blue-200 text-blue-800",
         destructive: "bg-red-50 border-red-200 text-red-800",
@@ -123,37 +126,15 @@ const Alert = ({ children, variant = "default", className = "" }) => {
     return <div className={`flex p-4 border rounded-md ${variantStyles[variant]} ${className}`}>{children}</div>;
 };
 
-const Card = ({ children, className = "" }) => {
+export const Card = ({ children, className = "" }) => {
     return <div className={`bg-white rounded-xl shadow-xl overflow-hidden ${className}`}>{children}</div>;
 };
 
-const Tab = ({ id, label, active, onClick, badge = null }) => {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            className={`px-6 py-4 text-sm font-medium transition-all ${
-                active ? "border-b-2 border-purple-600 text-purple-600" : "text-gray-500 hover:text-gray-700 hover:border-b-2 hover:border-gray-300"
-            }`}
-        >
-            <div className="flex items-center space-x-2">
-                <span>{label}</span>
-                {badge}
-            </div>
-        </button>
-    );
-};
-
 // Generate mock data
-const generatePermissions = (moduleId, baseName, count) => {
-    return Array.from({ length: count }, (_, i) => ({
-        id: `${moduleId}-${i + 1}`,
-        name: `${baseName} ${i + 1}`,
-    }));
-};
 
 export default function AddRolePage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState({ id: "general", label: "General Information" });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [notification, setNotification] = useState({
@@ -169,86 +150,12 @@ export default function AddRolePage() {
 
     // Permissions tab state
     const [selectedPermissions, setSelectedPermissions] = useState([]);
-    const [permissionGroups, setPermissionGroups] = useState([]);
-    const [permissionActiveTab, setPermissionActiveTab] = useState("");
-    const [searchQuery, setSearchQuery] = useState("");
-    const [isLoadingPermissions, setIsLoadingPermissions] = useState(false);
 
     // Users tab state
-    const [selectedUsers, setSelectedUsers] = useState([]);
+    const [selectedUsers, setSelectedUsers] = useState({});
     const [users, setUsers] = useState([]);
     const [userSearchQuery, setUserSearchQuery] = useState("");
     const [isLoadingUsers, setIsLoadingUsers] = useState(false);
-
-    // Fetch permission groups
-    const fetchPermissionGroups = useCallback(async () => {
-        setIsLoadingPermissions(true);
-        try {
-            const response = await fetch("/api/permission-groups");
-            if (!response.ok) {
-                throw new Error("Failed to fetch permission groups");
-            }
-            const data = await response.json();
-            setPermissionGroups(data);
-            if (data.length > 0) {
-                setPermissionActiveTab(data[0].id);
-            }
-        } catch (error) {
-            console.error("Error fetching permission groups:", error);
-            // Fallback to mock data
-            const mockPermissionGroups = [
-                {
-                    id: "user-management",
-                    name: "User Management",
-                    permissions: generatePermissions("user", "User Permission", 35),
-                },
-                {
-                    id: "course-management",
-                    name: "Course Management",
-                    permissions: generatePermissions("course", "Course Permission", 40),
-                },
-                {
-                    id: "content-management",
-                    name: "Content Management",
-                    permissions: generatePermissions("content", "Content Permission", 30),
-                },
-                {
-                    id: "reporting",
-                    name: "Reporting & Analytics",
-                    permissions: generatePermissions("report", "Report Permission", 25),
-                },
-                {
-                    id: "settings",
-                    name: "System Settings",
-                    permissions: generatePermissions("setting", "Setting Permission", 20),
-                },
-            ];
-            setPermissionGroups(mockPermissionGroups);
-            setPermissionActiveTab(mockPermissionGroups[0].id);
-        } finally {
-            setIsLoadingPermissions(false);
-        }
-    }, []);
-
-    // Fetch permissions for a specific group
-    const fetchPermissions = useCallback(async (groupId) => {
-        setIsLoadingPermissions(true);
-        try {
-            const response = await fetch(`/api/permissions/${groupId}`);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch permissions for group ${groupId}`);
-            }
-            const data = await response.json();
-
-            // Update the permissions for this specific group
-            setPermissionGroups((prev) => prev.map((group) => (group.id === groupId ? { ...group, permissions: data } : group)));
-        } catch (error) {
-            console.error(`Error fetching permissions for group ${groupId}:`, error);
-            // We don't need to set fallback data here as it's already in the permissionGroups state
-        } finally {
-            setIsLoadingPermissions(false);
-        }
-    }, []);
 
     // Fetch users
     const fetchUsers = useCallback(async () => {
@@ -276,32 +183,12 @@ export default function AddRolePage() {
         }
     }, []);
 
-    // Initial data loading
-    useEffect(() => {
-        fetchPermissionGroups();
-    }, [fetchPermissionGroups]);
-
-    // Load permissions when tab changes
-    useEffect(() => {
-        if (permissionActiveTab) {
-            fetchPermissions(permissionActiveTab);
-        }
-    }, [permissionActiveTab, fetchPermissions]);
-
     // Load users when tab changes to users
     useEffect(() => {
         if (activeTab === "users") {
             fetchUsers();
         }
     }, [activeTab, fetchUsers]);
-
-    // Filter permissions based on search query
-    const filteredPermissionGroups = permissionGroups
-        .map((group) => ({
-            ...group,
-            permissions: group.permissions.filter((permission) => permission.name.toLowerCase().includes(searchQuery.toLowerCase())),
-        }))
-        .filter((group) => group.permissions.length > 0);
 
     // Filter users based on search query
     const filteredUsers = users.filter(
@@ -310,17 +197,6 @@ export default function AddRolePage() {
             user.email.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
             user.department.toLowerCase().includes(userSearchQuery.toLowerCase())
     );
-
-    // Handle permission selection
-    const handlePermissionChange = useCallback((permissionId) => {
-        setSelectedPermissions((prev) => {
-            if (prev.includes(permissionId)) {
-                return prev.filter((id) => id !== permissionId);
-            } else {
-                return [...prev, permissionId];
-            }
-        });
-    }, []);
 
     // Handle user selection
     const handleUserChange = useCallback((userId) => {
@@ -332,32 +208,6 @@ export default function AddRolePage() {
             }
         });
     }, []);
-
-    // Handle select all permissions in a group
-    const handleSelectAllInGroup = useCallback(
-        (groupId) => {
-            const group = permissionGroups.find((g) => g.id === groupId);
-            if (!group) return;
-
-            const groupPermissionIds = group.permissions?.map((p) => p.id);
-            const allSelected = groupPermissionIds.every((id) => selectedPermissions.includes(id));
-
-            if (allSelected) {
-                setSelectedPermissions((prev) => prev.filter((id) => !groupPermissionIds.includes(id)));
-            } else {
-                setSelectedPermissions((prev) => {
-                    const newPermissions = [...prev];
-                    groupPermissionIds.forEach((id) => {
-                        if (!newPermissions.includes(id)) {
-                            newPermissions.push(id);
-                        }
-                    });
-                    return newPermissions;
-                });
-            }
-        },
-        [permissionGroups, selectedPermissions]
-    );
 
     // Handle select all users
     const handleSelectAllUsers = useCallback(() => {
@@ -444,11 +294,6 @@ export default function AddRolePage() {
         }
     }, [notification.show]);
 
-    // Calculate stats
-    const totalPermissions = permissionGroups.reduce((acc, group) => acc + group.permissions.length, 0);
-    const selectedPermissionsCount = selectedPermissions.length;
-    const percentSelected = totalPermissions > 0 ? Math.round((selectedPermissionsCount / totalPermissions) * 100) : 0;
-
     // Calculate completion percentage
     const calculateCompletion = () => {
         let steps = 0;
@@ -484,115 +329,6 @@ export default function AddRolePage() {
             </div>
         );
     };
-
-    // Render Permissions Tab Content
-    const PermissionsTabContent = ({ searchQuery, setSearchQuery }) => (
-        <div className="p-6 md:p-8">
-            <div className="space-y-6">
-                {/* Search and stats */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
-                    <div className="relative flex-1 max-w-md">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Search className="h-4 w-4 text-gray-400" />
-                        </div>
-                        <Input id="search-permissions" type="text" placeholder="Search permissions..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm text-gray-500">
-                        <span className="font-medium">
-                            {selectedPermissionsCount} of {totalPermissions} selected
-                        </span>
-                        <Progress value={percentSelected} className="w-24" />
-                        <span>{percentSelected}%</span>
-                    </div>
-                </div>
-
-                {/* Module tabs */}
-                <div className="mb-6 border-b overflow-x-auto hide-scrollbar">
-                    <div className="flex space-x-1 min-w-max">
-                        {permissionGroups.map((group) => (
-                            <button
-                                key={group.id}
-                                type="button"
-                                onClick={() => setPermissionActiveTab(group.id)}
-                                className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-all ${
-                                    permissionActiveTab === group.id ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white" : "text-gray-500 hover:bg-gray-100"
-                                }`}
-                            >
-                                {group.name}
-                                <Badge variant={permissionActiveTab === group.id ? "outline" : "secondary"} className={permissionActiveTab === group.id ? "ml-2 bg-white/20 text-white" : "ml-2"}>
-                                    {group.permissions.length}
-                                </Badge>
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Bulk actions */}
-                <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-medium text-gray-800">{permissionGroups.find((g) => g.id === permissionActiveTab)?.name} Permissions</h3>
-                    <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => handleSelectAllInGroup(permissionActiveTab)}>
-                            Select All
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                                const group = permissionGroups.find((g) => g.id === permissionActiveTab);
-                                if (group) {
-                                    const groupPermissionIds = group.permissions.map((p) => p.id);
-                                    setSelectedPermissions((prev) => prev.filter((id) => !groupPermissionIds.includes(id)));
-                                }
-                            }}
-                        >
-                            Deselect All
-                        </Button>
-                    </div>
-                </div>
-
-                {/* Permissions grid */}
-                <div className="bg-gray-50 rounded-lg border overflow-hidden">
-                    <div className="max-h-[400px] overflow-y-auto p-1">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 p-2">
-                            {isLoadingPermissions
-                                ? Array.from({ length: 21 }).map((_, index) => <div key={index} className="bg-gray-200 animate-pulse h-12 rounded-lg" />)
-                                : permissionGroups
-                                      .find((g) => g.id === permissionActiveTab)
-                                      ?.permissions.filter((permission) => permission.name.toLowerCase().includes(searchQuery.toLowerCase()))
-                                      .map((permission) => (
-                                          <label
-                                              key={permission.id}
-                                              className={`flex items-center p-3 rounded-lg cursor-pointer transition-all duration-150 ${
-                                                  selectedPermissions.includes(permission.id) ? "bg-purple-50 border border-purple-200" : "bg-white border hover:bg-gray-50"
-                                              }`}
-                                          >
-                                              <Checkbox checked={selectedPermissions.includes(permission.id)} onCheckedChange={() => handlePermissionChange(permission.id)} className="mr-2" />
-                                              <span className="text-sm truncate">{permission.name}</span>
-                                          </label>
-                                      ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* No results message */}
-                {searchQuery && filteredPermissionGroups.length === 0 && (
-                    <div className="text-center py-8">
-                        <div className="mx-auto h-12 w-12 text-gray-400">
-                            <Search className="h-12 w-12" />
-                        </div>
-                        <h3 className="mt-2 text-sm font-medium text-gray-900">No permissions found</h3>
-                        <p className="mt-1 text-sm text-gray-500">Try adjusting your search terms.</p>
-                    </div>
-                )}
-            </div>
-
-            <div className="mt-8 flex justify-end">
-                <Button onClick={handleNextTab}>
-                    Save and Next <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
-            </div>
-        </div>
-    );
 
     // Render Users Tab Content
     const UsersTabContent = ({ userSearchQuery, setUserSearchQuery }) => (
@@ -730,11 +466,20 @@ export default function AddRolePage() {
         setFormValues((prev) => ({ ...prev, [name]: value }));
     };
 
-    console.log(formValues);
+    const setQueryParam = (key, value) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (value) {
+            params.set(key, value);
+        } else {
+            params.delete(key);
+        }
+        router.replace(`?${params.toString()}`);
+    };
 
     // Navigate to next tab
-    const handleNextTab = (data) => {
-        console.log(data, activeTab);
+    const handleNextTab = (response) => {
+        setQueryParam("roleId", response.data.id);
+        console.log(data, activeTab, "handleNextTab");
         if (activeTab.id === "general") {
             setFormValues((prev) => ({ ...prev, ...data }));
             setActiveTab({ id: "permissions", label: "Permissions" });
@@ -758,13 +503,13 @@ export default function AddRolePage() {
             id: "permissions",
             label: "Permissions",
             icon: <Layers2 className="size-4" />,
-            content: <PermissionsTabContent searchQuery={searchQuery} setSearchQuery={setSearchQuery} />,
+            content: <PermissionForm selectedPermissions={selectedPermissions} setSelectedPermissions={setSelectedPermissions} handleNextTab={handleNextTab} />,
         },
         {
             id: "users",
             label: "Assign Users",
             icon: <User className="size-4" />,
-            content: <UsersTabContent userSearchQuery={userSearchQuery} setUserSearchQuery={setUserSearchQuery} />,
+            content: <AssignUsersForm selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} />,
         },
     ];
 

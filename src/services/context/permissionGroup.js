@@ -1,7 +1,14 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { usePermissionGroupCreate, usePermissionGroupDelete, usePermissionGroupGetDetails, usePermissionGroupGetStats, usePermissionGroupUpdate } from "../hooks/permissionGroup";
+import {
+    usePermissionGroupCreate,
+    usePermissionGroupDelete,
+    usePermissionGroupGetDetails,
+    usePermissionGroupGetList,
+    usePermissionGroupGetStats,
+    usePermissionGroupUpdate,
+} from "../hooks/permissionGroup";
 
 const PermissionGroupContext = createContext(null);
 
@@ -11,6 +18,7 @@ export const PermissionGroupProvider = ({ children, initialData = { permissionGr
     const usePermissionGroupGetDetailsState = usePermissionGroupGetDetails();
     const usePermissionGroupDeleteState = usePermissionGroupDelete();
     const usePermissionGroupGetStatsState = usePermissionGroupGetStats();
+    const usePermissionGroupGetStatsList = usePermissionGroupGetList();
 
     return (
         <PermissionGroupContext.Provider
@@ -20,6 +28,7 @@ export const PermissionGroupProvider = ({ children, initialData = { permissionGr
                 ...usePermissionGroupGetDetailsState,
                 ...usePermissionGroupDeleteState,
                 ...usePermissionGroupGetStatsState,
+                ...usePermissionGroupGetStatsList,
             }}
         >
             {children}

@@ -1,5 +1,5 @@
 const apiConstants = {
-    BACKEND_API_BASE_URL: "http://192.168.6.220:5000/api/v1",
+    BACKEND_API_BASE_URL: "http://localhost:5000/api/v1",
     TOKEN_KEY: "userToken",
     auth: {
         BASE_ROUTE: "/auth",
@@ -34,6 +34,7 @@ const apiConstants = {
     },
     permissionGroup: {
         BASE_ROUTE: "/privilege-group",
+        GET_PERMISSION_GROUP_LIST: "",
         CREATE_PERMISSION_GROUP: "",
         UPDATE_PERMISSION_GROUP: "",
         GET_PERMISSION_GROUP_DETAILS: "",
@@ -47,10 +48,13 @@ const apiConstants = {
         GET_ROLES_DETAILS: "/",
         DELETE_ROLES: "/",
         GET_ROLES_STATS: "/get-roles-stats",
+        ATTACH_PRIVILEGES: "/attach-privileges",
+        ASSIGN_USERS: "/user-role",
     },
     permission: {
         BASE_ROUTE: "/privilege",
         CREATE_PERMISSION: "/",
+        PERMISSION_LIST: "/",
         UPDATE_PERMISSION: "/",
         GET_PERMISSION_DETAILS: "/",
         DELETE_PERMISSION: "/",
@@ -64,6 +68,15 @@ const apiConstants = {
         DELETE_ROUTES: "/delete-routes",
         GET_ROUTES_STATS: "/get-routes-stats",
         DROPDOWN_LIST: "/dropdown",
+    },
+    users: {
+        BASE_ROUTE: "/users",
+        CREATE_USERS: "/",
+        USERS_LIST: "/",
+        UPDATE_USERS: "/",
+        GET_USERS_DETAILS: "/",
+        DELETE_USERS: "/",
+        GET_USERS_STATS: "/get-users-stats",
     },
     loadingStateKeys: {
         CREATE_INSTRUCTOR: "createInstructor",
@@ -82,6 +95,7 @@ const apiConstants = {
         UPDATE_PERMISSION_GROUP: "updatePermissionGroup",
         GET_PERMISSION_GROUP_DETAILS: "getPermissionGroupDetails",
         GET_PERMISSION_GROUP_STATS: "getPermissionGroupStats",
+        GET_PERMISSION_GROUP_LIST: "getPermissionGroupList",
         DELETE_PERMISSION_GROUP: "deletePermissionGroup",
 
         CREATE_ROLES: "createRoles",
@@ -89,12 +103,15 @@ const apiConstants = {
         GET_ROLES_DETAILS: "getRolesDetails",
         GET_ROLES_STATS: "getRolesStats",
         DELETE_ROLES: "deleteRoles",
+        ATTACH_PERMISSION_ROLES: "attachPermissionsRoles",
+        ASSIGN_USERS_ROLES: "assignUsersRoles",
 
         CREATE_PERMISSION: "createPermission",
         UPDATE_PERMISSION: "updatePermission",
         GET_PERMISSION_DETAILS: "getPermissionDetails",
         GET_PERMISSION_STATS: "getPermissionStats",
         DELETE_PERMISSION: "deletePermission",
+        GET_PERMISSION_LIST: "getPermissionsList",
 
         CREATE_ROUTES: "createRoutes",
         UPDATE_ROUTES: "updateRoutes",
@@ -102,6 +119,13 @@ const apiConstants = {
         GET_ROUTES_STATS: "getRoutesStats",
         GET_ROUTES_DROPDOWN: "getRoutesDropdown",
         DELETE_ROUTES: "deleteRoutes",
+
+        CREATE_USERS: "createUsers",
+        UPDATE_USERS: "updateUsers",
+        GET_USERS_DETAILS: "getUsersDetails",
+        GET_USERS_STATS: "getUsersStats",
+        DELETE_USERS: "deleteUsers",
+        GET_USERS_LIST: "getUsersList",
 
         SIGN_UP: "signup",
         VERIFY_EMAIL: "verifyEmail",

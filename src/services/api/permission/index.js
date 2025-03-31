@@ -19,7 +19,7 @@ class PermissionApiService {
      * @returns {Promise<Object>} Created permission
      */
     async create(payload, params, signal) {
-        const response = await this._apiClient.post(endpoints.CREATE_COURSE, payload, { params, signal });
+        const response = await this._apiClient.post(endpoints.CREATE_PERMISSION, payload, { params, signal });
         return response.data;
     }
 
@@ -31,7 +31,7 @@ class PermissionApiService {
      * @returns {Promise<Object>} Update status
      */
     async update(dynamicRoute, payload, params, signal) {
-        const response = await this._apiClient.post(`${endpoints.UPDATE_COURSE}/${dynamicRoute}`, payload, { params, signal });
+        const response = await this._apiClient.post(`${endpoints.UPDATE_PERMISSION}/${dynamicRoute}`, payload, { params, signal });
         return response.data;
     }
 
@@ -42,7 +42,7 @@ class PermissionApiService {
      * @returns {Promise<Object>} Permission details
      */
     async getDetails(dynamicRoute, params, signal) {
-        const response = await this._apiClient.get(`${endpoints.GET_COURSE_DETAILS}/${dynamicRoute}`, { params, signal });
+        const response = await this._apiClient.get(`${endpoints.GET_PERMISSION_DETAILS}/${dynamicRoute}`, { params, signal });
         return response.data;
     }
 
@@ -53,7 +53,7 @@ class PermissionApiService {
      * @returns {Promise<Object>} Deletion status
      */
     async delete(dynamicRoute, params, signal) {
-        const response = await this._apiClient.delete(`${endpoints.DELETE_COURSE}/${dynamicRoute}`, { params, signal });
+        const response = await this._apiClient.delete(`${endpoints.DELETE_PERMISSION}/${dynamicRoute}`, { params, signal });
         return response.data;
     }
 
@@ -64,7 +64,18 @@ class PermissionApiService {
      * @returns {Promise<Object>} Permission statistics
      */
     async getStats(params, signal) {
-        const response = await this._apiClient.get(endpoints.GET_COURSE_STATS, { params, signal });
+        const response = await this._apiClient.get(endpoints.GET_PERMISSION_STATS, { params, signal });
+        return response.data;
+    }
+
+    /**
+     * Retrieve permission stats
+     * @param {Object} [params] - Query params
+     * @param {AbortSignal} [signal] - Request cancellation
+     * @returns {Promise<Object>} Permission statistics
+     */
+    async list(params, signal) {
+        const response = await this._apiClient.get(endpoints.PERMISSION_LIST, { params, signal });
         return response.data;
     }
 }

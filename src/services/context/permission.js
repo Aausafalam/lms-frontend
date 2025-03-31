@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { usePermissionCreate, usePermissionDelete, usePermissionGetDetails, usePermissionGetStats, usePermissionUpdate } from "../hooks/permission";
+import { usePermissionCreate, usePermissionDelete, usePermissionGetDetails, usePermissionGetStats, usePermissionList, usePermissionUpdate } from "../hooks/permission";
 
 const PermissionContext = createContext(null);
 
@@ -11,6 +11,7 @@ export const PermissionProvider = ({ children, initialData = { permissionList: [
     const usePermissionGetDetailsState = usePermissionGetDetails();
     const usePermissionDeleteState = usePermissionDelete();
     const usePermissionGetStatsState = usePermissionGetStats();
+    const usePermissionGetListState = usePermissionList();
 
     return (
         <PermissionContext.Provider
@@ -20,6 +21,7 @@ export const PermissionProvider = ({ children, initialData = { permissionList: [
                 ...usePermissionGetDetailsState,
                 ...usePermissionDeleteState,
                 ...usePermissionGetStatsState,
+                ...usePermissionGetListState,
             }}
         >
             {children}

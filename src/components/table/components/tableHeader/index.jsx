@@ -64,19 +64,16 @@ const TableHeader = ({ data, setCheckboxState, checkboxState, initialValues, rou
                     <th className={styles.checkbox_cell}>
                         <CheckBoxField
                             formField={{
-                                id: `header${initialValues.page || "1"}`,
-                                name: `header${initialValues.page || "1"}`,
+                                id: `${data.url}_header${initialValues.page || "1"}`,
+                                name: `${data.url}_header${initialValues.page || "1"}`,
                                 onChange: (event) => {
                                     const { name, value } = event.target;
                                     setCheckboxState((prev) => {
                                         const updatedState = { ...prev, [name]: value };
                                         const page = parseInt(initialValues.page || "1");
-                                        const limit = parseInt(initialValues.limit || "10");
-                                        const startIndex = 1;
-                                        const endIndex = limit;
-                                        for (let i = startIndex; i <= endIndex; i++) {
-                                            updatedState[`row${page}${i}`] = value;
-                                        }
+                                        data.rows.forEach((row, i) => {
+                                            updatedState[`${data?.url}_row${page}${i + 1}`] = value ? row.Id?.value || value : value;
+                                        });
 
                                         return updatedState;
                                     });
