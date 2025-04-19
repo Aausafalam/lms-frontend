@@ -1,5 +1,5 @@
 .container {
-    background-color: var(--white-color);
+    background-color: rgb(var(--card-background));
     border-radius: 0.7rem;
     padding: 1.5rem;
     padding-top: 0;

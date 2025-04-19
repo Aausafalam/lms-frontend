@@ -59,11 +59,11 @@ const getStyles = (style, error) => {
     let styles = {
         control: (provided, state) => ({
             ...provided,
-            backgroundColor: "white",
+            backgroundColor: "var(--initial-field-background-color)",
             textAlign: "left",
-            color: "white",
+            color: "red",
             fontSize: "var(--input-font-size)",
-            borderColor: error ? "var(--error-color)" : state.isFocused ? "var(--active-border-color)" : "lightgray",
+            borderColor: error ? "var(--error-color)" : state.isFocused ? "var(--active-border-color)" : "var(--initial-border-color)",
             boxShadow: state.isFocused && error ? "0 0 0 1px var(--error-color)" : state.isFocused ? `0 0 0 1px var(--active-border-color)` : "none",
             "&:hover": {
                 borderColor: error ? "0" : state.isFocused ? "" : "var(--hover-border-color)",
@@ -81,7 +81,7 @@ const getStyles = (style, error) => {
             ...provided,
             textAlign: "left",
             fontSize: "var(--input-font-size)",
-            boxShadow: "0 2px 8px rgba(47, 43, 61, 0.12), 0 0 transparent, 0 0 transparent;",
+            boxShadow: "0 2px 8px rgba(var(--text-primary), 0.12), 0 0 transparent, 0 0 transparent;",
             backgroundColor: "white",
             padding: "0.45rem",
             paddingRight: "0.25rem",
@@ -91,8 +91,8 @@ const getStyles = (style, error) => {
         }),
         option: (provided, state) => ({
             ...provided,
-            backgroundColor: state.isSelected ? "rgb(113, 60, 232, .15)" : state.isFocused ? "#f5f5f5" : "white",
-            color: state.isSelected ? "var(--active-color)" : "rgb(47, 43, 61, 1)",
+            backgroundColor: state.isSelected ? "rgb(var(--theme-primary), .15)" : state.isFocused ? "#f5f5f5" : "white",
+            color: state.isSelected ? "var(--active-color)" : "var( --initial-color)",
             fontSize: "var(--input-font-size)",
             padding: "0.55rem 0.75rem",
             cursor: "pointer",

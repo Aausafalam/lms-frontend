@@ -46,7 +46,7 @@ const generalInformationSection = () => {
             validateOnChange: true,
             options: [],
             optionsUrl: {
-                url: "/route/dropdown",
+                url: "/route?responseType=dropdown",
                 labelKey: "name",
                 valueKey: "id",
             },

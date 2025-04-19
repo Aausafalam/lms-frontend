@@ -1,4 +1,5 @@
 import { rolesApiService } from "@/services/api/roles";
+import { userRolesApiService } from "@/services/api/userRoles";
 import { useLoading } from "@/services/context/loading";
 import { useNotification } from "@/services/context/notification";
 import apiConstants from "@/services/utils/constants";
@@ -61,7 +62,7 @@ export const useRolesAssignUsers = () => {
             const controller = new AbortController();
 
             try {
-                const data = await rolesApiService.assignUsers(payload, params, controller.signal);
+                const data = await userRolesApiService.assignUsers(payload, params, controller.signal);
                 showSuccessNotification({
                     key: ASSIGN_USERS_ROLES_KEY,
                     value: data,

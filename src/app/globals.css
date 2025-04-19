@@ -26,7 +26,7 @@ body {
     font-family: var(--primary-font-family) !important;
 }
 .card {
-    box-shadow: 0 3px 12px rgba(47, 43, 61, 0.14), 0 0 transparent, 0 0 transparent;
+    box-shadow: 0 3px 12px rgba(var(--text-primary), 0.14), 0 0 transparent, 0 0 transparent;
     background-color: white;
     padding: 2rem;
     max-width: 1500px;
@@ -58,12 +58,12 @@ body {
 
 :root {
     --backgroundColor: #f8f8fa;
-    --v-global-theme-primary: 113, 60, 232;
-    --primary-color: rgba(113, 60, 232);
+    --v-global-theme-primary: var(--theme-primary);
+    --primary-color: rgba(var(--theme-primary));
     --primary-hover-color: rgba(211, 206, 207, 0.2);
     --primary-active-group-menu: rgba(211, 206, 207, 0.3);
     --primary-active-color: #ff4c51;
-    --primary-box-shadow: rgba(113, 60, 232, 0.3);
+    --primary-box-shadow: rgba(var(--theme-primary), 0.3);
     --text-color: #444050;
     --text-secondary-color: #5a5a5a9c;
     --text-active-color: white;
@@ -71,7 +71,7 @@ body {
     --primary-font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     --text-white: white;
     --text-muted: #6d6b77;
-    --violet-color: rgb(113, 60, 232);
+    --violet-color: rgb(var(--theme-primary));
     --violet-light-color: rgb(233, 231, 253);
     --red-color: #ff4c51;
     --red-light-color: #ffe2e3;
@@ -91,10 +91,24 @@ body {
     --theme-success: 40, 199, 111;
     --theme-orange: 255, 159, 67;
     --theme-green: 40, 199, 111;
-    --theme-violet: 113, 60, 232;
+    --theme-violet: var(--theme-primary);
     --theme-red: 255, 76, 81;
-    --theme-primary: 113, 60, 232;
+    --theme-primary: 249, 115, 22;
     --theme-info: 0, 186, 209;
+    --text-primary: 47, 43, 61;
+    --background: 249, 250, 252;
+    --border-color: 209, 213, 219;
+    --card-background: 255, 255, 255;
+    --card-secondary-background: 255, 255, 255;
+    --max-width: 1800px;
 
     --radius: 0.5rem;
+}
+
+.dark {
+    --text-primary: 229, 229, 235;
+    --card-background: 17, 24, 40;
+    --background: 3, 7, 18;
+    --border-color: 75, 86, 99;
+    --card-secondary-background: 32, 41, 56;
 }

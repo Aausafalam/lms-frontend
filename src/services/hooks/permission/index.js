@@ -236,8 +236,8 @@ export const usePermissionList = () => {
 
             try {
                 const data = await permissionApiService.list(params, controller.signal);
-                setList(data.data);
-                onSuccess?.(data.data);
+                setList(data.data.records);
+                onSuccess?.(data.data.records);
             } catch (error) {
                 showErrorNotification({
                     key: GET_PERMISSION_LIST_KEY,

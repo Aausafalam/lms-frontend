@@ -73,18 +73,18 @@ const TableSearch = ({ showDataViewButton, dataView, setDataView, data, initialV
                         onClick={() => {
                             setDataView((prev) => {
                                 if (prev.table) {
-                                    return { customView: true };
+                                    return { grid: true };
                                 } else {
-                                    return { table: true, customView: false };
+                                    return { table: true, grid: false };
                                 }
                             });
                         }}
                         // tonal={true}
                         icon={dataView.table ? TableICON.CUSTOM : TableICON.TABLE}
                         iconOnly={true}
-                        tooltip={dataView.table ? "Custom View" : "Table View"}
+                        tooltip={dataView.table ? "Grid View" : "Table View"}
                     >
-                        {dataView.table ? "Custom View" : "Table View"}
+                        {dataView.table ? "Grid View" : "Table View"}
                     </Button>
                 )}
             </div>

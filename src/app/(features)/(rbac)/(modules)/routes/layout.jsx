@@ -1,12 +1,12 @@
 import React from "react";
 // import styles from "./styles/index.module.css";
-import LayoutWithSidebarNavbar from "@/app/layouts/WithNavbarSidebar";
+import DashboardLayout from "@/app/layout/index";
 
 const RoutesLayout = ({ children }) => {
     return (
-        <LayoutWithSidebarNavbar>
+        <DashboardLayout>
             <div id="routes_module">{children}</div>
-        </LayoutWithSidebarNavbar>
+        </DashboardLayout>
     );
 };
 

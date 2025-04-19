@@ -8,7 +8,7 @@ function cn(...inputs) {
     return twMerge(clsx(inputs));
 }
 
-export default function Tabs({ tabs, defaultTab, className, variant = "pills" }) {
+export default function Tabs({ tabs, defaultTab, className, variant = "pills", onTabChange }) {
     const [activeTab, setActiveTab] = React.useState(defaultTab.id || tabs[0]?.id);
     const [hoveredTab, setHoveredTab] = React.useState(null);
 
@@ -64,14 +64,17 @@ export default function Tabs({ tabs, defaultTab, className, variant = "pills" })
     return (
         <div className={cn("w-full mx-auto", className)}>
             <div className="relative flex overflow-x-auto scrollbar-hide p-1">
-                <div className={cn("flex w-full gap-2", variant === "underline" && "border-b")}>
+                <div className={cn("flex w-full gap-2", variant === "underline" && "border-b dark:border-gray-900")}>
                     {tabs.map((tab) => {
                         const styles = getTabStyles(tab.id);
                         return (
                             <button
                                 type="button"
                                 key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
+                                onClick={() => {
+                                    setActiveTab(tab.id);
+                                    onTabChange({ label: tab.label, id: tab.id });
+                                }}
                                 onMouseEnter={() => setHoveredTab(tab.id)}
                                 onMouseLeave={() => setHoveredTab(null)}
                                 className={`${styles.container}`}

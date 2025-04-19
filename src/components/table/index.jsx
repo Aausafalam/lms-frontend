@@ -10,6 +10,7 @@ import TableSearch from "./components/searches";
 import TablePagination from "./components/pagination";
 import TableError from "./components/tableError";
 import TableView from "./components/tableView";
+import GridView from "./components/gridView";
 
 const Table = ({ tableData }) => {
     const router = useRouter();
@@ -17,7 +18,7 @@ const Table = ({ tableData }) => {
     const initialValues = React.useMemo(() => Object.fromEntries(searchParams.entries()), [searchParams]);
 
     const [data, setData] = useState(tableData);
-    const [dataView, setDataView] = useState({ table: true });
+    const [dataView, setDataView] = useState({ [tableData.initialView || "table"]: true });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [checkboxState, setCheckboxState] = useState({});
@@ -67,7 +68,14 @@ const Table = ({ tableData }) => {
         <div key={tableData?.url} className={styles.table_container}>
             {/* Filters and Search */}
             <TableFilter router={router} initialValues={initialValues} data={data.externalFilters} />
-            <TableSearch dataView={dataView} showDataViewButton={data.customView} setDataView={setDataView} initialValues={initialValues} router={router} data={data.tableHeader} />
+            <TableSearch
+                dataView={dataView}
+                showDataViewButton={data.grid || data?.customView ? true : false}
+                setDataView={setDataView}
+                initialValues={initialValues}
+                router={router}
+                data={data.tableHeader}
+            />
 
             <TableError error={error} />
 
@@ -75,6 +83,9 @@ const Table = ({ tableData }) => {
             {dataView.table && <TableView isLoading={isLoading} checkboxState={checkboxState} setCheckboxState={setCheckboxState} data={data} router={router} initialValues={initialValues} />}
 
             {/* Grid View */}
+            {dataView.grid && <GridView isLoading={isLoading} checkboxState={checkboxState} setCheckboxState={setCheckboxState} data={data} router={router} initialValues={initialValues} />}
+
+            {/* Custom View */}
             {dataView.customView && <div className={styles.grid_view_container}>{data.rows?.length > 0 ? data.customView() : <DataNotFound message="Empty List" />}</div>}
 
             {/* Pagination */}

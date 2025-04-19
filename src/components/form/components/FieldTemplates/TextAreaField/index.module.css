@@ -26,6 +26,7 @@
     border-radius: var(--field-border-radius);
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     min-height: var(--textarea-min-height);
+    background-color: var(--initial-field-background-color);
 }
 .inputWrapper textarea::placeholder {
     font-weight: var(--placeholder-font-weight);

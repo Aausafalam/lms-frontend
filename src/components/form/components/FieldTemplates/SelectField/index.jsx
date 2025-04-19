@@ -106,7 +106,13 @@ const SelectField = ({
         apiClient
             .get(optionsUrl.url)
             .then((response) => {
-                setOptions(response.data?.data?.map((data) => ({ value: data?.[optionsUrl.valueKey || "_id"], label: GlobalUtils.capitalizeEachWord(data?.[optionsUrl.labelKey || "name"]) })));
+                if (response.data?.data?.records) {
+                    setOptions(
+                        response.data?.data?.records?.map((data) => ({ value: data?.[optionsUrl.valueKey || "id"], label: GlobalUtils.capitalizeEachWord(data?.[optionsUrl.labelKey || "name"]) }))
+                    );
+                } else {
+                    setOptions(response.data?.data?.map((data) => ({ value: data?.[optionsUrl.valueKey || "id"], label: GlobalUtils.capitalizeEachWord(data?.[optionsUrl.labelKey || "name"]) })));
+                }
             })
             .catch((error) => {
                 console.log(error);

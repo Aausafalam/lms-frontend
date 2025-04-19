@@ -2,7 +2,7 @@
 .main_container {
     max-width: 600px;
     padding: 1.4rem;
-    box-shadow: 0 3px 12px rgba(47, 43, 61, 0.14), 0 0 transparent, 0 0 transparent;
+    box-shadow: 0 3px 12px rgba(var(--text-primary), 0.14), 0 0 transparent, 0 0 transparent;
     background-color: white;
     border-radius: 0.3rem;
     width: 100%;
@@ -10,7 +10,7 @@
 }
 
 .main_container:hover {
-    box-shadow: 0 3px 15px rgba(47, 43, 61, 0.2), 0 0 transparent, 0 0 transparent;
+    box-shadow: 0 3px 15px rgba(var(--text-primary), 0.2), 0 0 transparent, 0 0 transparent;
 }
 .main_container_border_violet {
     border-bottom: 2px solid rgb(var(--theme-violet), 0.4);

@@ -8,28 +8,34 @@ import { PermissionProvider } from "./permission";
 import { RoutesProvider } from "./routes";
 import { RolesProvider } from "./roles";
 import { UsersProvider } from "./users";
+import { ThemeProvider } from "./theme";
+import { AuthProvider } from "./auth";
 
 const ContextProviders = ({ children }) => {
     return (
-        <LoadingProvider>
-            <NotificationProvider>
-                <TemplateProvider>
-                    <InstructorProvider>
-                        <RoutesProvider>
-                            <PermissionGroupProvider>
-                                <PermissionProvider>
-                                    <RolesProvider>
-                                        <UsersProvider>
-                                            <CourseProvider>{children}</CourseProvider>
-                                        </UsersProvider>
-                                    </RolesProvider>
-                                </PermissionProvider>
-                            </PermissionGroupProvider>
-                        </RoutesProvider>
-                    </InstructorProvider>
-                </TemplateProvider>
-            </NotificationProvider>
-        </LoadingProvider>
+        <ThemeProvider>
+            <LoadingProvider>
+                <NotificationProvider>
+                    <AuthProvider>
+                        <TemplateProvider>
+                            <InstructorProvider>
+                                <RoutesProvider>
+                                    <PermissionGroupProvider>
+                                        <PermissionProvider>
+                                            <RolesProvider>
+                                                <UsersProvider>
+                                                    <CourseProvider>{children}</CourseProvider>
+                                                </UsersProvider>
+                                            </RolesProvider>
+                                        </PermissionProvider>
+                                    </PermissionGroupProvider>
+                                </RoutesProvider>
+                            </InstructorProvider>
+                        </TemplateProvider>
+                    </AuthProvider>
+                </NotificationProvider>
+            </LoadingProvider>
+        </ThemeProvider>
     );
 };
 export default ContextProviders;

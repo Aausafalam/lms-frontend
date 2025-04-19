@@ -21,6 +21,11 @@ class AuthApiService {
         const response = await this._apiClient.post(`${endpoints.VALIDATE_PASSWORD_RESET_LINK}`, payload, { params, signal });
         return response.data;
     }
+
+    async authenticate(params, signal) {
+        const response = await this._apiClient.get(`${endpoints.AUTHENTICATE}`, { params, signal });
+        return response.data;
+    }
 }
 
 export const authApiService = new AuthApiService();

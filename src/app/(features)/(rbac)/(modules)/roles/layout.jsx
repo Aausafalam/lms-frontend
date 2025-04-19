@@ -1,12 +1,12 @@
 import React from "react";
 import "./styles/index.css";
-import LayoutWithSidebarNavbar from "@/app/layouts/WithNavbarSidebar";
+import DashboardLayout from "@/app/layout/index";
 
 const PermissionGroupLayout = ({ children }) => {
     return (
-        <LayoutWithSidebarNavbar>
+        <DashboardLayout>
             <div id="permission_group_module">{children}</div>
-        </LayoutWithSidebarNavbar>
+        </DashboardLayout>
     );
 };
 

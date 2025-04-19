@@ -48,7 +48,7 @@ class UsersTableUtils {
                 _id: user._id,
             };
             return {
-                Id: { key: "_id", value: user._id, type: "hidden" },
+                Id: { key: "id", value: user._id, type: "hidden" },
                 User: {
                     key: "name",
                     value: <UserAvatar userDetails={user.userDetails} />,
@@ -59,7 +59,7 @@ class UsersTableUtils {
                     key: "role",
                     value: (
                         <p className={styles.role}>
-                            <span className={styles[user.role.toLowerCase()]}>{UsersICONS?.[user.role.toUpperCase()]}</span>
+                            <span className={styles[user.role?.toLowerCase()]}>{UsersICONS?.[user.role?.toUpperCase()]}</span>
                             <span>{user.role}</span>
                         </p>
                     ),

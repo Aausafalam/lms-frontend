@@ -10,6 +10,7 @@ const apiConstants = {
         RESET_PASSWORD: "/auth/change-password",
         CURRENT_USER: "/auth/current-user",
         LOGOUT: "/auth/logout",
+        AUTHENTICATE: "/authenticate",
     },
     instructor: {
         BASE_Route: "/instructor",
@@ -51,6 +52,9 @@ const apiConstants = {
         ATTACH_PRIVILEGES: "/attach-privileges",
         ASSIGN_USERS: "/user-role",
     },
+    userRoles: {
+        BASE_ROUTE: "/user-role",
+    },
     permission: {
         BASE_ROUTE: "/privilege",
         CREATE_PERMISSION: "/",
@@ -59,6 +63,15 @@ const apiConstants = {
         GET_PERMISSION_DETAILS: "/",
         DELETE_PERMISSION: "/",
         GET_PERMISSION_STATS: "/get-permission-stats",
+    },
+    courses: {
+        BASE_ROUTE: "/courses",
+        CREATE_COURSE: "/",
+        COURSE_LIST: "/",
+        UPDATE_COURSE: "/",
+        GET_COURSE_DETAILS: "/",
+        DELETE_COURSE: "/",
+        GET_COURSE_STATS: "/get-permission-stats",
     },
     routes: {
         BASE_ROUTE: "/route",
@@ -137,6 +150,12 @@ const apiConstants = {
         FILE_UPLOAD_KEY: "fileUpload",
         CURRENT_ONBOARDED_USER: "currentOnboardedUser",
         GET_TEMPLATE_LIST: "getTemplateList",
+
+        AUTHENTICATE: "authenticate",
+    },
+    theme: {
+        LIGHT: "light",
+        DARK: "dark",
     },
 };
 export default apiConstants;

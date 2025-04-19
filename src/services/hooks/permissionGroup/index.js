@@ -236,8 +236,8 @@ export const usePermissionGroupGetList = () => {
 
             try {
                 const data = await permissionGroupApiService.list(params, controller.signal);
-                setList(data.data);
-                onSuccess?.(data.data);
+                setList(data.data.records);
+                onSuccess?.(data.data.records);
             } catch (error) {
                 showErrorNotification({
                     key: GET_PERMISSION_GROUP_LIST_KEY,

@@ -16,6 +16,7 @@
 }
 .rowHeader {
     font-weight: 500;
+    color: rgba(var(--text-primary));
 }
 .container svg {
     width: 20px;

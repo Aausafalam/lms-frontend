@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-// eslint-disable-next-line import/no-anonymous-default-export
-export default {
-    content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
+module.exports = {
+    darkMode: ["class"],
+    content: ["./pages/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}", "./app/**/*.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
     theme: {
         extend: {
             colors: {
@@ -11,18 +11,32 @@ export default {
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",
                 primary: {
-                    DEFAULT: "#7c3aed", // midpoint between purple-600 and indigo-600
-                    50: "#f5f3ff", // closest to purple-50
-                    100: "#ede9fe", // purple-100
-                    200: "#ddd6fe", // purple-200
-                    300: "#c4b5fd", // purple-300
-                    400: "#a78bfa", // purple-400
-                    500: "#8b5cf6", // purple-500
-                    600: "#7c3aed", // purple-600
-                    700: "#6366f1", // indigo-500
-                    800: "#4f46e5", // indigo-600
-                    900: "#4338ca", // indigo-700
-                    950: "#312e81", // indigo-900
+                    DEFAULT: "#f97316",
+                    50: "#fff7ed",
+                    100: "#ffedd5",
+                    200: "#fed7aa",
+                    300: "#fdba74",
+                    400: "#fb923c",
+                    500: "#f97316",
+                    600: "#ea580c",
+                    700: "#c2410c",
+                    800: "#9a3412",
+                    900: "#7c2d12",
+                    950: "#431407",
+                },
+                orange: {
+                    DEFAULT: "#f97316",
+                    50: "#fff7ed",
+                    100: "#ffedd5",
+                    200: "#fed7aa",
+                    300: "#fdba74",
+                    400: "#fb923c",
+                    500: "#f97316",
+                    600: "#ea580c",
+                    700: "#c2410c",
+                    800: "#9a3412",
+                    900: "#7c2d12",
+                    950: "#431407",
                 },
                 secondary: {
                     DEFAULT: "hsl(var(--secondary))",
@@ -75,7 +89,12 @@ export default {
                 shimmer: "shimmer 2s infinite",
             },
             boxShadow: {
-                glow: "0 0 20px rgba(255, 142, 6, 0.35)",
+                glow: "0 0 20px rgba(217, 57, 0, 0.35)",
+            },
+            backgroundOpacity: {
+                5: "0.05",
+                10: "0.1",
+                20: "0.2",
             },
         },
     },

@@ -478,12 +478,11 @@ export default function AddRolePage() {
 
     // Navigate to next tab
     const handleNextTab = (response) => {
-        setQueryParam("roleId", response.data.id);
-        console.log(data, activeTab, "handleNextTab");
         if (activeTab.id === "general") {
-            setFormValues((prev) => ({ ...prev, ...data }));
+            setQueryParam("roleId", response.data.id);
+            setFormValues((prev) => ({ ...prev, ...response.data }));
             setActiveTab({ id: "permissions", label: "Permissions" });
-        } else if (activeTab === "permissions") {
+        } else if (activeTab.id === "permissions") {
             if (selectedPermissions.length === 0) {
                 showNotification("error", "Please select at least one permission");
                 return;

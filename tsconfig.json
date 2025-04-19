@@ -23,6 +23,33 @@
             }
         ]
     },
-    "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
+    "include": [
+        "next-env.d.ts",
+        ".next/types/**/*.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/pages/course-details-page.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-call-to-action.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-content.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-footer-banner.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-hero.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-main-content.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-navigation.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-related.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-sidebar.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/sections/course-curriculum.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/sections/course-faq.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/sections/course-instructor-quick.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/sections/course-instructor.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/sections/course-overview.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/sections/course-progress.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/sections/course-reviews.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/sections/course-stats.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/ui-custom/badge.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/ui-custom/button.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/theme-provider.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/theme-toggle.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/data/course-data.js"
+    ],
     "exclude": ["node_modules"]
 }

@@ -1,11 +1,11 @@
 :root {
     --button-font-weight: 450;
     --button-font-size: 0.95rem;
-    --button-padding: 0.6rem 1.3rem;
-    --button-radius: 6px;
+    --button-padding: 0.6rem 1rem;
+    --button-radius: 7px;
     --button-letter-spacing: 0.04rem;
 
-    --primary-rgb: 113, 60, 232;
+    --primary-rgb: var(--theme-primary);
     --primary-text-color: #fff;
 
     --secondary-rgb: 115, 118, 130;

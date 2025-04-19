@@ -1,0 +1,228 @@
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    row-gap: 1.4rem;
+    padding: 1rem;
+}
+
+/* Default (mobile first) */
+.grid [class^="grid-"] {
+    flex: 1 1 100%;
+    max-width: 100%;
+}
+
+/* Small devices (tablets, 576px and up) */
+@media (min-width: 576px) {
+    .grid-2 {
+        flex: 1 1 calc(50% - 1rem);
+        max-width: calc(50% - 1rem);
+    }
+
+    .grid-3,
+    .grid-4 {
+        flex: 1 1 calc(50% - 1rem);
+        max-width: calc(50% - 1rem);
+    }
+
+    .grid-5,
+    .grid-6,
+    .grid-7,
+    .grid-8,
+    .grid-9,
+    .grid-10,
+    .grid-11,
+    .grid-12,
+    .grid-13,
+    .grid-14 {
+        flex: 1 1 calc(33.333% - 1rem);
+        max-width: calc(33.333% - 1rem);
+    }
+}
+
+/* Medium devices (laptops, 768px and up) */
+@media (min-width: 768px) {
+    .grid-3 {
+        flex: 1 1 calc(33.333% - 1rem);
+        max-width: calc(33.333% - 1rem);
+    }
+
+    .grid-4 {
+        flex: 1 1 calc(50% - 1rem);
+        max-width: calc(50% - 1rem);
+    }
+
+    .grid-5,
+    .grid-6 {
+        flex: 1 1 calc(33.333% - 1rem);
+        max-width: calc(33.333% - 1rem);
+    }
+
+    .grid-7,
+    .grid-8,
+    .grid-9,
+    .grid-10,
+    .grid-11,
+    .grid-12,
+    .grid-13,
+    .grid-14 {
+        flex: 1 1 calc(25% - 1rem);
+        max-width: calc(25% - 1rem);
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .grid-4 {
+        flex: 1 1 calc(25% - 1rem);
+        max-width: calc(25% - 1rem);
+    }
+
+    .grid-5 {
+        flex: 1 1 calc(20% - 1rem);
+        max-width: calc(20% - 1rem);
+    }
+
+    .grid-6 {
+        flex: 1 1 calc(16.666% - 1rem);
+        max-width: calc(16.666% - 1rem);
+    }
+
+    .grid-7,
+    .grid-8 {
+        flex: 1 1 calc(14.285% - 1rem);
+        max-width: calc(14.285% - 1rem);
+    }
+
+    .grid-9,
+    .grid-10,
+    .grid-11,
+    .grid-12 {
+        flex: 1 1 calc(12.5% - 1rem);
+        max-width: calc(12.5% - 1rem);
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .grid-7 {
+        flex: 1 1 calc(14.285% - 1rem);
+        max-width: calc(14.285% - 1rem);
+    }
+
+    .grid-8 {
+        flex: 1 1 calc(12.5% - 1rem);
+        max-width: calc(12.5% - 1rem);
+    }
+
+    .grid-9 {
+        flex: 1 1 calc(11.111% - 1rem);
+        max-width: calc(11.111% - 1rem);
+    }
+
+    .grid-10 {
+        flex: 1 1 calc(10% - 1rem);
+        max-width: calc(10% - 1rem);
+    }
+
+    .grid-11 {
+        flex: 1 1 calc(9.09% - 1rem);
+        max-width: calc(9.09% - 1rem);
+    }
+
+    .grid-12 {
+        flex: 1 1 calc(8.333% - 1rem);
+        max-width: calc(8.333% - 1rem);
+    }
+
+    .grid-13 {
+        flex: 1 1 calc(7.692% - 1rem);
+        max-width: calc(7.692% - 1rem);
+    }
+
+    .grid-14 {
+        flex: 1 1 calc(7.142% - 1rem);
+        max-width: calc(7.142% - 1rem);
+    }
+}
+.action_cell > div {
+    display: flex;
+    align-items: center;
+    margin-left: -0.75rem;
+    /* gap: 1rem; */
+}
+.action_icon {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+    /* color: rgba(var(--text-primary), 0.7); */
+    transition: color 0.2s ease;
+    padding: 0.6rem;
+    border-radius: 2rem;
+}
+.action_icon svg {
+    width: 22px;
+    height: 22px;
+}
+.action_icon:hover {
+    background-color: rgba(226, 224, 224, 0.4);
+}
+.checkbox label {
+    color: #ffffff;
+}
+.checkbox label:first-of-type:hover {
+    background-color: rgba(255, 255, 255, 0.27);
+}
+.cell_url {
+    color: var(--table-active-color);
+}
+.cell_url:hover {
+    text-decoration: underline;
+}
+
+.checkbox_cell {
+    display: none;
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 3;
+}
+.action_cell {
+    display: none;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 3;
+}
+.active_checkbox {
+    display: block;
+}
+.grid_card {
+    position: relative;
+}
+.grid_card_overlay {
+    position: absolute;
+    min-height: 3rem;
+    top: 0;
+    width: 100%;
+    display: flex;
+    border-radius: 0.6rem;
+    z-index: 5;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.grid_card:hover .grid_card_overlay {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.grid_card:hover .checkbox_cell,
+.grid_card:hover .action_cell {
+    display: block;
+}
+@media (max-width: 768px) {
+    .grid-2,
+    .grid-3 {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}

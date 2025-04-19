@@ -1,5 +1,7 @@
 import ConfirmationAlert from "@/components/ConfirmationAlert";
 import axios from "axios";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 class GlobalUtils {
     static capitalizeEachWord = (name) => {
@@ -294,6 +296,10 @@ class GlobalUtils {
                 onShowDetails?.((prev) => ({ ...prev, delete: false }));
             },
         });
+    }
+
+    static cn(...inputs) {
+        return twMerge(clsx(inputs));
     }
 }
 

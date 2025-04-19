@@ -1,11 +1,21 @@
 :root {
-    --table-background-color: #ffffff;
-    --table-border-radius: 6px;
-    --text-theme: 47, 43, 61;
-    --table-active-color: rgb(113, 60, 232, 1);
-    --table-box-shadow: 0 3px 12px rgb(var(--text-theme), 0.14), 0 0 transparent, 0 0 transparent;
+    /* Light Mode Variables */
+    --table-background-color: rgb(var(--card-background));
+    --table-border-radius: var(--radius);
+    --text-theme: var(--text-primary);
+    --table-active-color: rgb(var(--theme-primary), 1);
+    --table-box-shadow: 0 3px 12px rgb(var(--text-theme), 0.1), 0 0 transparent, 0 0 transparent;
     --table-text-color: rgb(var(--text-theme), 0.9);
     --table-text-muted-color: rgb(var(--text-theme), 0.7);
-    --table-max-width: 1500px;
-    --table-error-color: 255, 76, 81;
+    --table-max-width: var(--max-width);
+    --table-error-color: var(--theme-error);
+}
+
+/* Dark Mode Variables */
+.dark {
+    --table-active-color: rgb(var(--theme-primary), 0.9);
+    --table-box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3), 0 0 transparent, 0 0 transparent;
+    --table-text-color: rgb(var(--text-theme), 0.9);
+    --table-text-muted-color: rgb(var(--text-theme), 0.6);
+    --table-error-color: 255, 85, 90;
 }

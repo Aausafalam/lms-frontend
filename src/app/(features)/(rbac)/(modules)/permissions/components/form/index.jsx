@@ -19,7 +19,7 @@ const PermissionForm = ({ data, onSuccess, onCancel, formId }) => {
                 formButtons={GlobalUtils.getFormButtons(isPermissionFormLoading, onCancel, {
                     route: data?.id ? `${apiConstants.permission.BASE_ROUTE}/${data.id}` : apiConstants.permission.BASE_ROUTE,
                     method: data?.id ? "patch" : "post",
-                    body: { privilegeGroupId: permissionGroupId },
+                    // body: { privilegeGroupId: permissionGroupId },
                 })}
                 // onSubmit={handlePermissionFormSubmit}
                 responseErrors={permissionFormErrors}

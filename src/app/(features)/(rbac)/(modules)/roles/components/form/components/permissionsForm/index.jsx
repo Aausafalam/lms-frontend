@@ -21,7 +21,7 @@ const PermissionForm = ({ selectedPermissions, setSelectedPermissions, handleNex
             params: { responseType: "dropdown" },
             onSuccess: (data) => {
                 if (data[0]?.id) {
-                    permissionList.fetch({ params: { responseType: "dropdown", filterBy: { privilegeGroupId: data[0]?.id } } });
+                    setPermissionActiveTab(data[0]?.id);
                 }
             },
         });
@@ -30,7 +30,7 @@ const PermissionForm = ({ selectedPermissions, setSelectedPermissions, handleNex
     // Load permissions when tab changes
     useEffect(() => {
         if (permissionActiveTab) {
-            permissionList.fetch({ permissionGroupId: permissionActiveTab });
+            permissionList.fetch({ params: { responseType: "dropdown", filterBy: { privilegeGroupId: permissionActiveTab } } });
         }
     }, [permissionActiveTab]);
     console.log("permissionList", permissionList.data);
@@ -74,7 +74,7 @@ const PermissionForm = ({ selectedPermissions, setSelectedPermissions, handleNex
 
     const handleSubmit = () => {
         rolesAttachPermissions.execute({
-            payload: { roleId, permissionIds: selectedPermissions },
+            payload: { roleId, privileges: selectedPermissions },
             onSuccess: (data) => {
                 handleNextTab(data.data);
             },
@@ -85,7 +85,7 @@ const PermissionForm = ({ selectedPermissions, setSelectedPermissions, handleNex
     };
 
     // Calculate stats
-    const totalPermissions = permissionGroupList.data.reduce((acc, group) => acc + group.permissions, 0);
+    const totalPermissions = permissionGroupList.data.reduce((acc, group) => acc + group.privilegeCount, 0);
     const selectedPermissionsCount = selectedPermissions.length;
     const percentSelected = totalPermissions > 0 ? Math.round((selectedPermissionsCount / totalPermissions) * 100) : 0;
 
@@ -123,7 +123,7 @@ const PermissionForm = ({ selectedPermissions, setSelectedPermissions, handleNex
                             >
                                 {group.name}
                                 <Badge variant={permissionActiveTab === group.id ? "outline" : "secondary"} className={permissionActiveTab === group.id ? "ml-2 bg-white/20 text-white" : "ml-2"}>
-                                    {group.permissions}
+                                    {group.privilegeCount}
                                 </Badge>
                             </button>
                         ))}

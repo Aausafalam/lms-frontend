@@ -14,7 +14,7 @@
     color: rgb(40, 199, 111);
 }
 .admin {
-    color: rgb(113, 60, 232);
+    color: rgb(var(--theme-primary));
 }
 .maintainer {
     color: rgb(0, 186, 209);
@@ -23,7 +23,7 @@
     color: rgb(255, 76, 81);
 }
 .billing {
-    color: rgb(47, 43, 61, 0.7);
+    color: rgb(var(--text-primary), 0.7);
 }
 .status {
     padding: 0.3rem 0.5rem;
