@@ -1,6 +1,6 @@
 import React from "react";
 import "./styles/index.css";
-import DashboardLayout from "@/app/layout/index";
+import DashboardLayout from "@/app/layouts/index";
 
 const PermissionGroupLayout = ({ children }) => {
     return (

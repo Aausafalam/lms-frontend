@@ -12,8 +12,8 @@ const apiConstants = {
         LOGOUT: "/auth/logout",
         AUTHENTICATE: "/authenticate",
     },
-    instructor: {
-        BASE_Route: "/instructor",
+    instructors: {
+        BASE_ROUTE: "/instructor",
         CREATE_INSTRUCTOR: "/create-instructor",
         UPDATE_INSTRUCTOR: "/update-instructor",
         GET_INSTRUCTOR_DETAILS: "/get-instructor-details",
@@ -72,6 +72,15 @@ const apiConstants = {
         GET_COURSE_DETAILS: "/",
         DELETE_COURSE: "/",
         GET_COURSE_STATS: "/get-permission-stats",
+    },
+    modules: {
+        BASE_ROUTE: "/modules",
+        CREATE_MODULE: "/",
+        MODULE_LIST: "/",
+        UPDATE_MODULE: "/",
+        GET_MODULE_DETAILS: "/",
+        DELETE_MODULE: "/",
+        GET_MODULE_STATS: "/get-module-stats",
     },
     routes: {
         BASE_ROUTE: "/route",

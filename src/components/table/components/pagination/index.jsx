@@ -77,7 +77,7 @@ const TablePagination = ({ initialValues, router, data }) => {
 
     return (
         <div className={styles.container}>
-            <div className="flex gap-4 align-middle justify-center">
+            <div className="flex gap-4 align-middle justify-center mb-[-0.5rem] mt-2">
                 <div className={styles.limit}>
                     {data.tableHeader.limit && (
                         <SelectField
@@ -96,7 +96,7 @@ const TablePagination = ({ initialValues, router, data }) => {
                     )}
                 </div>
                 <div>
-                    <p>
+                    <p className="relative top-[-0.4rem]">
                         Showing {itemRange} of {data?.pagination?.totalItemCount} entries
                     </p>
                 </div>

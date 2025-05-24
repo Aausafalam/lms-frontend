@@ -2,8 +2,6 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    /* margin-bottom: 1rem; */
 }
 .label {
     font-size: var(--label-font-size);
@@ -85,4 +83,8 @@
 .formGroup .inputWrapper:has(textarea.inputError) .label {
     color: var(--error-color);
     letter-spacing: var(--field-letter-spacing);
+}
+.helperText {
+    font-size: 0.75rem;
+    color: var(--initial-color);
 }

@@ -1,6 +1,5 @@
 import React from "react";
-// import styles from "./styles/index.module.css";
-import DashboardLayout from "@/app/layout/index";
+import DashboardLayout from "@/app/layouts/index";
 
 const RoutesLayout = ({ children }) => {
     return (

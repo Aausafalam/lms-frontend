@@ -15,6 +15,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import styles from "./index.module.css";
 import { useFileUpload } from "@/services/hooks/fileUpload";
 import apiConstants from "@/services/utils/constants";
+import FileUploadField from "@/components/ui/file";
 
 // Register all plugins
 registerPlugin(
@@ -35,7 +36,7 @@ const fileTypeMapping = {
     docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 };
 
-const FileUploadField = ({ formField, errors }) => {
+const FormFileUploadField = ({ formField, errors }) => {
     const {
         id,
         name,
@@ -47,7 +48,7 @@ const FileUploadField = ({ formField, errors }) => {
         style,
         info_text,
         multiple = false,
-        maxFileSize = "5MB",
+        maxFileSize,
         maxFiles = 3,
         imagePreviewHeight = 400,
         imageCropAspectRatio = "1:1",
@@ -225,38 +226,54 @@ const FileUploadField = ({ formField, errors }) => {
     }, [files]);
 
     return (
-        <div className={styles.fileUploadContainer} style={style}>
-            <div className={styles.labelWrapper}>
-                <label className={styles.label}>
-                    {label}
-                    {validationRules.required && <span className={styles.required}>*</span>}
-                </label>
-                {info_text && <span className={styles.infoText}>{info_text}</span>}
-            </div>
-
-            <FilePond
-                ref={pondRef}
+        <>
+            <FileUploadField
                 id={id}
+                label={label}
                 name={name}
-                disabled={disabled || readonly}
-                allowMultiple={multiple}
-                maxFiles={maxFiles}
-                acceptedFileTypes={accept.map((type) => fileTypeMapping[type.trim()])}
+                helperText={formField?.helperText}
+                infoText={formField?.infoText}
+                disabled={disabled}
+                required={validationRules.required}
+                error={error}
+                touched={touched}
+                uploadPath={formField?.uploadPath}
                 maxFileSize={maxFileSize}
-                files={files}
-                onaddfile={handleProcessFile}
-                onremovefile={handleRemoveFile}
-                allowFileEncode={true}
-                allowImageTransform={true}
-                imagePreviewHeight={imagePreviewHeight}
-                imageCropAspectRatio={imageCropAspectRatio}
-                imageResizeTargetWidth={imageResizeTargetWidth}
-                imageResizeTargetHeight={imageResizeTargetHeight}
-                imageResizeMode={imageResizeMode}
-                imageTransformOutputQuality={imageQuality}
-                imageTransformOutputQualityMode="optional"
-                instantUpload={false}
-                labelIdle={`
+                acceptedFormats={accept}
+                multiple={multiple}
+            />
+            {/* <div className={styles.fileUploadContainer} style={style}>
+                <div className={styles.labelWrapper}>
+                    <label className={styles.label}>
+                        {label}
+                        {validationRules.required && <span className={styles.required}>*</span>}
+                    </label>
+                    {info_text && <span className={styles.infoText}>{info_text}</span>}
+                </div>
+
+                <FilePond
+                    ref={pondRef}
+                    id={id}
+                    name={name}
+                    disabled={disabled || readonly}
+                    allowMultiple={multiple}
+                    maxFiles={maxFiles}
+                    acceptedFileTypes={accept.map((type) => fileTypeMapping[type.trim()])}
+                    maxFileSize={maxFileSize}
+                    files={files}
+                    onaddfile={handleProcessFile}
+                    onremovefile={handleRemoveFile}
+                    allowFileEncode={true}
+                    allowImageTransform={true}
+                    imagePreviewHeight={imagePreviewHeight}
+                    imageCropAspectRatio={imageCropAspectRatio}
+                    imageResizeTargetWidth={imageResizeTargetWidth}
+                    imageResizeTargetHeight={imageResizeTargetHeight}
+                    imageResizeMode={imageResizeMode}
+                    imageTransformOutputQuality={imageQuality}
+                    imageTransformOutputQualityMode="optional"
+                    instantUpload={false}
+                    labelIdle={`
                     <div class="${styles.file_upload_container}">
                         ${
                             !disabled
@@ -284,12 +301,13 @@ const FileUploadField = ({ formField, errors }) => {
                         }
                     </div>
                 `}
-                className={`${styles.filePond} ${error ? styles.hasError : ""}`}
-            />
+                    className={`${styles.filePond} ${error ? styles.hasError : ""}`}
+                />
 
-            {error && <div className={styles.errorMessage}>{error}</div>}
-        </div>
+                {error && <div className={styles.errorMessage}>{error}</div>}
+            </div> */}
+        </>
     );
 };
 
-export default FileUploadField;
+export default FormFileUploadField;

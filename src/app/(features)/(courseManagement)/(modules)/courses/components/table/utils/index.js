@@ -7,10 +7,11 @@ class CoursesTableUtils {
     /**
      * Generates table header configuration.
      */
-    static getTableHeader({ data, setModalState, styles, navigate }) {
+    static getTableHeader({ data, setModalState, styles, navigate, title }) {
         const autoSuggestions = TableUtils.formatDataForAutoSuggestion(data?.data || [], ["name"]);
 
         return {
+            title,
             limit: coursesTableConstants.LIMITS,
             actionButtons: [
                 {
@@ -35,52 +36,12 @@ class CoursesTableUtils {
     }
 
     /**
-     * Generates table rows based on courses data.
-     */
-    static getTableRows({ data = { data: [] }, styles }) {
-        return data?.records?.map((courses) => {
-            return {
-                id: { key: "id", value: courses.id, type: "hidden" },
-                Name: {
-                    key: "name",
-                    value: (
-                        <div class="whitespace-nowrap py-1">
-                            <div class="text-sm font-normal text-gray-800">{GlobalUtils.capitalizeEachWord(courses.name)}</div>
-                            <div class="text-xs text-gray-500 font-light">{courses.description}</div>
-                        </div>
-                    ),
-                },
-                Group: {
-                    key: "coursesGroup",
-                    value: (
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.75rem] font-normal bg-blue-100 text-blue-800">
-                            {GlobalUtils.capitalizeEachWord(courses.privilegeGroup?.name)}
-                        </span>
-                    ),
-                },
-                "Routes Count": {
-                    key: "Routes",
-                    value: courses?.routes?.length,
-                },
-                Status: {
-                    key: "Status",
-                    value: <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.75rem] font-medium bg-green-100 text-green-800">Active</span>,
-                },
-                "Created At": {
-                    key: "createdAt",
-                    value: GlobalUtils.formatDate(courses.createdAt),
-                },
-            };
-        });
-    }
-
-    /**
      * Returns available actions for each row.
      */
-    static getTableActions({ data, setModalState, setSelectedCourses }) {
+    static getTableActions({ data, setModalState, setSelectedCourse }) {
         const handleAction = (row, actionType) => {
-            const selectedCourses = data?.records?.find((item) => row["id"].value === item.id);
-            setSelectedCourses(selectedCourses);
+            const selectedCourses = data?.records?.find((item) => row["id"] === item.id);
+            setSelectedCourse(selectedCourses);
             setModalState(actionType, selectedCourses.id);
         };
 
@@ -94,9 +55,9 @@ class CoursesTableUtils {
     /**
      * Handles row click actions.
      */
-    static handleRowClick({ row, data, setModalState, setSelectedCourses }) {
+    static handleRowClick({ row, data, setModalState, setSelectedCourse }) {
         const selectedCourses = data?.data?.find((item) => row["id"].value === item.id);
-        setSelectedCourses(selectedCourses);
+        setSelectedCourse(selectedCourses);
         setModalState("view", selectedCourses.id);
     }
 }

@@ -1,4 +1,4 @@
-import DashboardLayout from "@/app/layout/index";
+import DashboardLayout from "@/app/layouts/index";
 import React from "react";
 
 const CoursesLayout = ({ children }) => {

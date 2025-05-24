@@ -3,8 +3,9 @@ import styles from "./index.module.css";
 import "../../../styles/root.css";
 import FormUtils from "@/components/form/utils";
 import CkEditor from "./components/ckeEditor";
+import TextareaField from "@/components/ui/textarea";
 
-const TextAreaField = ({
+const FormTextAreaField = ({
     // Base props
     formField,
     formValues,
@@ -129,46 +130,78 @@ const TextAreaField = ({
     const Comp = editorType === "rich" ? CkEditor : "textarea";
 
     return (
-        <div className={formGroupClasses} style={style}>
-            <div className={styles.inputWrapper}>
-                {label && (
-                    <label htmlFor={id} className={labelClasses} style={labelStyle}>
-                        {label}
-                        {validationRules.required && <span className={styles.required}>*</span>}
-                        {labelChild}
-                    </label>
-                )}
-                <Comp
-                    id={id}
-                    type={type}
-                    name={name}
-                    value={inputValue}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    disabled={disabled}
-                    readOnly={readOnly}
-                    placeholder={placeholder}
-                    className={`${styles.formControl} ${touched && error ? styles.inputError : ""}`}
-                    style={inputStyle}
-                    aria-invalid={!!error}
-                    aria-describedby={error ? `${id}-error` : undefined}
-                    {...restProps}
-                ></Comp>
+        <>
+            {/* <div className={formGroupClasses} style={style}>
+                <div className={styles.inputWrapper}>
+                    {label && (
+                        <label htmlFor={id} className={labelClasses} style={labelStyle}>
+                            {label}
+                            {validationRules.required && <span className={styles.required}>*</span>}
+                            {labelChild}
+                        </label>
+                    )}
+                    <Comp
+                        id={id}
+                        type={type}
+                        name={name}
+                        value={inputValue}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        disabled={disabled}
+                        readOnly={readOnly}
+                        placeholder={placeholder}
+                        className={`${styles.formControl} ${touched && error ? styles.inputError : ""}`}
+                        style={inputStyle}
+                        aria-invalid={!!error}
+                        aria-describedby={error ? `${id}-error` : undefined}
+                        {...restProps}
+                    ></Comp>
 
-                {contentChild}
-            </div>
-
-            {touched && error && (
-                <div id={`${id}-error`} className={styles.errorText} role="alert">
-                    {error}
+                    {contentChild}
                 </div>
-            )}
 
-            {helperText && !error && <div className={styles.helperText}>{helperText}</div>}
+                {touched && error && (
+                    <div id={`${id}-error`} className={styles.errorText} role="alert">
+                        {error}
+                    </div>
+                )}
 
-            {infoText && <p className={styles.infoText}>{infoText}</p>}
-        </div>
+                {helperText && !error && <div className={styles.helperText}>{helperText}</div>}
+
+                {infoText && <p className={styles.infoText}>{infoText}</p>}
+            </div> */}
+
+            <TextareaField
+                id={id}
+                type={type}
+                name={name}
+                label={label}
+                placeholder={placeholder}
+                helperText={helperText}
+                infoText={infoText}
+                icon={formField.icon}
+                disabled={disabled}
+                readOnly={readOnly}
+                required={required}
+                value={inputValue}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={error}
+                touched={touched}
+                className={formGroupClasses}
+                maxLength={formField.maxLength}
+                maxWords={formField.maxWords}
+                minRows={formField.minRows}
+                maxRows={formField.maxRows}
+                autoResize={formField.autoResize ? formField.autoResize : true}
+                showWordCount={formField.showWordCount ? formField?.showWordCount : true}
+                spellCheck={formField.spellCheck ? formField.spellCheck : true}
+                autoFocus={formField?.autoFocus}
+                style={inputStyle}
+                {...restProps}
+            />
+        </>
     );
 };
 
-export default React.memo(TextAreaField);
+export default React.memo(FormTextAreaField);

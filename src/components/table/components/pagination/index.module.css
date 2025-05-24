@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.1rem 1.3rem;
+    /* padding: 1.1rem 1.3rem; */
 }
 .container > div:nth-child(1) p {
     font-size: 0.93rem;

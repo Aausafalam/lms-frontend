@@ -71,10 +71,10 @@ const TableFilter = ({ data, initialValues, router }) => {
     return (
         <div className={styles.container}>
             <div className={styles.heading}>
-                <h2>
+                {/* <h2>
                     <span>{data.icon ? data.icon : data.icon === false ? "" : ICON.LIST}</span>
                     {data.title || "Filters"}
-                </h2>
+                </h2> */}
                 <div className={styles.filters_icon} onClick={() => setIsBodyVisible((prev) => !prev)}>
                     {ICON.FILTERS}
                 </div>

@@ -24,11 +24,11 @@ export default function Tabs({ tabs, defaultTab, className, variant = "pills", o
             case "pills":
                 return {
                     container: cn(
-                        "relative px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 min-w-[120px]",
+                        "relative px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 min-w-[120px]",
                         "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2",
-                        isActive ? "text-white shadow-lg" : "text-gray-500 hover:text-primary bg-white"
+                        isActive ? "text-white" : "text-gray-500 hover:text-primary bg-white"
                     ),
-                    indicator: "absolute inset-0 rounded-full bg-gradient-to-r from-primary to-primary/80 shadow-[0_4px_14px_0_rgba(255,142,6,0.39)]",
+                    indicator: "absolute inset-0 rounded-lg bg-gradient-to-r from-primary to-primary/80 ",
                 };
             case "cards":
                 return {

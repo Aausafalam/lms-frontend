@@ -2,7 +2,7 @@ import apiConstants from "@/services/utils/constants";
 import apiClient from "../config";
 
 const instructorApiClient = apiClient.create({
-    baseURL: `${apiClient.defaults.baseURL}${apiConstants.instructor.BASE_Route}`,
+    baseURL: `${apiClient.defaults.baseURL}${apiConstants.instructors.BASE_ROUTE}`,
     headers: {
         ...apiClient.defaults.headers,
     },

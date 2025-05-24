@@ -67,20 +67,13 @@ const Table = ({ tableData }) => {
     return (
         <div key={tableData?.url} className={styles.table_container}>
             {/* Filters and Search */}
-            <TableFilter router={router} initialValues={initialValues} data={data.externalFilters} />
-            <TableSearch
-                dataView={dataView}
-                showDataViewButton={data.grid || data?.customView ? true : false}
-                setDataView={setDataView}
-                initialValues={initialValues}
-                router={router}
-                data={data.tableHeader}
-            />
 
+            <TableSearch dataView={dataView} showDataViewButton={data.multiView} setDataView={setDataView} initialValues={initialValues} router={router} data={data.tableHeader} />
+            {/* <TableFilter router={router} initialValues={initialValues} data={data.externalFilters} /> */}
             <TableError error={error} />
 
             {/* Table View */}
-            {dataView.table && <TableView isLoading={isLoading} checkboxState={checkboxState} setCheckboxState={setCheckboxState} data={data} router={router} initialValues={initialValues} />}
+            {/* {dataView.table && <TableView isLoading={isLoading} checkboxState={checkboxState} setCheckboxState={setCheckboxState} data={data} router={router} initialValues={initialValues} />} */}
 
             {/* Grid View */}
             {dataView.grid && <GridView isLoading={isLoading} checkboxState={checkboxState} setCheckboxState={setCheckboxState} data={data} router={router} initialValues={initialValues} />}

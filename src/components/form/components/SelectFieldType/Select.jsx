@@ -127,14 +127,14 @@ const getStyles = (style, error) => {
     return styles;
 };
 
-const CustomSelect = ({ name, formValues, handleSelectChange, options, multiple, required, disabled, style = {}, classNames = [], error, placeholder, type, clearOption, value }) => (
+const CustomSelect = ({ name, defaultValue, handleSelectChange, options, multiple, required, disabled, style = {}, classNames = [], error, placeholder, type, clearOption, value }) => (
     <Select
         id={name}
         name={name}
         value={
             multiple
-                ? options.filter((option) => formValues?.[name]?.includes(option.value) || value?.includes(option.value))
-                : options.find((option) => option.value === formValues?.[name] || option.value === value)
+                ? options.filter((option) => defaultValue?.includes(option.value) || value?.includes(option.value))
+                : options.find((option) => option.value === defaultValue || option.value === value)
         }
         onChange={(selectedOption) => handleSelectChange({ target: { name, value: multiple ? selectedOption.map((opt) => opt.value) : selectedOption?.value } })}
         options={options}

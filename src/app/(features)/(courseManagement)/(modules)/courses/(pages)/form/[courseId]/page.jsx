@@ -1,71 +1,41 @@
-"use client";
-import React, { useState } from "react";
-import BasicDetails from "./components/basicDetails";
-import { SparklesIcon } from "lucide-react";
-import { useParams } from "next/navigation";
-import Tabs from "@/components/tab";
-import CourseCurriculumDetails from "./components/curriculumDetails";
-import FAQDetails from "./components/faqDetails";
-import PriceDetails from "./components/priceDetails";
-import CourseDetails from "./components/courseDetails";
-import CertificateDetails from "./components/certificateDetails.js";
+"use client"
 
-const CourseForm = () => {
-    const { courseId } = useParams();
-    const [activeTab, setActiveTab] = useState({ id: "basicDetails", label: "Basic Details" });
+import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import CourseFormBase from ".."
+import { sampleCourseData } from "../components/preview"
 
-    const handleNextTab = (response) => {
-        if (activeTab.id === "basicDetails") {
-            setActiveTab({ id: "permissions", label: "Permissions" });
-        } else if (activeTab.id === "permissions") {
-            setActiveTab({ id: "users", label: "Assign Users" });
-        }
-    };
+const EditCourse = () => {
+  const { courseId } = useParams()
+  const [initialData, setInitialData] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-    const tabs = [
-        {
-            id: "basicDetails",
-            label: "Basic Details",
-            icon: <SparklesIcon className="size-4" />,
-            content: <BasicDetails courseId={courseId} handleNextTab={handleNextTab} />,
-        },
-        {
-            id: "priceDetails",
-            label: "Price Details",
-            icon: <SparklesIcon className="size-4" />,
-            content: <PriceDetails courseId={courseId} handleNextTab={handleNextTab} />,
-        },
-        {
-            id: "details",
-            label: "Details",
-            icon: <SparklesIcon className="size-4" />,
-            content: <CourseDetails courseId={courseId} handleNextTab={handleNextTab} />,
-        },
-        {
-            id: "curriculum",
-            label: "Curriculum",
-            icon: <SparklesIcon className="size-4" />,
-            content: <CourseCurriculumDetails />,
-        },
-        {
-            id: "certificate",
-            label: "Certificate",
-            icon: <SparklesIcon className="size-4" />,
-            content: <CertificateDetails courseId={courseId} handleNextTab={handleNextTab} />,
-        },
-        {
-            id: "faq",
-            label: "FAQ",
-            icon: <SparklesIcon className="size-4" />,
-            content: <FAQDetails />,
-        },
-    ];
+  useEffect(() => {
+    // Replace with actual data fetch
+    async function fetchCourseData() {
+      setLoading(true)
+      try {
+        // const res = await fetch(`/api/courses/${courseId}`);
+        // if (!res.ok) throw new Error("Failed to fetch course data");
+        // const data = await res.json();
+        const data = sampleCourseData
+        setInitialData(data)
+      } catch (error) {
+        console.error(error)
+        // handle error state
+      } finally {
+        setLoading(false)
+      }
+    }
+    if (courseId) {
+      fetchCourseData()
+    }
+  }, [courseId])
 
-    return (
-        <div>
-            <Tabs defaultTab={activeTab} tabs={tabs} variant={"underline"} onTabChange={(tab) => setActiveTab(tab)} />
-        </div>
-    );
-};
+  if (loading) return <div>Loading course data...</div>
+  if (!initialData) return <div>Course data not found.</div>
 
-export default CourseForm;
+  return <CourseFormBase initialData={initialData} courseId={courseId} />
+}
+
+export default EditCourse

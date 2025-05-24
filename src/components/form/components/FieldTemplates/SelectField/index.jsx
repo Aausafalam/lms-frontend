@@ -5,8 +5,9 @@ import "../../../styles/root.css";
 import FormUtils from "@/components/form/utils";
 import apiClient from "@/services/api/config";
 import GlobalUtils from "@/lib/utils";
+import SelectField from "@/components/ui/select";
 
-const SelectField = ({
+const FormSelectField = ({
     // Base props
     formField,
     formValues,
@@ -64,11 +65,16 @@ const SelectField = ({
     const [error, setError] = useState("");
     const [touched, setTouched] = useState(false);
     const [options, setOptions] = useState(formField.options || []);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Update value when prop changes
     useEffect(() => {
         setInputValue(value);
     }, [value]);
+
+    useEffect(() => {
+        setInputValue(formValues?.[name]);
+    }, [formValues?.[name]]);
 
     useEffect(() => {
         if (errors?.[name]) {
@@ -103,6 +109,7 @@ const SelectField = ({
   `.trim();
 
     const fetchOptionData = () => {
+        setIsLoading(true);
         apiClient
             .get(optionsUrl.url)
             .then((response) => {
@@ -116,6 +123,9 @@ const SelectField = ({
             })
             .catch((error) => {
                 console.log(error);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
 
@@ -124,56 +134,89 @@ const SelectField = ({
             fetchOptionData();
         }
     }, [optionsUrl]);
-
+    console.log(formValues);
     return (
-        <div className={formGroupClasses} style={style}>
-            <div className={styles.inputWrapper}>
-                {label && (
-                    <label htmlFor={id} className={labelClasses} style={labelStyle}>
-                        {label}
-                        {validationRules.required && <span className={styles.required}>*</span>}
-                        {labelChild}
-                    </label>
-                )}
-                <CustomSelect
-                    id={id}
-                    formValues={formValues}
-                    name={name}
-                    value={inputValue}
-                    handleSelectChange={(event) => {
-                        onChange(event);
-                        customOnChange && customOnChange(event);
-                        validateInput(event.target.value);
-                    }}
-                    options={dynamicOptions?.[name] || options}
-                    disabled={disabled}
-                    readOnly={readOnly}
-                    multiple={multiple}
-                    placeholder={placeholder}
-                    classNames={[`${styles.formControl}`]}
-                    style={inputStyle}
-                    aria-invalid={!!error}
-                    aria-describedby={error ? `${id}-error` : undefined}
-                    error={error}
-                    type={type}
-                    clearOption={clearOption}
-                    {...restProps}
-                />
+        <>
+            <SelectField
+                id={id}
+                name={name}
+                label={label}
+                placeholder={placeholder}
+                helperText={helperText}
+                infoText={infoText}
+                icon={formField?.icon}
+                disabled={disabled}
+                readOnly={readOnly}
+                required={required}
+                value={inputValue}
+                onChange={(event) => {
+                    onChange(event);
+                    customOnChange && customOnChange(event);
+                    validateInput(event.target.value);
+                }}
+                onBlur={onBlur}
+                error={error}
+                touched={touched}
+                className={formGroupClasses}
+                options={dynamicOptions?.[name] || options}
+                isLoading={isLoading}
+                isMulti={multiple}
+                isSearchable={formField?.isSearchable ? formField?.isSearchable : true}
+                isClearable={formField?.isClearable ? formField?.isClearable : true}
+                maxSelections={formField?.maxSelections}
+                autoFocus={formField?.autoFocus}
+                groupBy={formField?.groupBy}
+                noOptionsMessage={formField?.noOptionsMessage}
+            />
+            {/* <div className={formGroupClasses} style={style}>
+                <div className={styles.inputWrapper}>
+                    {label && (
+                        <label htmlFor={id} className={labelClasses} style={labelStyle}>
+                            {label}
+                            {validationRules.required && <span className={styles.required}>*</span>}
+                            {labelChild}
+                        </label>
+                    )}
+                    <CustomSelect
+                        id={id}
+                        defaultValue={formValues[name]}
+                        name={name}
+                        value={inputValue}
+                        handleSelectChange={(event) => {
+                            onChange(event);
+                            customOnChange && customOnChange(event);
+                            validateInput(event.target.value);
+                        }}
+                        options={dynamicOptions?.[name] || options}
+                        disabled={disabled}
+                        readOnly={readOnly}
+                        multiple={multiple}
+                        placeholder={placeholder}
+                        classNames={[`${styles.formControl}`]}
+                        style={inputStyle}
+                        aria-invalid={!!error}
+                        aria-describedby={error ? `${id}-error` : undefined}
+                        error={error}
+                        type={type}
+                        clearOption={clearOption}
+                        {...restProps}
+                    />
 
-                {contentChild}
-            </div>
-
-            {error && (
-                <div id={`${id}-error`} className={styles.errorText} role="alert">
-                    {error}
+                    {contentChild}
                 </div>
-            )}
 
-            {helperText && !error && <div className={styles.helperText}>{helperText}</div>}
+                {error && (
+                    <div id={`${id}-error`} className={styles.errorText} role="alert">
+                        {error}
+                    </div>
+                )}
 
-            {infoText && <p className={styles.infoText}>{infoText}</p>}
-        </div>
+                {helperText && !error && <div className={styles.helperText}>{helperText}</div>}
+
+                {infoText && <p className={styles.infoText}>{infoText}</p>}
+            </div> */}
+        </>
     );
 };
 
-export default React.memo(SelectField);
+export default React.memo(FormSelectField);

@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./styles/index.module.css";
 import usePermissionGroupStats from "./hooks/usePermissionGroupStats";
 import "./styles/index.css";
-import StatCard from "@/components/StatCard";
+import StatCard from "@/components/statCard";
 import { usePermissionGroup } from "@/services/context/permissionGroup";
 const PermissionGroupStats = () => {
     const { permissionGroupStats } = usePermissionGroup();
