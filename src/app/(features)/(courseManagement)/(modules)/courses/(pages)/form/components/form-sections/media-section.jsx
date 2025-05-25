@@ -1,14 +1,26 @@
 "use client"
 
-import { memo } from "react"
-import { ImageIcon, Video } from "lucide-react"
+import { memo, useState } from "react"
+import { ImageIcon, Video, Upload, Link, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { FormSection } from "./form-section"
 import FileUploadField from "@/components/ui/file"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+/**
+ * Media Section Component
+ * Handles banner image, thumbnail, and intro video uploads/URLs
+ *
+ * @param {Object} props - Component props
+ * @param {Object} props.formData - Current form data
+ * @param {React.RefObject} props.sectionRef - Reference for section scrolling
+ * @param {boolean} props.isActive - Whether this section is currently active
+ * @param {Object} props.handlers - Form event handlers
+ */
 export const MediaSection = memo(function MediaSection({ formData = {}, sectionRef, isActive, handlers = {} }) {
-  // Destructure handlers for better readability
-  const { handleImageUpload, handleInputChange } = handlers
+  const { handleImageUpload, handleInputChange, handleVideoUpload } = handlers
+  const [videoInputType, setVideoInputType] = useState("url") // 'url' or 'file'
 
   /**
    * Extracts YouTube video ID from different YouTube URL formats
@@ -20,76 +32,155 @@ export const MediaSection = memo(function MediaSection({ formData = {}, sectionR
       const parsedUrl = new URL(url)
       let videoId = ""
 
-      // Handle youtube.com format (with v parameter)
       if (url.includes("youtube.com")) {
         videoId = parsedUrl.searchParams.get("v")
-      }
-      // Handle youtu.be format (short links)
-      else if (url.includes("youtu.be")) {
+      } else if (url.includes("youtu.be")) {
         videoId = parsedUrl.pathname.substring(1)
       }
 
       return videoId || null
     } catch (e) {
-      // Invalid URL
       return null
     }
   }
 
-  // Determine if we have a valid YouTube URL to display
+  // Check for valid YouTube URL
   const hasValidYoutubeUrl =
-    formData.introVideo && formData.introVideo.includes("youtube") && getYoutubeVideoId(formData.introVideo)
+    formData.introVideo &&
+    typeof formData.introVideo === "string" &&
+    formData.introVideo.includes("youtube") &&
+    getYoutubeVideoId(formData.introVideo)
+
+  // Check for uploaded video file
+  const hasUploadedVideo = formData.introVideoFile || formData.introVideoPreview
 
   return (
     <FormSection
       id="media"
-      title="Media"
+      title="Media Assets"
       icon={<ImageIcon className="h-5 w-5" />}
-      description="Upload images and videos for your course"
+      description="Upload images and videos to showcase your course"
       sectionRef={sectionRef}
       isActive={isActive}
     >
       <div className="space-y-6">
-        {/* Banner image upload field */}
+        {/* Banner Image Upload */}
         <FileUploadField
           labelIcon={<ImageIcon className="h-3.5 w-3.5" />}
-          label="Banner Image"
+          label="Banner Image *"
           value={formData.bannerImagePreview || ""}
           onChange={handleImageUpload}
           name="bannerImage"
-          className="md:col-span-4"
+          helperText="Main course image displayed in course listings (recommended: 1200x600px)"
+          required
         />
 
-        <div className="space-y-4">
-          {/* Video URL input field */}
-          <Input
-            label="Introduction Video"
-            labelIcon={<Video className="h-3.5 w-3.5" />}
-            id="introVideo"
-            name="introVideo"
-            placeholder="https://www.youtube.com/watch?v=..."
-            value={formData.introVideo || ""}
-            onChange={handleInputChange}
-          />
+        {/* Thumbnail Upload */}
+        <FileUploadField
+          labelIcon={<ImageIcon className="h-3.5 w-3.5" />}
+          label="Course Thumbnail"
+          value={formData.thumbnailPreview || ""}
+          onChange={handleImageUpload}
+          name="thumbnailUrl"
+          helperText="Smaller image for course cards and previews (recommended: 400x300px)"
+        />
 
-          {/* YouTube video preview section */}
-          {hasValidYoutubeUrl ? (
-            <div className="mt-4 rounded-lg overflow-hidden border border-border shadow-md">
-              <div className="aspect-video w-full">
-                <iframe
-                  src={`https://www.youtube.com/embed/${getYoutubeVideoId(formData.introVideo)}`}
-                  title="YouTube video player"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full"
-                ></iframe>
-              </div>
-            </div>
-          ) : (
-            // Placeholder when no valid video URL is provided
+        {/* Introduction Video - URL or File Upload */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+              <Video className="h-3.5 w-3.5 mr-2" />
+              Introduction Video
+            </label>
+
+            {/* Clear Video Button */}
+            {(hasValidYoutubeUrl || hasUploadedVideo) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  handleInputChange({ target: { name: "introVideo", value: "" } })
+                  handleInputChange({ target: { name: "introVideoFile", value: null } })
+                  handleInputChange({ target: { name: "introVideoPreview", value: "" } })
+                }}
+                className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"
+              >
+                <X className="h-4 w-4 mr-1" />
+                Clear Video
+              </Button>
+            )}
+          </div>
+
+          <Tabs value={videoInputType} onValueChange={setVideoInputType} className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="url" className="flex items-center">
+                <Link className="h-4 w-4 mr-2" />
+                YouTube URL
+              </TabsTrigger>
+              <TabsTrigger value="file" className="flex items-center">
+                <Upload className="h-4 w-4 mr-2" />
+                Upload Video
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="url" className="space-y-4">
+              <Input
+                placeholder="https://www.youtube.com/watch?v=..."
+                value={typeof formData.introVideo === "string" ? formData.introVideo : ""}
+                onChange={handleInputChange}
+                name="introVideo"
+                helperText="Paste a YouTube URL for your course preview video"
+              />
+
+              {/* YouTube Video Preview */}
+              {hasValidYoutubeUrl && (
+                <div className="rounded-lg overflow-hidden border border-border shadow-md">
+                  <div className="aspect-video w-full">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${getYoutubeVideoId(formData.introVideo)}`}
+                      title="YouTube video player"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    ></iframe>
+                  </div>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="file" className="space-y-4">
+              <FileUploadField
+                label=""
+                value={formData.introVideoPreview || ""}
+                onChange={handleVideoUpload}
+                name="introVideoFile"
+                accept="video/*"
+                helperText="Upload a video file (MP4, MOV, AVI - max 100MB)"
+                showPreview={false}
+              />
+
+              {/* Video File Preview */}
+              {hasUploadedVideo && (
+                <div className="rounded-lg overflow-hidden border border-border shadow-md">
+                  <div className="aspect-video w-full bg-black">
+                    <video controls className="w-full h-full" src={formData.introVideoPreview}>
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+
+          {/* Placeholder when no video */}
+          {!hasValidYoutubeUrl && !hasUploadedVideo && (
             <div className="border border-dashed rounded-lg p-6 text-center bg-muted/30 dark:bg-gray-800/30">
               <Video className="h-10 w-10 mx-auto mb-2 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">Enter a YouTube URL to preview your video</p>
+              <p className="text-sm text-muted-foreground">
+                {videoInputType === "url"
+                  ? "Enter a YouTube URL to preview your video"
+                  : "Upload a video file to preview"}
+              </p>
             </div>
           )}
         </div>

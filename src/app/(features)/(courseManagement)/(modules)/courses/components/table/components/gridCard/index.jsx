@@ -1,26 +1,36 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Star, Clock, Heart, Share2, Award, ChevronRight } from "lucide-react";
+import { Star, Clock, Heart, Share2, Award, ChevronRight, BookOpen } from "lucide-react";
 import Image from "next/image";
 import { useNavigation } from "@/components/navigation";
+import GlobalUtils from "@/lib/utils";
 
 export default function CourseCard({ data }) {
     const { navigate } = useNavigation();
     // Course data state with default values
     const [courseData, setCourseData] = useState({
         id: "7890",
-        title: "Complete Web Development Bootcamp 2025",
-        description: "Master HTML, CSS, JavaScript, React and Node.js with practical projects and real-world applications.",
-        instructor: {
-            name: "Sarah Johnson",
-            title: "Senior Developer & Instructor",
-            image: "/instructor.jpg",
-        },
+        name: "Complete Web Development Bootcamp 2025",
+        summary: "Master HTML, CSS, JavaScript, React and Node.js with practical projects and real-world applications.",
+        instructors: [
+            {
+                name: "Sarah Johnson",
+                image: "https://randomuser.me/api/portraits/women/44.jpg",
+            },
+            {
+                name: "Michael Chen",
+                image: "https://randomuser.me/api/portraits/men/32.jpg",
+            },
+            {
+                name: "Emily Rodriguez",
+                image: "https://randomuser.me/api/portraits/women/28.jpg",
+            },
+        ],
         categories: ["Web Development", "JavaScript"],
         rating: 4.8,
         reviewCount: "2.5k",
-        duration: "12 weeks",
+        duration: "12",
         studentCount: "12.5k",
         lessonCount: "75",
         price: {
@@ -28,7 +38,7 @@ export default function CourseCard({ data }) {
             original: "$129.99",
             discount: "30% OFF",
         },
-        badges: ["Bestseller", "New"],
+        tags: ["Bestseller", "New"],
         banner: "/banner.jpg",
         progress: 35,
     });
@@ -41,6 +51,17 @@ export default function CourseCard({ data }) {
             setCourseData((prevData) => ({ ...prevData, ...data, id: "7890" }));
         }
     }, [data]);
+
+    // Format instructors names for display
+    const formatInstructorNames = () => {
+        if (courseData.instructors.length === 1) {
+            return courseData.instructors[0].name;
+        } else if (courseData.instructors.length === 2) {
+            return `${courseData.instructors[0].name} & ${courseData.instructors[1].name}`;
+        } else {
+            return `${courseData.instructors[0].name} +${courseData.instructors.length - 1}`;
+        }
+    };
 
     return (
         <div
@@ -62,14 +83,14 @@ export default function CourseCard({ data }) {
                         width={500}
                         height={300}
                         src={courseData.banner || "/placeholder.svg"}
-                        alt={courseData.title}
+                        alt={courseData.name}
                         className="h-full w-full object-cover transition-transform duration-700 ease-in-out hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 
-                    {/* Top badges */}
+                    {/* Top tags */}
                     <div className="absolute right-3 top-3 flex space-x-2">
-                        {courseData.badges.map((badge, index) => (
+                        {courseData.tags.map((badge, index) => (
                             <span
                                 key={index}
                                 className={`rounded-full ${
@@ -108,38 +129,54 @@ export default function CourseCard({ data }) {
                                             : "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 dark:from-blue-900/30 dark:to-blue-800/30 dark:text-blue-400"
                                     } px-2 py-0.5 text-[10px] font-semibold`}
                                 >
-                                    {category}
+                                    {category.name}
                                 </span>
                             ))}
                         </div>
                         <div className="flex items-center text-[10px] text-gray-500 dark:text-gray-400">
                             <Clock className="mr-1 h-3 w-3" />
-                            <span>{courseData.duration}</span>
+                            <span>{courseData.duration} Hours</span>
                         </div>
                     </div>
 
                     <h3
                         onClick={() => navigate(`/courses/details/${courseData.id}`)}
-                        className={`mb-1 cursor-pointer hover:underline text-sm font-bold text-gray-900 dark:text-white hover:text-orange-500  dark:hover:text-orange-400 transition-colors duration-200 ${isHovered && "text-orange-500"}`}
+                        className={`mb-1 cursor-pointer hover:underline text-sm font-bold text-gray-900 dark:text-white hover:text-orange-500  dark:hover:text-orange-400 transition-colors duration-200 ${
+                            isHovered && "text-orange-500"
+                        }`}
                     >
-                        {courseData.title}
+                        {courseData.name}
                     </h3>
 
-                    <p className="text-[10px] leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-2 mb-2" title={courseData.description}>
-                        {courseData.description}
+                    <p title={courseData.summary} className="text-[10px] leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-2 mb-2" name={courseData.summary}>
+                        {courseData.summary}
                     </p>
 
                     {/* Instructor - Condensed */}
                     <div className="mb-2 flex items-center">
-                        <div className="mr-2 h-6 w-6 overflow-hidden rounded-full ring-1 ring-orange-500 ring-offset-1 dark:ring-offset-gray-800">
-                            <Image width={100} height={100} src={courseData.instructor.image || "/placeholder.svg"} alt={courseData.instructor.name} className="h-full w-full object-cover" />
+                        <div className="flex -space-x-2 mr-2">
+                            {courseData.instructors.slice(0, 3).map((instructors, index) => (
+                                <Image
+                                    key={index}
+                                    width={24}
+                                    height={24}
+                                    src={"https://randomuser.me/api/portraits/women/44.jpg" || "/placeholder.svg?height=24&width=24"}
+                                    alt={instructors.name}
+                                    className={GlobalUtils.cn("h-6 w-6 rounded-full ring-1 ring-white dark:ring-gray-800", courseData.featured ? "ring-orange-500/50" : "")}
+                                />
+                            ))}
+                            {courseData.instructors.length > 3 && (
+                                <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[10px] font-medium text-gray-600 dark:text-gray-300 ring-1 ring-white dark:ring-gray-800">
+                                    +{courseData.instructors.length - 3}
+                                </div>
+                            )}
                         </div>
-                        <div>
-                            <p className="text-[10px] font-medium text-gray-900 dark:text-white">{courseData.instructor.name}</p>
-                            <div className="flex items-center">
-                                <Award className="mr-1 h-2 w-2 text-orange-500" />
-                                <p className="text-[9px] text-gray-500 dark:text-gray-400">{courseData.instructor.title}</p>
-                            </div>
+                        <div className="flex items-center space-x-2">
+                            <span className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate max-w-[120px]">{formatInstructorNames()}</span>
+                            <span className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                <BookOpen className="mr-1 h-3 w-3" />
+                                {courseData.lessonCount}
+                            </span>
                         </div>
                         <div className="ml-auto flex space-x-1">
                             <button

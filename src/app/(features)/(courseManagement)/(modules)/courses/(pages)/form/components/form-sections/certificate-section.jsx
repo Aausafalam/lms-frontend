@@ -11,7 +11,7 @@ import FileUploadField from "@/components/ui/file"
 
 export const CertificateSection = memo(function CertificateSection({
   handlers = {},
-  formData = { certificate: { certificateBenefits: [] } },
+  formData = { certificateCriteria: { certificateBenefits: [] } },
   sectionRef,
   isActive,
 }) {
@@ -24,7 +24,7 @@ export const CertificateSection = memo(function CertificateSection({
   } = handlers
 
   // Default empty certificate object to prevent errors
-  const certificate = formData.certificate || { certificateBenefits: [] }
+  const certificate = formData.certificateCriteria || { certificateBenefits: [] }
 
   // Animation configuration for list items
   const listItemAnimation = {

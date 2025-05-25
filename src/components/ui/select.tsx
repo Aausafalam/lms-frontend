@@ -39,6 +39,7 @@ interface SelectFieldProps {
     groupBy?: (option: SelectOption) => string;
     noOptionsMessage?: string;
     labelIcon?: React.ReactNode;
+    fieldClassName?: string;
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
@@ -68,6 +69,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
     labelIcon,
     groupBy,
     noOptionsMessage = "No options available",
+    fieldClassName,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchValue, setSearchValue] = useState("");
@@ -289,7 +291,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
             >
                 {/* Select control */}
                 <div
-                    className={GlobalUtils.cn("flex items-center min-h-[42px] px-4 py-2 cursor-pointer", disabled && "cursor-not-allowed", readOnly && "cursor-default")}
+                    className={GlobalUtils.cn("flex items-center min-h-[42px] px-4 py-2 cursor-pointer", disabled && "cursor-not-allowed", readOnly && "cursor-default", fieldClassName)}
                     onClick={handleToggleDropdown}
                     onKeyDown={handleKeyDown}
                     tabIndex={disabled ? -1 : 0}

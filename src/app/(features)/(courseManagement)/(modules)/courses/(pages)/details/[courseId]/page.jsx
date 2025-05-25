@@ -1,25 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { courseData } from "./data/course-data";
+import { courseDetailsData } from "./data/course-data";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Briefcase, LayoutDashboard } from "lucide-react";
 import { SidebarNavigation } from "./components/sidebar";
-import CourseOverviewPage from "./components/content";
+import { CourseDetailPreview } from "../../form/components/preview/course-detail-preview";
+import { sampleCourseData } from "../../form/utils/seeds";
+import CourseDetailsContent from "./components/content";
+import { useState } from "react";
 
-export default function CourseDetailsPage({ course = courseData }) {
-    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-
-    // Handle scroll effect for premium feel
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 100);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
+export default function CourseDetailsPage({ course = courseDetailsData }) {
+    const [activeTab, setActiveTab] = useState("overview");
     const breadcrumbItems = [
         {
             title: "Courses",
@@ -38,9 +29,9 @@ export default function CourseDetailsPage({ course = courseData }) {
             <Breadcrumb items={breadcrumbItems} className={"mb-4"} />
 
             <div className="flex gap-4">
-                <SidebarNavigation activeSection={"overview"} />
-                <div className="space-y-4 max-w-[1200px]">
-                    <CourseOverviewPage />
+                <SidebarNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+                <div className="w-full">
+                    <CourseDetailsContent activeTab={activeTab} />
                 </div>
             </div>
         </div>

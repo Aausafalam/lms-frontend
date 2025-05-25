@@ -1,5 +1,5 @@
 const apiConstants = {
-    BACKEND_API_BASE_URL: "http://localhost:5000/api/v1",
+    BACKEND_API_BASE_URL: "http://192.168.183.220:5000/api/v1",
     TOKEN_KEY: "userToken",
     auth: {
         BASE_ROUTE: "/auth",
@@ -65,7 +65,7 @@ const apiConstants = {
         GET_PERMISSION_STATS: "/get-permission-stats",
     },
     courses: {
-        BASE_ROUTE: "/courses",
+        BASE_ROUTE: "/course",
         CREATE_COURSE: "/",
         COURSE_LIST: "/",
         UPDATE_COURSE: "/",

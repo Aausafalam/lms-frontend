@@ -98,6 +98,7 @@ const sampleCourseModule = {
     rating: 4.9,
     reviewCount: 128,
     completionRate: 87,
+    
 };
 
 // Add viewportWidth prop to control responsive behavior

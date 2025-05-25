@@ -1,22 +1,17 @@
-"use client";
+import React from "react";
+import { CourseDetailPreview } from "../../../../form/components/preview/course-detail-preview";
+import { sampleCourseData } from "../../../../form/utils/seeds";
+import CourseModules from "@/app/(features)/(courseManagement)/(modules)/modules/page";
 
-import { CourseHeader } from "./course-header";
-import { CoursePreview } from "./course-preview";
-import { CourseDetails } from "./course-details";
-import { CourseSidebar } from "./course-sidebar";
-import { courseData } from "./course-data";
-import { DeviceProvider } from "./device-context";
+const CourseDetailsContent = ({ activeTab }) => {
+    switch (activeTab) {
+        case "overview":
+            return <CourseDetailPreview data={sampleCourseData} viewportWidth={1024} onDetailsPage={true} />;
+        case "modules":
+            return <CourseModules onCourseDetailsPage={true} />;
+        default:
+            return <CourseDetailPreview data={sampleCourseData} viewportWidth={1024} onDetailsPage={true} />;
+    }
+};
 
-export default function CourseOverviewPage() {
-    return (
-        <DeviceProvider>
-            <div className="w-full">
-                <CourseHeader course={courseData} />
-                <div className="px-4 py-6 md:py-8 lg:flex gap-8 max-w-7xl mx-auto">
-                    <CourseDetails course={courseData} />
-                    <CourseSidebar course={courseData} />
-                </div>
-            </div>
-        </DeviceProvider>
-    );
-}
+export default CourseDetailsContent;

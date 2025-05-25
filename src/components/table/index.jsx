@@ -67,7 +67,6 @@ const Table = ({ tableData }) => {
     return (
         <div key={tableData?.url} className={styles.table_container}>
             {/* Filters and Search */}
-
             <TableSearch dataView={dataView} showDataViewButton={data.multiView} setDataView={setDataView} initialValues={initialValues} router={router} data={data.tableHeader} />
             {/* <TableFilter router={router} initialValues={initialValues} data={data.externalFilters} /> */}
             <TableError error={error} />

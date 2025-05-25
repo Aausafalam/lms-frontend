@@ -2,29 +2,35 @@
 // schema
 // Add Edit api payload
 const coursePayload = {
-    title: "",
-    shortDescription: "",
-    longDescription: "<p>Enter detailed description here...</p>",
-    publishedAt: new Date(),
-    instructors: ["werwe"],
+    // basicInformation start
+    name: "",
+    summary: "",
+    duration: 30,
+    courseCode: "",
+    //  basicInformation end
+    //media start
     bannerImage: null,
+    thumbnailUrl: null,
     introVideo: "",
-    estimatedDuration: 30,
+    // media end
+    // content start
+    description: "<p>Enter detailed description here...</p>",
+    // content end
+    // learning objective start
+    learningOutcomes: [""],
+    // learning objective end
+    // pre Requisites start
     preRequisites: [""],
-    learningObjectives: [""],
-    price: {
-        regularPrice: "99.99",
-        salePrice: "79.99",
-        discountPercentage: "20",
-        saleEndDate: "2023-12-31",
-        saleEndsText: "Limited time offer!",
-    },
-    certificate: {
+    // pre Requisites end
+    // certificate start
+    certificateCriteria: {
         certificateImage: "https://example.com/certificate.png",
         certificateDescription: "This is a sample certificate description.",
         certificateBenefits: ["Benefit 1", "Benefit 2", "Benefit 3"],
     },
-    skills: [
+    // certificate end
+    // skills start
+    features: [
         {
             name: "React.js",
             level: "Advanced",
@@ -34,34 +40,95 @@ const coursePayload = {
             level: "Advanced",
         },
     ],
+    // skills end
+    // meta data Info start
     tags: ["id", "id"],
-    isPublished: false,
+    difficultyLevel: ["id"],
+    categoryIds: ["id"],
+    languageCode: "English Hindi HingLish",
+    // meta Info end
+    // instructor start
+    instructors: ["id"],
+    // instructor end
+
+    // attachment start
+    attachments: [{ title: "", description: "", file: "" }],
+    // attachment end
+
+    // sidebar course status
+    status: ["draft", "published", "archive"],
     isFeatured: false,
+};
+
+const modulePayload = {
+    // basicInformation start
+    name: "",
+    summary: "",
+    duration: 30,
+    moduleOrder: 1,
+    //  basicInformation end
+    //media start
+    bannerImage: null,
+    thumbnailUrl: null,
+    introVideo: "",
+    // media end
+    // content start
+    description: "<p>Enter detailed description here...</p>",
+    // content end
+    // learning objective start
+    learningOutcomes: [""],
+    // learning objective end
+    // pre Requisites start
+    preRequisites: [""],
+    // pre Requisites end
+    // meta data Info start
+    tags: ["id", "id"],
+    categoryIds: ["id"],
+    // meta Info end
+    // instructor start
+    instructors: ["id"],
+    // instructor end
+
+    // attachment start
+    attachments: [{ title: "", description: "", file: "" }],
+    // attachment end
+
+    // Additional Resources start
+    resources: [{ title: "", url: "" }],
+    // Additional Resources end
+
+    // sidebar course status
+    status: ["draft", "published", "archive"],
 };
 
 // list api
 const courseRow = {
-    title: "",
-    shortDescription: "",
+    id: "101",
+    title: "Complete Web Development Bootcamp",
+    summary: "",
     publishedAt: new Date(),
-    instructors: ["werwe"],
-    bannerImage: null,
-    price: {
-        regularPrice: "99.99",
-        salePrice: "79.99",
-        discountPercentage: "20",
-        saleEndDate: "2023-12-31",
-        saleEndsText: "Limited time offer!",
-    },
-    tags: ["id", "id"],
-    isPublished: false,
+    instructors: [
+        {
+            name: "Sarah Johnson",
+            title: "Senior Developer & Instructor",
+            image: "https://randomuser.me/api/portraits/women/44.jpg",
+        },
+    ],
     isFeatured: false,
+    categories: [{ name: "Web Development" }, { name: "JavaScript" }],
+    rating: 4.8,
+    reviewCount: "2.5k",
+    duration: "12 weeks",
+    studentCount: "12.5k",
+    lessonCount: "75",
+    tags: [{ name: "Bestseller" }, "New"],
+    thumbnailUrl: "https://img.freepik.com/free-vector/website-development-banner_33099-1687.jpg",
 };
 
 // Module
 // schema
 // Add Edit api payload
-const modulePayload = {
+const oldModulePayload = {
     title: "",
     shortDescription: "",
     longDescription: "<p>Enter detailed description here...</p>",

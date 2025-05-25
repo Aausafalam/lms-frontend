@@ -72,6 +72,6 @@
         "src/app/(features)/(courseManagement)/(modules)/modules/(pages)/form/components/form-sections/sample-data.jsx",
         "src/app/(features)/(courseManagement)/(modules)/modules/(pages)/form/components/form-sections/settings-section.jsx",
         "src/app/(features)/(courseManagement)/(modules)/modules/(pages)/form/hooks/index.jsx"
-    ],
+, "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/form/components/preview/instructor-card.jsx"    ],
     "exclude": ["node_modules"]
 }

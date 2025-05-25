@@ -19,7 +19,7 @@ class CourseApiService {
      * @returns {Promise<Object>} Created course
      */
     async create(payload, params, signal) {
-        const response = await this._apiClient.post(endpoints.CREATE_COURSE, payload, { params, signal });
+        const response = await this._apiClient.post("", payload, { params, signal });
         return response.data;
     }
 

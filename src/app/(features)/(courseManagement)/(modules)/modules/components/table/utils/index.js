@@ -38,10 +38,10 @@ class ModulesTableUtils {
     /**
      * Returns available actions for each row.
      */
-    static getTableActions({ data, setModalState, setSelectedCourse }) {
+    static getTableActions({ data, setModalState, setSelectedModule }) {
         const handleAction = (row, actionType) => {
             const selectedModules = data?.records?.find((item) => row["id"] === item.id);
-            setSelectedCourse(selectedModules);
+            setSelectedModule(selectedModules);
             setModalState(actionType, selectedModules.id);
         };
 
@@ -55,9 +55,9 @@ class ModulesTableUtils {
     /**
      * Handles row click actions.
      */
-    static handleRowClick({ row, data, setModalState, setSelectedCourse }) {
+    static handleRowClick({ row, data, setModalState, setSelectedModule }) {
         const selectedModules = data?.data?.find((item) => row["id"].value === item.id);
-        setSelectedCourse(selectedModules);
+        setSelectedModule(selectedModules);
         setModalState("view", selectedModules.id);
     }
 }

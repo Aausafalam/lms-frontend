@@ -154,9 +154,7 @@ const GridView = ({ isLoading, checkboxState, setCheckboxState, data, router, on
                     ))}
                 </div>
             ) : (
-                <div className={styles.grid_view_container}>
-                    <DataNotFound message="Empty List" />
-                </div>
+                <div className={styles.grid_view_container}>{data?.emptyStateComponent ? data?.emptyStateComponent?.() : <DataNotFound message="Empty List" />}</div>
             )}
         </>
     );

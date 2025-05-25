@@ -1,5 +1,5 @@
-// Sample course data
-export const courseDetailsData = {
+// Sample data for the course preview
+export const sampleCourseData = {
     id: "course-123",
     name: "Complete Web Development Bootcamp",
     summary: "Learn modern web development from scratch to advanced concepts in this comprehensive bootcamp.",

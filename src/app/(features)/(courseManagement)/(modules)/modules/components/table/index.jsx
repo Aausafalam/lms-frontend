@@ -9,9 +9,10 @@ import modulesTableConstants from "./utils/constants";
 import ModuleCard from "./components/gridCard";
 import { useNavigation } from "@/components/navigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { Package } from "lucide-react";
+import { ImageIcon, Package, Plus } from "lucide-react";
+import { EmptyState } from "@/components/emptyState";
 
-const ModulesTable = ({ setSelectedModule, setModalState, refreshTable, hideBreadcrumb }) => {
+const ModulesTable = ({ onCourseDetailsPage = false, setSelectedModule, setModalState, refreshTable, hideBreadcrumb }) => {
     const { navigate } = useNavigation();
     const breadcrumbItems = [
         {
@@ -34,7 +35,7 @@ const ModulesTable = ({ setSelectedModule, setModalState, refreshTable, hideBrea
         sorting: modulesTableConstants.SORTING,
         rowClickHandler: (row) => ModulesTableUtils.handleRowClick({ row, data, setModalState, setSelectedModule }),
         externalFilters: modulesTableConstants.FILTERS,
-        tableHeader: ModulesTableUtils.getTableHeader({ data, setModalState, styles, navigate, title: <Breadcrumb items={breadcrumbItems} />, hideBreadcrumb }),
+        tableHeader: ModulesTableUtils.getTableHeader({ data, setModalState, styles, navigate, title: onCourseDetailsPage ? "Module List" : <Breadcrumb items={breadcrumbItems} />, hideBreadcrumb }),
         checkbox: true,
         refreshTable: refreshTable || false,
         formatTableData,
@@ -42,13 +43,24 @@ const ModulesTable = ({ setSelectedModule, setModalState, refreshTable, hideBrea
         multiView: false,
         /* Grid view configuration */
         grid: {
-            column: 5,
+            column: onCourseDetailsPage ? 4 : 5,
             card: (row) => <ModuleCard data={row} />,
         },
+        emptyStateComponent: () => (
+            <EmptyState
+                icon={ImageIcon}
+                title="No Modules Found"
+                description="You haven't created any  modules yet. Start by creating your first module."
+                actionLabel="Create Module"
+                actionIcon={Plus}
+                onAction={() => navigate("/modules/form/add")}
+                className="bg-orange-50/50 dark:bg-orange-950/10 border-orange-200 dark:border-orange-800/30 my-3"
+            />
+        ),
     });
 
     /* Memoize table data for performance optimization */
-    const tableData = useMemo(() => formatTableData(sampleModulesTableData), [refreshTable]);
+    const tableData = useMemo(() => formatTableData(sampleModulesTableData), [refreshTable, onCourseDetailsPage]);
 
     return (
         <div className={styles.container}>

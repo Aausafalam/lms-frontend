@@ -16,7 +16,7 @@ export function EmptyState({ icon: Icon, title, description, actionLabel, action
     return (
         <div
             className={GlobalUtils.cn(
-                "relative overflow-hidden min-h-[450px] w-full rounded-xl border border-dashed p-8 text-center",
+                "relative overflow-hidden  w-full rounded-xl border border-dashed p-8 text-center",
                 "bg-gradient-to-b from-orange-50/80 to-orange-100/30 dark:from-orange-950/20 dark:to-orange-900/5",
                 "shadow-[inset_0_0_40px_rgba(249,115,22,0.05)]",
                 className

@@ -4,49 +4,62 @@ import { BookOpen, FileText } from "lucide-react"
 import { FormSection } from "./form-section"
 import { Textarea } from "@/components/ui/textarea"
 
+/**
+ * Content Section Component
+ * Handles detailed course description
+ *
+ * @param {Object} props - Component props
+ * @param {Object} props.handlers - Form event handlers
+ * @param {Object} props.formData - Current form data
+ * @param {React.RefObject} props.sectionRef - Reference for section scrolling
+ * @param {boolean} props.isActive - Whether this section is currently active
+ */
 export const ContentSection = memo(function ContentSection({ handlers = {}, formData = {}, sectionRef, isActive }) {
-  // Destructure handlers for better readability
   const { handleInputChange } = handlers
 
-  // Calculate current word count (fallback to 0 if not available)
-  const currentWordCount = formData.longDescription
-    ? formData.longDescription.trim().split(/\s+/).filter(Boolean).length
+  // Calculate current word count
+  const currentWordCount = formData.description
+    ? formData.description
+        .replace(/<[^>]*>/g, "")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean).length
     : 0
 
-  // Determine if we're approaching the word limit (90% or more)
+  // Check if approaching word limit
   const isApproachingWordLimit = currentWordCount >= 1800 // 90% of 2000
 
   return (
     <FormSection
       id="content"
-      title="Content"
+      title="Course Content"
       icon={<BookOpen className="h-5 w-5" />}
-      description="Provide detailed content for your course"
+      description="Provide detailed information about your course content"
       sectionRef={sectionRef}
       isActive={isActive}
     >
       <div className="space-y-6">
-        {/* Detailed description text area with word count functionality */}
+        {/* Detailed Description */}
         <Textarea
           label="Detailed Description"
           labelIcon={<FileText className="h-3.5 w-3.5" />}
-          id="longDescription"
-          name="longDescription"
-          placeholder="Write detailed description of the course"
-          value={formData.longDescription || ""}
+          id="description"
+          name="description"
+          placeholder="Write a comprehensive description of your course content, structure, and what students will learn"
+          value={formData.description || ""}
           onChange={handleInputChange}
           spellCheck={true}
           minRows={12}
-          maxWords={2000} // Ensure this is passed as a number if the component expects it
+          maxWords={2000}
           showWordCount={true}
-          maxLength={20000} // Character limit (approx 10x word limit for safety)
+          maxLength={20000}
           className={isApproachingWordLimit ? "border-yellow-300 focus:ring-yellow-500" : ""}
-          aria-describedby="description-help"
+          helperText="Detailed course information that helps students understand what they'll learn"
         />
 
-        {/* Warning for approaching word limit */}
+        {/* Word count warning */}
         {isApproachingWordLimit && (
-          <p className="text-[0.8rem] text-yellow-600 dark:text-yellow-400">
+          <p className="text-sm text-yellow-600 dark:text-yellow-400">
             You are approaching the 2000 word limit. Current count: {currentWordCount} words.
           </p>
         )}
