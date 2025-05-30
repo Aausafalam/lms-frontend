@@ -2,7 +2,7 @@ import apiConstants from "@/services/utils/constants";
 import apiClient from "../config";
 
 const fileUploadApiClient = apiClient.create({
-    baseURL: `${apiClient.defaults.baseURL}${apiConstants.instructors.BASE_ROUTE}`,
+    baseURL: `${apiClient.defaults.baseURL}`,
     headers: {
         ...apiClient.defaults.headers,
         "Content-Type": "multipart/form-data",

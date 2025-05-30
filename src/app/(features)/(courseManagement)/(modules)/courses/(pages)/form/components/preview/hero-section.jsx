@@ -223,7 +223,7 @@ export function HeroSection({ data, isMobile, isTablet, isDesktop }) {
                                     <div className="flex items-center justify-center space-x-4 text-white/80 text-xs">
                                         <span>✓ Lifetime Access</span>
                                         <span>✓ Certificate</span>
-                                        <span>✓ Mobile App</span>
+                                        {/* <span>✓ Mobile App</span> */}
                                     </div>
                                 </div>
                             </div>

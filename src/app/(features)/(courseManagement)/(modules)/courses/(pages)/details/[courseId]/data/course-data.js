@@ -3,7 +3,7 @@ export const courseDetailsData = {
     id: "course-123",
     name: "Complete Web Development Bootcamp",
     summary: "Learn modern web development from scratch to advanced concepts in this comprehensive bootcamp.",
-    longDescription:
+    description:
         "<p>This comprehensive bootcamp takes you from absolute beginner to professional web developer. You'll learn HTML, CSS, JavaScript, React, Node.js, and more through hands-on projects and real-world examples.</p><p>Our step-by-step approach ensures you build a solid foundation before moving on to more advanced topics. By the end of this course, you'll have the skills to build complete web applications and the confidence to apply for web development positions.</p>",
     publishedAt: "2025-05-15",
     instructors: ["1", "2"],
@@ -71,7 +71,7 @@ export const courseDetailsData = {
     rating: 4.8,
     reviewCount: 256,
     completionRate: 82,
-    tags: ["bestseller", "2", "trending"],
+    tags: ["bestseller", "trending"],
     status: "published",
     duration: 20,
     languageCode: "English",

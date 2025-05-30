@@ -6,6 +6,7 @@ import { Upload, FileIcon, AlertCircle, Trash2, RefreshCw, FileText } from "luci
 import GlobalUtils from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Label } from "./label";
+import fileUploadApiService from "@/services/api/fileUpload";
 
 interface FileUploadFieldProps {
     id: string;
@@ -96,59 +97,60 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
     const uploadFile = async (fileWithProgress: FileWithProgress) => {
         try {
             const formData = new FormData();
-            formData.append("file", fileWithProgress.file);
+            formData.append(name, fileWithProgress.file);
 
             // Update file status to uploading
             setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, status: "uploading", progress: 0 } : f)));
 
-            const xhr = new XMLHttpRequest();
+            // const xhr = new XMLHttpRequest();
 
-            xhr.upload.addEventListener("progress", (event) => {
-                if (event.lengthComputable) {
-                    const progress = Math.round((event.loaded / event.total) * 100);
+            // xhr.upload.addEventListener("progress", (event) => {
+            //     if (event.lengthComputable) {
+            //         const progress = Math.round((event.loaded / event.total) * 100);
 
-                    // Update progress for this specific file
-                    setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, progress } : f)));
+            //         // Update progress for this specific file
+            //         setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, progress } : f)));
 
-                    if (onUploadProgress) {
-                        onUploadProgress(progress);
-                    }
-                }
-            });
+            //         if (onUploadProgress) {
+            //             onUploadProgress(progress);
+            //         }
+            //     }
+            // });
 
-            xhr.addEventListener("load", () => {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    try {
-                        const response = JSON.parse(xhr.responseText);
+            // xhr.addEventListener("load", () => {
+            //     if (xhr.status >= 200 && xhr.status < 300) {
+            //         try {
+            //             const response = JSON.parse(xhr.responseText);
 
-                        // Update file status to success and store the URL
-                        setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, status: "success", url: response.url, progress: 100 } : f)));
+            //             // Update file status to success and store the URL
+            //             setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, status: "success", url: response.url, progress: 100 } : f)));
 
-                        // Collect all successfully uploaded file URLs
-                        const updatedFiles = [...files];
-                        const successfulFiles = updatedFiles.filter((f) => f.status === "success" && f.url).map((f) => f.url as string);
+            //             // Collect all successfully uploaded file URLs
+            //             const updatedFiles = [...files];
+            //             const successfulFiles = updatedFiles.filter((f) => f.status === "success" && f.url).map((f) => f.url as string);
 
-                        if (onFilesUploaded) {
-                            onFilesUploaded(successfulFiles);
-                        }
-                    } catch (error) {
-                        handleUploadError(fileWithProgress.id, "Failed to parse server response");
-                    }
-                } else {
-                    handleUploadError(fileWithProgress.id, `Upload failed with status ${xhr.status}`);
-                }
-            });
+            //             if (onFilesUploaded) {
+            //                 onFilesUploaded(successfulFiles);
+            //             }
+            //         } catch (error) {
+            //             handleUploadError(fileWithProgress.id, "Failed to parse server response");
+            //         }
+            //     } else {
+            //         handleUploadError(fileWithProgress.id, `Upload failed with status ${xhr.status}`);
+            //     }
+            // });
 
-            xhr.addEventListener("error", () => {
-                handleUploadError(fileWithProgress.id, "Network error occurred during upload");
-            });
+            // xhr.addEventListener("error", () => {
+            //     handleUploadError(fileWithProgress.id, "Network error occurred during upload");
+            // });
 
-            xhr.addEventListener("abort", () => {
-                handleUploadError(fileWithProgress.id, "Upload was aborted");
-            });
+            // xhr.addEventListener("abort", () => {
+            //     handleUploadError(fileWithProgress.id, "Upload was aborted");
+            // });
 
-            xhr.open("POST", uploadPath, true);
-            xhr.send(formData);
+            // xhr.open("POST", uploadPath, true);
+            // xhr.send(formData);
+            fileUploadApiService.uploadFile(uploadPath, formData, {}, "", "");
         } catch (error) {
             handleUploadError(fileWithProgress.id, "An unexpected error occurred");
         }

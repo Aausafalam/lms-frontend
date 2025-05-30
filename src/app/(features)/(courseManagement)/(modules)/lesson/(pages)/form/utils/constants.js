@@ -1,45 +1,34 @@
-import { Lightbulb, Zap, Flame, Award, Laptop, Palette, Target } from "lucide-react"
+import { Laptop, Palette, Target } from "lucide-react"
 
-// Sample instructors data
-export const instructors = [
-  { id: "1", name: "Dr. Jane Smith", role: "Lead Instructor", avatar: "/placeholder.svg?height=40&width=40" },
-  { id: "2", name: "Prof. John Doe", role: "Subject Expert", avatar: "/placeholder.svg?height=40&width=40" },
-  { id: "3", name: "Dr. Emily Johnson", role: "Course Designer", avatar: "/placeholder.svg?height=40&width=40" },
-  { id: "4", name: "Prof. Michael Brown", role: "Guest Lecturer", avatar: "/placeholder.svg?height=40&width=40" },
-  { id: "5", name: "Dr. Sarah Williams", role: "Teaching Assistant", avatar: "/placeholder.svg?height=40&width=40" },
-]
+const ModuleFormUtils = {
+  instructors: [
+    { id: "1", name: "Dr. Jane Smith", role: "Lead Instructor", avatar: "/placeholder.svg?height=40&width=40" },
+    { id: "2", name: "Prof. John Doe", role: "Subject Expert", avatar: "/placeholder.svg?height=40&width=40" },
+    { id: "3", name: "Dr. Emily Johnson", role: "Module Designer", avatar: "/placeholder.svg?height=40&width=40" },
+    { id: "4", name: "Prof. Michael Brown", role: "Guest Lecturer", avatar: "/placeholder.svg?height=40&width=40" },
+    { id: "5", name: "Dr. Sarah Williams", role: "Teaching Assistant", avatar: "/placeholder.svg?height=40&width=40" },
+  ],
+  categories: [
+    { value: "f5c81acb-2451-402f-9b6f-a4ee980f44b0", label: "Programming", icon: <Laptop /> },
+    { value: "design", label: "Design", icon: <Palette /> },
+    { value: "business", label: "Business", icon: <Briefcase /> },
+    { value: "marketing", label: "Marketing", icon: <Target /> },
+    { value: "science", label: "Science", icon: <Flask /> },
+    { value: "mathematics", label: "Mathematics", icon: <PiFunction /> },
+    { value: "language", label: "Language", icon: <Languages /> },
+    { value: "arts", label: "Arts", icon: <Paintbrush /> },
+  ],
+  tags: [
+    { id: "1", name: "Essential" },
+    { id: "2", name: "Advanced" },
+    { id: "3", name: "Popular" },
+    { id: "4", name: "Hands-on" },
+    { id: "5", name: "Theory" },
+    { id: "6", name: "Practical" },
+  ],
+}
+export default ModuleFormUtils
 
-// Sample difficulty levels
-export const difficultyLevels = [
-  { value: "beginner", label: "Beginner", icon: <Lightbulb className="h-4 w-4" /> },
-  { value: "intermediate", label: "Intermediate", icon: <Zap className="h-4 w-4" /> },
-  { value: "advanced", label: "Advanced", icon: <Flame className="h-4 w-4" /> },
-  { value: "expert", label: "Expert", icon: <Award className="h-4 w-4" /> },
-]
-
-// Sample categories
-export const categories = [
-  { value: "programming", label: "Programming", icon: <Laptop /> },
-  { value: "design", label: "Design", icon: <Palette /> },
-  { value: "business", label: "Business", icon: <Briefcase /> },
-  { value: "marketing", label: "Marketing", icon: <Target /> },
-  { value: "science", label: "Science", icon: <Flask /> },
-  { value: "mathematics", label: "Mathematics", icon: <PiFunction /> },
-  { value: "language", label: "Language", icon: <Languages /> },
-  { value: "arts", label: "Arts", icon: <Paintbrush /> },
-]
-
-// Sample tags
-export const tags = [
-  { id: "1", name: "Bestseller" },
-  { id: "2", name: "New" },
-  { id: "3", name: "Popular" },
-  { id: "4", name: "Trending" },
-  { id: "5", name: "Featured" },
-  { id: "6", name: "Staff Pick" },
-]
-
-// Icons for categories
 export function Briefcase(props) {
   return (
     <svg
