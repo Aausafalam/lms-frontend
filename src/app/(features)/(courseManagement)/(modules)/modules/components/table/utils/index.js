@@ -7,17 +7,17 @@ class ModulesTableUtils {
     /**
      * Generates table header configuration.
      */
-    static getTableHeader({ data, setModalState, styles, navigate, title, hideBreadcrumb }) {
+    static getTableHeader({ data, setModalState, styles, navigate, title, courseId }) {
         const autoSuggestions = TableUtils.formatDataForAutoSuggestion(data?.data || [], ["name"]);
 
         return {
-            title: hideBreadcrumb ? "Module List" : title,
+            title: courseId ? "Module List" : title,
             limit: modulesTableConstants.LIMITS,
             actionButtons: [
                 {
                     icon: TableIcon.PLUS,
                     label: "New Modules",
-                    onClick: () => navigate("/modules/form/add"),
+                    onClick: () => navigate(`/modules/form/add?courseId=${courseId}`),
                 },
                 TableUtils.getExportButton({ url: "/modules" }),
             ],
@@ -41,9 +41,12 @@ class ModulesTableUtils {
     static getTableActions({ data, setModalState, setSelectedModule, navigate }) {
         const handleAction = (row, actionType) => {
             const selectedModules = data?.records?.find((item) => row["id"] === item.id);
-            // setSelectedModule(selectedModules);
-            // setModalState(actionType, selectedModules.id);
-            navigate(`/course/form/${row["id"]}`);
+            if (actionType === "edit") {
+                navigate(`/modules/form/${row["id"]}`);
+            } else {
+                setSelectedModule(selectedModules);
+                setModalState(actionType, selectedModules.id);
+            }
         };
 
         return [

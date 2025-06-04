@@ -48,7 +48,7 @@ export default function CourseCard({ data }) {
 
     useEffect(() => {
         if (data) {
-            setCourseData((prevData) => ({ ...prevData, ...data, id: "7890" }));
+            setCourseData((prevData) => ({ ...prevData, ...data }));
         }
     }, [data]);
 

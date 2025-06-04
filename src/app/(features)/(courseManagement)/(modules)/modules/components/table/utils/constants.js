@@ -4,7 +4,7 @@ import ModulesICONS from "./icons";
 import apiConstants from "@/services/utils/constants";
 
 const modulesTableConstants = {
-    API_URL: apiConstants.modules.BASE_ROUTE,
+    API_URL: apiConstants.module.BASE_ROUTE,
     LIMITS: globalConstants.TABLE_LIMITS,
     SORTING: { initialSort: "Modules ID", initialSortOrder: "asc" },
     FILTERS: {

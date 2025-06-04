@@ -118,6 +118,7 @@ const Button = React.forwardRef(
                     name={name}
                     value={value}
                     aria-label={ariaLabel || (typeof children === "string" ? children : undefined)}
+                    title={tooltip}
                     {...props}
                 >
                     {content}

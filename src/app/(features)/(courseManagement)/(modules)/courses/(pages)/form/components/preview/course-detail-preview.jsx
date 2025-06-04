@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Award,
     FileText,
@@ -27,6 +27,8 @@ import { CourseContentCard } from "./course-content-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { useCourse } from "@/services/context/course";
+import { useParams } from "next/navigation";
 
 // Device presets for responsive design
 const devicePresets = {
@@ -40,8 +42,11 @@ const devicePresets = {
  * Renders a premium, responsive course preview with modular components
  */
 
-export function CourseDetailPreview({ data, viewportWidth, onDetailsPage }) {
+export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage }) {
     const [showFullDescription, setShowFullDescription] = useState(false);
+    const { courseId } = useParams();
+    const { courseDetails } = useCourse();
+    const data = { ...initialData, ...courseDetails.data.data };
 
     // Determine device type based on viewport width
     const isMobile = viewportWidth <= devicePresets.mobile;
@@ -79,6 +84,11 @@ export function CourseDetailPreview({ data, viewportWidth, onDetailsPage }) {
             bio: "Author of 'React at Scale' and performance consultant",
         },
     ];
+
+    useEffect(() => {
+        courseDetails.fetch?.({ dynamicRoute: courseId });
+    }, [courseId]);
+    console.log(courseDetails.data);
 
     return (
         <div className={`w-full ${onDetailsPage ? "max-w-[1225px]" : "max-h-[75vh]  overflow-scroll"} `}>
@@ -259,7 +269,7 @@ export function CourseDetailPreview({ data, viewportWidth, onDetailsPage }) {
 
                         <CourseContentCard title="Instructors" Icon={Users} headerColor="purple">
                             <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
-                                {instructor.map((instructor) => (
+                                {(data?.instructors || instructor).map((instructor) => (
                                     <div
                                         key={instructor.id}
                                         className="flex items-center p-2 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-purple-200 dark:hover:border-purple-800/40 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all group"
@@ -281,7 +291,7 @@ export function CourseDetailPreview({ data, viewportWidth, onDetailsPage }) {
                                             >
                                                 {instructor.name}
                                             </h3>
-                                            <p className="text-purple-600 dark:text-purple-400 text-[10px]">{instructor.role}</p>
+                                            <p className="text-purple-600 dark:text-purple-400 text-[10px]">{instructor.designation || instructor.role}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -401,13 +411,13 @@ export function CourseDetailPreview({ data, viewportWidth, onDetailsPage }) {
                                         <div>
                                             <h3 className="text-[12px] font-medium text-gray-500 dark:text-gray-400 mb-2">Categories</h3>
                                             <div className="flex flex-wrap gap-1">
-                                                {data.categoryIds?.map((category) => (
+                                                {(data.categories || data.categoryIds)?.map((category) => (
                                                     <Badge
                                                         key={category}
                                                         variant="secondary"
                                                         className="bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200 px-2 py-0 text-[10px] rounded-lg h-5"
                                                     >
-                                                        {"Category"}
+                                                        {typeof category === "string" ? category : category?.name}
                                                     </Badge>
                                                 ))}
                                             </div>

@@ -1,5 +1,5 @@
 const apiConstants = {
-    BACKEND_API_BASE_URL: "http://192.168.45.220:5000/api/v1",
+    BACKEND_API_BASE_URL: "http://192.168.152.220:5000/api/v1",
     TOKEN_KEY: "userToken",
     auth: {
         BASE_ROUTE: "/auth",
@@ -73,14 +73,20 @@ const apiConstants = {
         DELETE_COURSE: "/",
         GET_COURSE_STATS: "/get-permission-stats",
     },
-    modules: {
-        BASE_ROUTE: "/modules",
+    module: {
+        BASE_ROUTE: "/course",
         CREATE_MODULE: "/",
         MODULE_LIST: "/",
         UPDATE_MODULE: "/",
         GET_MODULE_DETAILS: "/",
         DELETE_MODULE: "/",
         GET_MODULE_STATS: "/get-module-stats",
+    },
+    lesson: {
+        BASE_ROUTE: "/course",
+    },
+    content: {
+        BASE_ROUTE: "/course",
     },
     routes: {
         BASE_ROUTE: "/route",

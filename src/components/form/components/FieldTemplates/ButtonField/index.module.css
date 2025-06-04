@@ -279,8 +279,8 @@
     padding-block: 0.45rem !important;
 }
 .button.iconOnly svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 }
 .fullWidth,
 .button.fullWidth {

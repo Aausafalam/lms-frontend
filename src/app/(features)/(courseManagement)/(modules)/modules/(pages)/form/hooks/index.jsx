@@ -4,7 +4,9 @@
 
 // Import necessary hooks and utilities
 import { useState, useEffect, useCallback } from "react";
-
+import { useModuleCreate } from "@/services/hooks/module";
+import { useParams } from "next/navigation";
+import { useQueryParams } from "@/lib/hooks/useQuery";
 /**
  * Custom hook for managing module form data and operations
  * @param {Object} params - Hook parameters
@@ -43,18 +45,19 @@ export function useModuleFormData({ initialData }) {
         categoryIds: [],
 
         // Instructors
-        instructors: [],
+        instructorIds: [],
 
         // Attachments
         attachments: [{ title: "", description: "", file: "" }],
 
         // Additional Resources
-        resources: [{ title: "", url: "" }],
+        resources: [{ title: "", link: "" }],
 
         // Status
         status: "DRAFT",
     });
-
+    const { courseId } = useQueryParams();
+    const { moduleCreate } = useModuleCreate();
     const [progress, setProgress] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -111,7 +114,7 @@ export function useModuleFormData({ initialData }) {
 
         // Instructors
         totalFields += 1;
-        if (formData.instructors.length > 0) completedFields++;
+        if (formData.instructorIds.length > 0) completedFields++;
 
         const calculatedProgress = Math.round((completedFields / totalFields) * 100);
         setProgress(calculatedProgress);
@@ -272,7 +275,7 @@ export function useModuleFormData({ initialData }) {
     const addResource = useCallback(() => {
         setFormData((prev) => ({
             ...prev,
-            resources: [...prev.resources, { title: "", url: "" }],
+            resources: [...prev.resources, { title: "", link: "" }],
         }));
     }, []);
 
@@ -351,8 +354,12 @@ export function useModuleFormData({ initialData }) {
                 formDataToSubmit.append("introVideoFile", formData.introVideoFile);
             }
 
+            console.log(formData, "formData,formData");
+
+            moduleCreate.execute({ dynamicRoute: `/${courseId}/module`, payload: formData, onSuccess: () => setSuccess(true), onError: () => setTimeout(() => setSuccess(false), 5000) });
+
             // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            // await new Promise((resolve) => setTimeout(resolve, 2000));
 
             setSuccess(true);
             setTimeout(() => setSuccess(false), 5000);

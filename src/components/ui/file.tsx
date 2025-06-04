@@ -28,6 +28,7 @@ interface FileUploadFieldProps {
     onUploadProgress?: (progress: number) => void;
     onError?: (error: string) => void;
     labelIcon?: React.ReactNode;
+    onChange?: (error: object) => void;
 }
 
 interface FileWithProgress {
@@ -59,6 +60,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
     onUploadProgress,
     onError,
     labelIcon,
+    onChange,
 }) => {
     const [files, setFiles] = useState<FileWithProgress[]>([]);
     const [isDragging, setIsDragging] = useState(false);
@@ -150,7 +152,8 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
 
             // xhr.open("POST", uploadPath, true);
             // xhr.send(formData);
-            fileUploadApiService.uploadFile(uploadPath, formData, {}, "", "");
+            const data = await fileUploadApiService.uploadFile(uploadPath, formData, {}, "", "");
+            onChange?.({ target: { name, value: { fileId: data.fileId } } });
         } catch (error) {
             handleUploadError(fileWithProgress.id, "An unexpected error occurred");
         }

@@ -5,14 +5,18 @@ import { Clock, ChevronRight, BookOpen } from "lucide-react";
 import Image from "next/image";
 import { useNavigation } from "@/components/navigation";
 import GlobalUtils from "@/lib/utils";
+import apiConstants from "@/services/utils/constants";
+import ApiUtils from "@/services/utils";
+import { useParams } from "next/navigation";
 
 export default function ModuleCard({ data }) {
     const { navigate } = useNavigation();
+    const { courseId } = useParams();
     const [moduleData, setModuleData] = useState({
         id: "101",
-        title: "Overview of Web Development",
-        description: "Get a comprehensive introduction to web development, covering HTML, CSS, and JavaScript. Learn the fundamentals of building responsive websites.",
-        instructor: [
+        name: "Overview of Web Development",
+        summary: "Get a comprehensive introduction to web development, covering HTML, CSS, and JavaScript. Learn the fundamentals of building responsive websites.",
+        instructors: [
             {
                 name: "Sarah Johnson",
                 image: "https://randomuser.me/api/portraits/women/44.jpg",
@@ -26,8 +30,8 @@ export default function ModuleCard({ data }) {
                 image: "https://randomuser.me/api/portraits/women/28.jpg",
             },
         ],
-        duration: "1 week",
-        lessonCount: "15",
+        duration: "1",
+        topicsCount: "15",
         publishedAt: "2025-01-15",
         banner: "https://img.freepik.com/free-vector/website-development-banner_33099-1687.jpg",
         featured: true,
@@ -41,17 +45,17 @@ export default function ModuleCard({ data }) {
     }, [data]);
 
     const handleCardClick = () => {
-        navigate(`/modules/details/${moduleData.id}`);
+        navigate(`/modules/details/${moduleData.id}?courseId=${courseId}`);
     };
 
-    // Format instructor names for display
+    // Format instructors names for display
     const formatInstructorNames = () => {
-        if (moduleData.instructor.length === 1) {
-            return moduleData.instructor[0].name;
-        } else if (moduleData.instructor.length === 2) {
-            return `${moduleData.instructor[0].name} & ${moduleData.instructor[1].name}`;
+        if (moduleData.instructors.length === 1) {
+            return moduleData.instructors[0].name;
+        } else if (moduleData.instructors.length === 2) {
+            return `${moduleData.instructors[0].name} & ${moduleData.instructors[1].name}`;
         } else {
-            return `${moduleData.instructor[0].name} +${moduleData.instructor.length - 1}`;
+            return `${moduleData.instructors[0].name} +${moduleData.instructors.length - 1}`;
         }
     };
 
@@ -65,8 +69,11 @@ export default function ModuleCard({ data }) {
                 <Image
                     width={1000}
                     height={1000}
-                    src={moduleData.banner || "/placeholder.svg?height=400&width=600"}
-                    alt={moduleData.title}
+                    src={
+                        `${apiConstants.BACKEND_API_BASE_URL}/course/${courseId}/module/${moduleData.id}/getImage?type=thumbnailUrl&token=${ApiUtils.getAuthToken()}` ||
+                        "/placeholder.svg?height=400&width=600"
+                    }
+                    alt={moduleData.name}
                     className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
@@ -77,37 +84,37 @@ export default function ModuleCard({ data }) {
                 {/* Title and duration */}
                 <div className="mb-2 flex items-start justify-between">
                     <h3 className="text-sm font-bold leading-tight text-gray-900 dark:text-white group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors duration-200 line-clamp-2">
-                        {moduleData.title}
+                        {moduleData.name}
                     </h3>
                     <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 ml-2 shrink-0">
                         <Clock className="mr-1 h-3 w-3" />
-                        <span>{moduleData.duration}</span>
+                        <span>{moduleData.duration} Hours</span>
                     </div>
                 </div>
 
                 {/* Description */}
-                <p className=" text-xs leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-3" title={moduleData.description}>
-                    {moduleData.description}
+                <p className=" text-xs leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-3 min-h-12" title={moduleData.summary}>
+                    {moduleData.summary}
                 </p>
 
-                {/* Footer with instructor and actions */}
+                {/* Footer with instructors and actions */}
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                     {/* Instructors */}
                     <div className="flex items-center">
                         <div className="flex -space-x-2 mr-2">
-                            {moduleData.instructor.slice(0, 3).map((instructor, index) => (
+                            {moduleData.instructors.slice(0, 3).map((instructors, index) => (
                                 <Image
                                     key={index}
                                     width={24}
                                     height={24}
-                                    src={instructor.image || "/placeholder.svg?height=24&width=24"}
-                                    alt={instructor.name}
+                                    src={"https://randomuser.me/api/portraits/women/44.jpg" || "/placeholder.svg?height=24&width=24"}
+                                    alt={instructors.name}
                                     className={GlobalUtils.cn("h-6 w-6 rounded-full ring-1 ring-white dark:ring-gray-800", moduleData.featured ? "ring-orange-500/50" : "")}
                                 />
                             ))}
-                            {moduleData.instructor.length > 3 && (
+                            {moduleData.instructors.length > 3 && (
                                 <div className="h-6 w-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[10px] font-medium text-gray-600 dark:text-gray-300 ring-1 ring-white dark:ring-gray-800">
-                                    +{moduleData.instructor.length - 3}
+                                    +{moduleData.instructors.length - 3}
                                 </div>
                             )}
                         </div>
@@ -115,7 +122,7 @@ export default function ModuleCard({ data }) {
                             <span className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate max-w-[120px]">{formatInstructorNames()}</span>
                             <span className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                                 <BookOpen className="mr-1 h-3 w-3" />
-                                {moduleData.lessonCount}
+                                {moduleData.topicsCount}
                             </span>
                         </div>
                     </div>
@@ -135,4 +142,3 @@ export default function ModuleCard({ data }) {
         </div>
     );
 }
-

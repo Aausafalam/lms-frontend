@@ -11,9 +11,11 @@ import { useNavigation } from "@/components/navigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ImageIcon, Package, Plus } from "lucide-react";
 import { EmptyState } from "@/components/emptyState";
+import { useQueryParams } from "@/lib/hooks/useQuery";
 
-const ModulesTable = ({ onCourseDetailsPage = false, setSelectedModule, setModalState, refreshTable, hideBreadcrumb }) => {
+const ModulesTable = ({ setSelectedModule, setModalState, refreshTable }) => {
     const { navigate } = useNavigation();
+    const { courseId } = useQueryParams();
     const breadcrumbItems = [
         {
             title: "Courses",
@@ -29,13 +31,13 @@ const ModulesTable = ({ onCourseDetailsPage = false, setSelectedModule, setModal
     /* Function to format data for the table */
     const formatTableData = (data) => ({
         rows: data?.records,
-        actionData: ModulesTableUtils.getTableActions({ data, setModalState, setSelectedModule,navigate }),
-        url: modulesTableConstants.API_URL,
+        actionData: ModulesTableUtils.getTableActions({ data, setModalState, setSelectedModule, navigate }),
+        url: `/course/${courseId}/module`,
         pagination: GlobalUtils.tablePagination(data),
         sorting: modulesTableConstants.SORTING,
         rowClickHandler: (row) => ModulesTableUtils.handleRowClick({ row, data, setModalState, setSelectedModule }),
         externalFilters: modulesTableConstants.FILTERS,
-        tableHeader: ModulesTableUtils.getTableHeader({ data, setModalState, styles, navigate, title: onCourseDetailsPage ? "Module List" : <Breadcrumb items={breadcrumbItems} />, hideBreadcrumb }),
+        tableHeader: ModulesTableUtils.getTableHeader({ data, setModalState, styles, navigate, title: courseId ? "Module List" : <Breadcrumb items={breadcrumbItems} />, courseId }),
         checkbox: true,
         refreshTable: refreshTable || false,
         formatTableData,
@@ -43,7 +45,7 @@ const ModulesTable = ({ onCourseDetailsPage = false, setSelectedModule, setModal
         multiView: false,
         /* Grid view configuration */
         grid: {
-            column: onCourseDetailsPage ? 4 : 5,
+            column: courseId ? 4 : 5,
             card: (row) => <ModuleCard data={row} />,
         },
         emptyStateComponent: () => (
@@ -60,7 +62,7 @@ const ModulesTable = ({ onCourseDetailsPage = false, setSelectedModule, setModal
     });
 
     /* Memoize table data for performance optimization */
-    const tableData = useMemo(() => formatTableData(sampleModulesTableData), [refreshTable, onCourseDetailsPage]);
+    const tableData = useMemo(() => formatTableData(sampleModulesTableData), [refreshTable, courseId]);
 
     return (
         <div className={styles.container}>

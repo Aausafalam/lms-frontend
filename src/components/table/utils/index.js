@@ -1,6 +1,7 @@
 import apiConstants from "@/services/utils/constants";
 import axios from "axios";
 import TableICON from "./icon";
+import { Download } from "lucide-react";
 
 class TableUtils {
     static capitalizeEachWord = (name) => {
@@ -160,11 +161,13 @@ class TableUtils {
             outlined: outlined ?? true,
             flat: flat ?? true,
             tonal: tonal ?? true,
-            icon: icon || TableICON.EXPORT,
-            label: label || "Export",
+            icon: <Download /> || TableICON.EXPORT,
+            label: label || "",
             className: className || "export",
             href: href || urlObj.toString(),
             target: target || "_blank",
+            tooltip: label || "Export",
+            iconOnly: true,
             ...restProps,
         };
     }

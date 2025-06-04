@@ -42,7 +42,7 @@ class CourseApiService {
      * @returns {Promise<Object>} Course details
      */
     async getDetails(dynamicRoute, params, signal) {
-        const response = await this._apiClient.get(`${endpoints.GET_COURSE_DETAILS}/${dynamicRoute}`, { params, signal });
+        const response = await this._apiClient.get(`/${dynamicRoute}`, { params, signal });
         return response.data;
     }
 

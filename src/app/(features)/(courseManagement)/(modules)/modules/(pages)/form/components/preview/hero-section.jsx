@@ -5,6 +5,10 @@ import { Play, Star, Users, Clock, Hash, CheckCircle, Flame, TrendingUp, Sparkle
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ApiUtils from "@/services/utils";
+import apiConstants from "@/services/utils/constants";
+import { useQueryParams } from "@/lib/hooks/useQuery";
+import { useParams } from "next/navigation";
 
 /**
  * Hero Section Component for Module Preview
@@ -12,7 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
  */
 export function HeroSection({ data, isMobile, isTablet, isDesktop }) {
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-
+    const { courseId } = useQueryParams();
+    const { moduleDetailsId } = useParams();
     // Mock instructor data
     const getInstructorData = (id) => {
         const instructorIds = {
@@ -31,14 +36,15 @@ export function HeroSection({ data, isMobile, isTablet, isDesktop }) {
                 students: "30K+",
             },
         };
-        return instructorIds[id] || { name: "Instructor", role: "Module Creator", avatar: "/placeholder.svg?height=40&width=40" };
+        return instructorIds[id];
     };
 
     return (
         <div
             className={`relative w-full bg-cover bg-center overflow-hidden ${isDesktop ? "rounded-xl" : ""} `}
             style={{
-                backgroundImage: data.bannerImagePreview ? `url('${data.bannerImagePreview}')` : "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop')",
+                backgroundImage: `url(${apiConstants.BACKEND_API_BASE_URL}/course/${courseId}/module/${data.id}/getImage?type=bannerImage&token=${ApiUtils.getAuthToken()})`,
+                // backgroundImage: data.bannerImagePreview ? `url('${data.bannerImagePreview}')` : "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop')",
             }}
         >
             {/* Animated Background Overlay */}
@@ -132,23 +138,23 @@ export function HeroSection({ data, isMobile, isTablet, isDesktop }) {
                         {data.instructors?.length > 0 && (
                             <div className="flex items-center space-x-4 bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 max-w-fit">
                                 <div className="flex -space-x-3">
-                                    {data.instructors.slice(0, 3).map((instructorId, index) => {
-                                        const instructor = getInstructorData(instructorId);
+                                    {data.instructors.slice(0, 3).map((instructor, index) => {
+                                        instructor = getInstructorData(instructor) ? getInstructorData(instructor) : instructor;
                                         return (
                                             <Avatar key={index} className="border-0 h-8 w-8 ">
                                                 <AvatarImage src={instructor.avatar || "/placeholder.svg"} alt={instructor.name} />
                                                 <AvatarFallback className="bg-gradient-to-br border-0 from-blue-500 to-blue-500 text-white font-semibold">
                                                     {instructor.name
-                                                        .split(" ")
-                                                        .map((n) => n[0])
-                                                        .join("")}
+                                                        ?.split(" ")
+                                                        ?.map((n) => n[0])
+                                                        ?.join("")}
                                                 </AvatarFallback>
                                             </Avatar>
                                         );
                                     })}
                                 </div>
                                 <div>
-                                    <p className="text-white font-semibold text-sm">Created by {data.instructors.map((id) => getInstructorData(id).name).join(" & ")}</p>
+                                    <p className="text-white font-semibold text-sm">Created by {data.instructors.map((id) => getInstructorData(id)?.name)?.join(" & ")}</p>
                                     <p className="text-white/80 text-xs">Expert Instructors • 4.9★ Rating</p>
                                 </div>
                             </div>

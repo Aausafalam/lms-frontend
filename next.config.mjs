@@ -9,7 +9,7 @@ const nextConfig = {
         appDir: true,
     },
     images: {
-        // domains: ["images.unsplash.com"],
+        domains: ["192.168.152.220"],
         unoptimized: true,
     },
 };
