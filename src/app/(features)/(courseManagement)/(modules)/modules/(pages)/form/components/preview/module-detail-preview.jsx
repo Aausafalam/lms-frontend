@@ -28,7 +28,7 @@ const devicePresets = {
 export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage }) {
     const [showFullDescription, setShowFullDescription] = useState(false);
     const { moduleDetails } = useModuleGetDetails();
-    const data = moduleDetails?.data || initialData;
+    const data = moduleDetails?.data || initialData || {};
     const { courseId } = useQueryParams();
     const { moduleDetailsId } = useParams();
     console.log("courseId", courseId);

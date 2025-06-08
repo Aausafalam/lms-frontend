@@ -1,76 +1,66 @@
-import TableUtils from "@/components/table/utils";
-import TableIcon from "@/components/table/utils/icon";
-import lessonsTableConstants from "./constants";
-import GlobalUtils from "@/lib/utils";
-import { List } from "lucide-react";
+import TableUtils from "@/components/table/utils"
+import TableIcon from "@/components/table/utils/icon"
+import lessonsTableConstants from "./constants"
+import { List } from "lucide-react"
 
 class LessonsTableUtils {
-    /**
-     * Generates table header configuration.
-     */
-    static getTableHeader({ data, setModalState, styles, navigate, title, hideBreadcrumb, courseId, moduleDetailsId }) {
-        const autoSuggestions = TableUtils.formatDataForAutoSuggestion(data?.data || [], ["name"]);
+  static getTableHeader({ data, setModalState, navigate, title, hideBreadcrumb, courseId, moduleDetailsId }) {
+    const autoSuggestions = TableUtils.formatDataForAutoSuggestion(data?.data || [], ["name"])
 
-        return {
-            title: hideBreadcrumb ? "Lesson List" : title,
-            limit: lessonsTableConstants.LIMITS,
-            actionButtons: [
-                {
-                    icon: TableIcon.PLUS,
-                    label: "New Lesson",
-                    onClick: () => navigate(`/lessons/form/add?courseId=${courseId}&moduleId=${moduleDetailsId}`),
-                },
-                TableUtils.getExportButton({ url: "/lessons" }),
-                {
-                    icon: <List />,
-                    iconOnly: true,
-                    onClick: () => navigate("/lessons/form/add"),
-                },
-            ],
-            filters: [
-                {
-                    name: "searchText",
-                    grid: 2,
-                    placeholder: "Search Lessons ",
-                    autoSuggestion: {
-                        initialData: autoSuggestions,
-                        autoSuggestionUrl: "/api/suggestions",
-                    },
-                },
-            ],
-        };
+    return {
+      title: hideBreadcrumb ? "Lesson List" : title,
+      limit: lessonsTableConstants.LIMITS,
+      actionButtons: [
+        {
+          icon: TableIcon.PLUS,
+          label: "New Lesson",
+          onClick: () => navigate(`/lessons/form/add?courseId=${courseId}&moduleId=${moduleDetailsId}`),
+        },
+        TableUtils.getExportButton({ url: "/lessons" }),
+        {
+          icon: <List />,
+          iconOnly: true,
+          onClick: () => navigate("/lessons/form/add"),
+        },
+      ],
+      filters: [
+        {
+          name: "searchText",
+          grid: 2,
+          placeholder: "Search Lessons",
+          autoSuggestion: {
+            initialData: autoSuggestions,
+            autoSuggestionUrl: "/api/suggestions",
+          },
+        },
+      ],
+    }
+  }
+
+  static getTableActions({ data, setModalState, setSelectedLesson, navigate, courseId, moduleId }) {
+    const handleAction = (row, actionType) => {
+      const selectedLesson = data?.records?.find((item) => row["id"] === item.id)
+
+      if (actionType === "edit") {
+        navigate(`/lessons/form/${row["id"]}?courseId=${courseId}&moduleId=${moduleId}`)
+      } else {
+        setSelectedLesson(selectedLesson)
+        setModalState(actionType, selectedLesson.id)
+      }
     }
 
-    /**
-     * Returns available actions for each row.
-     */
-    static getTableActions({ data, setModalState, setSelectedLesson, navigate, courseId, moduleId }) {
-        const handleAction = (row, actionType) => {
-            const selectedLessons = data?.records?.find((item) => row["id"] === item.id);
+    return [
+      { name: "Delete", functions: (row) => handleAction(row, "delete"), label: "Delete Entry" },
+      { name: "View", functions: (row) => handleAction(row, "view"), label: "View Details" },
+      { name: "Edit", functions: (row) => handleAction(row, "edit"), label: "Edit Details" },
+    ]
+  }
 
-            if (actionType === "edit") {
-                navigate(`/lessons/form/${row["id"]}?courseId=${courseId}&moduleId=${moduleId}`);
-            } else {
-                setSelectedLesson(selectedLessons);
-                setModalState(actionType, selectedLessons.id);
-            }
-        };
-
-        return [
-            { name: "Delete", functions: (row) => handleAction(row, "delete"), label: "Delete Entry" },
-            { name: "View", functions: (row) => handleAction(row, "view"), label: "View Details" },
-            { name: "Edit", functions: (row) => handleAction(row, "edit"), label: "Edit Details" },
-        ];
-    }
-
-    /**
-     * Handles row click actions.
-     */
-    static handleRowClick({ row, data, setModalState, setSelectedLesson }) {
-        const selectedLessons = data?.data?.find((item) => row["id"].value === item.id);
-        setSelectedLesson(selectedLessons);
-        setModalState("view", selectedLessons?.id);
-    }
+  static handleRowClick({ row, data, setModalState, setSelectedLesson }) {
+    const selectedLesson = data?.data?.find((item) => row["id"].value === item.id)
+    setSelectedLesson(selectedLesson)
+    setModalState("view", selectedLesson?.id)
+  }
 }
 
-export default LessonsTableUtils;
+export default LessonsTableUtils

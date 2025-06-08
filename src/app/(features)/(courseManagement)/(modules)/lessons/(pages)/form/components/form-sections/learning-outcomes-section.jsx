@@ -1,10 +1,11 @@
 "use client"
+
 import { memo } from "react"
 import { motion } from "framer-motion"
 import { Target, Lightbulb, CheckCircle2, X, GraduationCap } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { FormSection } from "@/components/formSection";
+import { FormSection } from "@/components/formSection"
 
 export const LearningOutcomesSection = memo(function LearningOutcomesSection({
   handlers = {},
@@ -68,7 +69,6 @@ export const LearningOutcomesSection = memo(function LearningOutcomesSection({
                   onClick={() => removeLearningOutcome(index)}
                   className="h-10 w-11 rounded-full text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/20 mt-[-0.85rem]"
                   aria-label={`Remove learning outcome ${index + 1}`}
-                  title="Remove this outcome"
                 >
                   <X className="h-4 w-4" />
                 </Button>

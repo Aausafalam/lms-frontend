@@ -1,7 +1,8 @@
 "use client"
+
 import { memo } from "react"
 import { BookOpen, FileText } from "lucide-react"
-import { FormSection } from "@/components/formSection";
+import { FormSection } from "@/components/formSection"
 import { Textarea } from "@/components/ui/textarea"
 
 export const ContentSection = memo(function ContentSection({ handlers = {}, formData = {}, sectionRef, isActive }) {

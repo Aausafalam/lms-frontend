@@ -1,36 +1,37 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import LessonFormBase from "..";
-import { sampleLessonData } from "../utils/seeds";
+import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
+import LessonFormBase from ".."
+import { sampleLessonData } from "../utils/seeds"
 
 const EditLesson = () => {
-    const { lessonId } = useParams();
-    const [initialData, setInitialData] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const { lessonId } = useParams()
+  const [initialData, setInitialData] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        async function fetchLessonData() {
-            setLoading(true);
-            try {
-                const data = sampleLessonData;
-                setInitialData(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        if (lessonId) {
-            fetchLessonData();
-        }
-    }, [lessonId]);
+  useEffect(() => {
+    async function fetchLessonData() {
+      setLoading(true)
+      try {
+        const data = sampleLessonData
+        setInitialData(data)
+      } catch (error) {
+        console.error("Failed to fetch lesson data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-    if (loading) return <div>Loading lesson data...</div>;
-    if (!initialData) return <div>Lesson data not found.</div>;
+    if (lessonId) {
+      fetchLessonData()
+    }
+  }, [lessonId])
 
-    return <LessonFormBase initialData={initialData} lessonId={lessonId} />;
-};
+  if (loading) return <div className="flex items-center justify-center h-64">Loading lesson data...</div>
+  if (!initialData) return <div className="flex items-center justify-center h-64">Lesson data not found.</div>
 
-export default EditLesson;
+  return <LessonFormBase initialData={initialData} lessonId={lessonId} />
+}
+
+export default EditLesson

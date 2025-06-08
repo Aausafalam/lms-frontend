@@ -1,12 +1,11 @@
-import DashboardLayout from "@/app/layouts/index";
-import React from "react";
+import DashboardLayout from "@/app/layouts/index"
 
-const ModulesLayout = ({ children }) => {
-    return (
-        <DashboardLayout>
-            <div id="lessons_module">{children}</div>
-        </DashboardLayout>
-    );
-};
+const LessonsLayout = ({ children }) => {
+  return (
+    <DashboardLayout>
+      <div id="lessons_module">{children}</div>
+    </DashboardLayout>
+  )
+}
 
-export default ModulesLayout;
+export default LessonsLayout

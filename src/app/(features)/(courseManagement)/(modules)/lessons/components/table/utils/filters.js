@@ -1,3 +1,3 @@
-const FILTER_OPTIONS = {};
+const FILTER_OPTIONS = {}
 
-export default FILTER_OPTIONS;
+export default FILTER_OPTIONS

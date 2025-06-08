@@ -3,7 +3,7 @@ import { Copy, BookOpen, School, Trash2, GraduationCap } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 
-const LessonFormHeader = ({ children, lessonId }) => {
+const LessonDetailsHeader = ({ children, lessonId }) => {
   const breadcrumbItems = [
     {
       title: "Courses",
@@ -16,14 +16,14 @@ const LessonFormHeader = ({ children, lessonId }) => {
       icon: <BookOpen className="h-3.5 w-3.5" />,
     },
     {
-      title: lessonId,
-      href: "/lessons/form/add",
+      title: lessonId || "Lesson Details",
+      href: `/lessons/details/${lessonId}`,
       icon: <GraduationCap className="h-3.5 w-3.5" />,
     },
   ]
 
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
       <Breadcrumb items={breadcrumbItems} />
       <div className="flex items-center gap-3">
         <TooltipProvider>
@@ -62,4 +62,4 @@ const LessonFormHeader = ({ children, lessonId }) => {
   )
 }
 
-export default LessonFormHeader
+export default LessonDetailsHeader
