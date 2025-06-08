@@ -456,32 +456,12 @@ export function useCourseFormData({ initialData }) {
             const url = formData.id ? `/api/courses/${formData.id}` : "/api/courses";
             const method = formData.id ? "PATCH" : "POST";
 
-            // result = await fetch(url, {
-            //     method,
-            //     body: formDataToSubmit,
-            // });
-
             courseApiService.create(formData);
             courseCreate.execute(
                 formData,
                 () => setSuccess(true),
                 () => setTimeout(() => setSuccess(false), 5000)
             );
-            // if (!result.ok) {
-            //     const errorData = await result.json();
-            //     throw new Error(errorData.message || `API error: ${result.status}`);
-            // }
-
-            // const data = await result.json();
-
-            // setFormData((prev) => ({
-            //     ...prev,
-            //     id: data.id || prev.id,
-            // }));
-
-            // Clear success after 5 seconds
-
-            // return data;
         } catch (err) {
             console.error("Save error:", err);
             setError(err.message || "An error occurred while saving the course");

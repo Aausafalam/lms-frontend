@@ -19,16 +19,17 @@ import {
     Bookmark,
     Tag,
     Calendar,
+    Folder,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HeroSection } from "./hero-section";
-import { CourseContentCard } from "./course-content-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useCourse } from "@/services/context/course";
 import { useParams } from "next/navigation";
+import { ContentCard } from "@/components/contentCard";
 
 // Device presets for responsive design
 const devicePresets = {
@@ -96,13 +97,13 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
             <HeroSection data={data} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} />
 
             {/* Main Content */}
-            <div className="mx-auto mt-6 px-3">
+            <div className={`mx-auto mt-4 ${isMobile || isTablet ? "px-3" : ""}`}>
                 <div className={isMobile || isTablet ? "space-y-8" : "grid grid-cols-3 gap-8"}>
                     {/* Main Content Column */}
                     <div className={isMobile || isTablet ? "space-y-6" : "col-span-2 space-y-6"}>
                         {/* Course Description */}
-                        <CourseContentCard
-                            subTitle={"course detailed description"}
+                        <ContentCard
+                            subTitle="A detailed overview of what this course covers"
                             title="About This Course"
                             icon={<FileText className="w-[1.1rem] h-[1.1rem] text-orange-600" />}
                             headerColor="white"
@@ -129,11 +130,49 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                     </span>
                                 )}
                             </Button>
-                        </CourseContentCard>
+                        </ContentCard>
+
+                        {/* Instructors */}
+                        <ContentCard title="Instructors" Icon={Users} headerColor="purple" subTitle="Meet the educators who designed and will guide the course">
+                            <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
+                                {(data?.instructors || instructor).map((instructor) => (
+                                    <div
+                                        key={instructor.id}
+                                        className="flex items-center p-2 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-purple-200 dark:hover:border-purple-800/40 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all group"
+                                    >
+                                        <Avatar className="h-8 w-8 border-2 border-purple-100 dark:border-purple-900/30 group-hover:border-purple-300 dark:group-hover:border-purple-700/50 transition-colors">
+                                            <AvatarImage src={instructor.image || "/placeholder.svg"} alt={instructor.name} />
+                                            <AvatarFallback className="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs">
+                                                {instructor.name
+                                                    ?.split(" ")
+                                                    ?.map((n) => n[0])
+                                                    ?.join("")}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div className="ml-2">
+                                            <h3
+                                                className={`font-medium text-gray-900 dark:text-white group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors ${
+                                                    isMobile ? "text-xs" : "text-sm"
+                                                }`}
+                                            >
+                                                {instructor.name}
+                                            </h3>
+                                            <p className="text-purple-600 dark:text-purple-400 text-[10px]">{instructor.designation || instructor.role}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </ContentCard>
 
                         {/* Learning Outcomes */}
                         {data.learningOutcomes?.length > 0 && data.learningOutcomes[0] && (
-                            <CourseContentCard title="What You'll Learn" Icon={GraduationCap} headerColor="purple" isMobile={isMobile}>
+                            <ContentCard
+                                title="What You'll Learn"
+                                Icon={GraduationCap}
+                                headerColor="purple"
+                                subTitle="Key knowledge and skills you'll gain by completing the course"
+                                isMobile={isMobile}
+                            >
                                 <div className="grid gap-0">
                                     {data.learningOutcomes
                                         .filter((outcome) => outcome.trim())
@@ -146,12 +185,12 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                             </div>
                                         ))}
                                 </div>
-                            </CourseContentCard>
+                            </ContentCard>
                         )}
 
                         {/* Features/Skills */}
                         {data.features?.length > 0 && data.features[0]?.name && (
-                            <CourseContentCard title="Skills You'll Master" Icon={Lightbulb} headerColor="orange" isMobile={isMobile}>
+                            <ContentCard title="Skills You'll Master" Icon={Lightbulb} headerColor="orange" isMobile={isMobile} subTitle="Practical skills and capabilities you'll develop">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {data.features
                                         .filter((feature) => feature.name.trim())
@@ -176,12 +215,12 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                             </div>
                                         ))}
                                 </div>
-                            </CourseContentCard>
+                            </ContentCard>
                         )}
 
                         {/* Prerequisites */}
                         {data.preRequisites?.length > 0 && data.preRequisites[0] && (
-                            <CourseContentCard title="Prerequisites" Icon={Award} headerColor="green" isMobile={isMobile}>
+                            <ContentCard title="Prerequisites" Icon={Award} headerColor="green" isMobile={isMobile} subTitle="Topics or knowledge you should know before taking this course">
                                 <div className="space-y-0">
                                     {data.preRequisites
                                         .filter((prereq) => prereq.trim())
@@ -194,12 +233,12 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                             </div>
                                         ))}
                                 </div>
-                            </CourseContentCard>
+                            </ContentCard>
                         )}
 
                         {/* Certificate */}
                         {data.certificateCriteria?.certificateDescription && (
-                            <CourseContentCard title="Course Certificate" Icon={Certificate} headerColor="indigo" isMobile={isMobile}>
+                            <ContentCard title="Course Certificate" Icon={Certificate} headerColor="indigo" isMobile={isMobile} subTitle="Get recognized with a certificate after course completion">
                                 <div className="space-y-6">
                                     {data.certificateCriteria.certificateImagePreview && (
                                         <div className="flex justify-center">
@@ -231,12 +270,12 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                         </div>
                                     )}
                                 </div>
-                            </CourseContentCard>
+                            </ContentCard>
                         )}
 
                         {/* Attachments */}
                         {data.attachments?.length > 0 && data.attachments[0]?.title && (
-                            <CourseContentCard title="Course Resources" Icon={Paperclip} headerColor="green" isMobile={isMobile}>
+                            <ContentCard title="Course Resources" Icon={Paperclip} headerColor="green" isMobile={isMobile} subTitle="Downloadable files and additional course materials">
                                 <div className="grid gap-4">
                                     {data.attachments
                                         .filter((attachment) => attachment.title.trim())
@@ -264,49 +303,20 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                             </div>
                                         ))}
                                 </div>
-                            </CourseContentCard>
+                            </ContentCard>
                         )}
-
-                        <CourseContentCard title="Instructors" Icon={Users} headerColor="purple">
-                            <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
-                                {(data?.instructors || instructor).map((instructor) => (
-                                    <div
-                                        key={instructor.id}
-                                        className="flex items-center p-2 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-purple-200 dark:hover:border-purple-800/40 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all group"
-                                    >
-                                        <Avatar className="h-8 w-8 border-2 border-purple-100 dark:border-purple-900/30 group-hover:border-purple-300 dark:group-hover:border-purple-700/50 transition-colors">
-                                            <AvatarImage src={instructor.image || "/placeholder.svg"} alt={instructor.name} />
-                                            <AvatarFallback className="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs">
-                                                {instructor.name
-                                                    ?.split(" ")
-                                                    ?.map((n) => n[0])
-                                                    ?.join("")}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <div className="ml-2">
-                                            <h3
-                                                className={`font-medium text-gray-900 dark:text-white group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors ${
-                                                    isMobile ? "text-xs" : "text-sm"
-                                                }`}
-                                            >
-                                                {instructor.name}
-                                            </h3>
-                                            <p className="text-purple-600 dark:text-purple-400 text-[10px]">{instructor.designation || instructor.role}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </CourseContentCard>
                     </div>
 
                     {/* Sidebar - Desktop Only */}
                     {isDesktop && (
                         <div className="space-y-6">
-                            {/* Course Info Card */}
-
                             {/* Video Preview */}
                             {((data.introVideo && typeof data.introVideo === "string" && getYoutubeVideoId(data.introVideo)) || data.introVideoPreview) && (
-                                <Card className="rounded-xl shadow-lg overflow-hidden border-0 bg-white dark:bg-gray-900 hover:shadow-xl transition-shadow">
+                                <ContentCard
+                                    isHideHeader={true}
+                                    className="rounded-xl shadow-lg overflow-hidden border-0 bg-white dark:bg-gray-900 hover:shadow-xl transition-shadow"
+                                    contentClassName="px-0 py-0"
+                                >
                                     <div className="aspect-video bg-gray-100 dark:bg-gray-800 relative group">
                                         {data.introVideoPreview ? (
                                             <video controls className="w-full h-full object-cover" src={data.introVideoPreview}>
@@ -315,7 +325,7 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                         ) : (
                                             <iframe
                                                 src={`https://www.youtube.com/embed/${getYoutubeVideoId(data.introVideo)}`}
-                                                title="Course Preview"
+                                                title="Module Preview"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowFullScreen
                                                 className="w-full h-full"
@@ -323,125 +333,104 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                         )}
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
-                                </Card>
+                                </ContentCard>
                             )}
 
-                            {/* Action Buttons */}
-                            <Card className="rounded-xl shadow-lg overflow-hidden border-0 bg-gradient-to-br from-orange-500 to-pink-500 text-white">
-                                <div className="p-6 space-y-4">
-                                    <div className="text-center">
-                                        <h3 className="font-bold text-xl mb-2">Ready to Start?</h3>
-                                        <p className="text-white/90 text-sm">Join thousands of successful students</p>
-                                    </div>
-
-                                    <Button className="w-full bg-white text-orange-600 hover:bg-gray-100 font-bold py-3 shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
-                                        Enroll Now
-                                    </Button>
-
-                                    <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10 font-semibold">
-                                        <Bookmark className="mr-2 h-4 w-4" />
-                                        Save for Later
-                                    </Button>
-
-                                    <div className="text-center text-white/80 text-xs">
-                                        <p>✓ 30-day money-back guarantee</p>
-                                        <p>✓ Lifetime access included</p>
-                                    </div>
-                                </div>
-                            </Card>
-
-                            {/* Course Details Card */}
-                            <Card className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800">
-                                <div className="p-4">
-                                    <h2 className={`font-semibold mb-4 text-gray-900 dark:text-white ${isMobile ? "text-base" : "text-lg"}`}>Course Details</h2>
-
-                                    <div className="space-y-3">
-                                        <div className="flex items-start">
-                                            <div className="h-6 w-6 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-2">
-                                                <Clock className="h-3 w-3 text-orange-600 dark:text-orange-400" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-[12px] font-medium text-gray-500 dark:text-gray-400">Duration</h3>
-                                                <p className="text-gray-900 dark:text-white font-medium text-xs">{data.duration} hours</p>
-                                            </div>
+                            {/* Course Details */}
+                            <ContentCard
+                                headerColor="gray"
+                                title="Course Details"
+                                subTitle="Duration, Difficulty and Published Date"
+                                Icon={Clock}
+                                className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800"
+                            >
+                                <div className="space-y-3">
+                                    {/* Duration */}
+                                    <div className="flex items-start">
+                                        <div className="h-6 w-6 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-2">
+                                            <Clock className="h-3 w-3 text-orange-600 dark:text-orange-400" />
                                         </div>
-
-                                        <Separator className="bg-gray-100 dark:bg-gray-800" />
-
-                                        <div className="flex items-start">
-                                            <div className="h-6 w-6 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-2">
-                                                <Award className="h-3 w-3 text-orange-600 dark:text-orange-400" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-[12px] font-medium text-gray-500 dark:text-gray-400">Difficulty</h3>
-                                                <p className="text-gray-900 dark:text-white font-medium text-xs capitalize">{data.difficultyLevel?.join(", ")}</p>
-                                            </div>
-                                        </div>
-
-                                        <Separator className="bg-gray-100 dark:bg-gray-800" />
-
-                                        <div className="flex items-start">
-                                            <div className="h-6 w-6 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-2">
-                                                <Calendar className="h-3 w-3 text-orange-600 dark:text-orange-400" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-[12px] font-medium text-gray-500 dark:text-gray-400">Published</h3>
-                                                <p className="text-gray-900 dark:text-white font-medium text-xs">
-                                                    {new Date(data.publishedAt).toLocaleDateString("en-US", {
-                                                        year: "numeric",
-                                                        month: "long",
-                                                        day: "numeric",
-                                                    })}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Card>
-
-                            {/* Categories & Tags */}
-                            <Card className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800">
-                                <div className="p-4">
-                                    <h2 className={`font-semibold mb-4 text-gray-900 dark:text-white flex items-center ${isMobile ? "text-base" : "text-lg"}`}>
-                                        <Tag className="mr-2 h-4 w-4 text-orange-600 dark:text-orange-400" />
-                                        Categories & Tags
-                                    </h2>
-
-                                    <div className="space-y-3">
                                         <div>
-                                            <h3 className="text-[12px] font-medium text-gray-500 dark:text-gray-400 mb-2">Categories</h3>
-                                            <div className="flex flex-wrap gap-1">
-                                                {(data.categories || data.categoryIds)?.map((category) => (
-                                                    <Badge
-                                                        key={category}
-                                                        variant="secondary"
-                                                        className="bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200 px-2 py-0 text-[10px] rounded-lg h-5"
-                                                    >
-                                                        {typeof category === "string" ? category : category?.name}
-                                                    </Badge>
-                                                ))}
-                                            </div>
+                                            <h3 className="text-[14px] font-medium text-gray-500 dark:text-gray-400">Duration</h3>
+                                            <p className="text-gray-900 dark:text-white font-medium text-[0.8rem]">{data.duration} hours</p>
                                         </div>
+                                    </div>
 
-                                        <Separator className="bg-gray-100 dark:bg-gray-800" />
+                                    <Separator className="bg-gray-100 dark:bg-gray-800" />
 
+                                    {/* Difficulty */}
+                                    <div className="flex items-start">
+                                        <div className="h-6 w-6 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-2">
+                                            <Award className="h-3 w-3 text-orange-600 dark:text-orange-400" />
+                                        </div>
                                         <div>
-                                            <h3 className="text-[12px] font-medium text-gray-500 dark:text-gray-400 mb-2">Tags</h3>
-                                            <div className="flex flex-wrap gap-1">
-                                                {data.tags.map((tag) => (
-                                                    <Badge
-                                                        key={tag}
-                                                        variant="outline"
-                                                        className="border-orange-200 dark:border-orange-800/50 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 px-2 py-0 text-[10px] rounded-lg h-5"
-                                                    >
-                                                        {tag || "Tag"}
-                                                    </Badge>
-                                                ))}
-                                            </div>
+                                            <h3 className="text-[14px] font-medium text-gray-500 dark:text-gray-400">Difficulty</h3>
+                                            <p className="text-gray-900 dark:text-white font-medium text-[0.8rem] capitalize">{data.difficultyLevel?.join(", ")}</p>
+                                        </div>
+                                    </div>
+
+                                    <Separator className="bg-gray-100 dark:bg-gray-800" />
+
+                                    {/* Published */}
+                                    <div className="flex items-start">
+                                        <div className="h-6 w-6 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-2">
+                                            <Calendar className="h-3 w-3 text-orange-600 dark:text-orange-400" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-[14px] font-medium text-gray-500 dark:text-gray-400">Published</h3>
+                                            <p className="text-gray-900 dark:text-white font-medium text-[0.8rem]">
+                                                {new Date(data.publishedAt).toLocaleDateString("en-US", {
+                                                    year: "numeric",
+                                                    month: "long",
+                                                    day: "numeric",
+                                                })}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
-                            </Card>
+                            </ContentCard>
+
+                            {/* Categories */}
+                            <ContentCard
+                                headerColor="blue"
+                                title="Categories"
+                                subTitle="Course categories and classification"
+                                Icon={Folder}
+                                className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800"
+                            >
+                                <div className="flex flex-wrap gap-1">
+                                    {(data.categories || data.categoryIds)?.map((category) => (
+                                        <Badge
+                                            key={typeof category === "string" ? category : category?.name}
+                                            variant="outline"
+                                            className="border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-3 py-1.5 text-[0.8rem] rounded-full capitalize"
+                                        >
+                                            {typeof category === "string" ? category : category?.name}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </ContentCard>
+
+                            {/* Tags */}
+                            <ContentCard
+                                headerColor="orange"
+                                title="Topic Tags"
+                                subTitle="Keywords and tags for this course"
+                                Icon={Tag}
+                                className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800"
+                            >
+                                <div className="flex flex-wrap gap-1">
+                                    {data.tags?.map((tag) => (
+                                        <Badge
+                                            key={tag}
+                                            variant="outline"
+                                            className="border-orange-200 dark:border-orange-800/50 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 px-3 py-1.5 text-[0.8rem] rounded-full capitalize"
+                                        >
+                                            {tag || "Tag"}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </ContentCard>
                         </div>
                     )}
                 </div>

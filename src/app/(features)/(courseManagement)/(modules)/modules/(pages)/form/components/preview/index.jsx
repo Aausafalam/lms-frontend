@@ -3,34 +3,20 @@
 import { useState } from "react";
 import { Smartphone, Tablet, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ModuleDetailPreview } from "./module-detail-preview";
 import Tabs from "@/components/tab";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { ModuleDetailPreview } from "./module-detail-preview";
 
-// Device presets with their respective widths
 const devicePresets = {
     mobile: 400,
     tablet: 768,
     desktop: 1224,
 };
 
-/**
- * Module Preview Component
- * Provides responsive preview of the module across different devices
- *
- * @param {Object} props - Component props
- * @param {Object} props.data - Module data to preview
- */
 export function ModulePreview({ data }) {
     const [showModal, setShowModal] = useState(false);
-    const [isFullscreen, setIsFullscreen] = useState(false);
     const [activeTab, setActiveTab] = useState({ id: "mobile", label: "Mobile" });
 
-    const toggleFullscreen = () => {
-        setIsFullscreen(!isFullscreen);
-    };
-
-    // Tab configuration for different device previews
     const tabs = [
         {
             id: "mobile",
@@ -43,8 +29,8 @@ export function ModulePreview({ data }) {
                         <div className="text-xs text-gray-500 dark:text-gray-400">{devicePresets.mobile}px</div>
                     </div>
                     <div className="dark:bg-gray-900 border-2 border-t-0 border-white dark:border-gray-900 rounded-b-xl overflow-hidden shadow-sm w-full">
-                        <div className="overflow-hidden">
-                            <ModuleDetailPreview data={data} viewportWidth={devicePresets.mobile} />
+                        <div className="overflow-hidden p-2">
+                            <ModuleDetailPreview initialData={data} viewportWidth={devicePresets.mobile} />
                         </div>
                     </div>
                 </div>
@@ -96,10 +82,8 @@ export function ModulePreview({ data }) {
         <div>
             <Tabs defaultTab={activeTab} tabs={tabs} variant="pills" onTabChange={(tab) => setActiveTab(tab)} />
 
-            {/* Modal for larger previews */}
             <Dialog open={showModal} onOpenChange={setShowModal}>
-                <DialogContent className={`p-0 ${isFullscreen ? "max-w-full w-full h-screen m-0 rounded-none" : "max-w-[90vw] w-full"}`}>
-                    {/* Modal Header */}
+                <DialogContent className="p-0 max-w-[90vw] w-full" style={{ width: `${devicePresets[activeTab.id]}px` }}>
                     <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
                         <DialogTitle className="flex items-center">
                             {activeTab.id === "tablet" ? (
@@ -109,21 +93,11 @@ export function ModulePreview({ data }) {
                             )}
                             {activeTab.id.charAt(0).toUpperCase() + activeTab.id.slice(1)} Preview ({devicePresets[activeTab.id]}px)
                         </DialogTitle>
-                        <div></div>
                     </div>
 
-                    {/* Modal Content */}
-                    <div
-                        className="overflow-auto p-4 flex justify-center"
-                        style={{
-                            maxHeight: isFullscreen ? "calc(100vh - 60px)" : "80vh",
-                        }}
-                    >
-                        <div
-                            className={`bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm ${isFullscreen ? "h-full" : ""}`}
-                            style={{ width: `${devicePresets[activeTab.id]}px` }}
-                        >
-                            <ModuleDetailPreview data={data} viewportWidth={devicePresets[activeTab.id]} />
+                    <div className="overflow-auto p-4 flex justify-center" style={{ maxHeight: "80vh" }}>
+                        <div className="bg-gray-100 dark:bg-gray-900 p-4 rounded-2xl overflow-hidden" style={{ width: `${devicePresets[activeTab.id]}px` }}>
+                            <ModuleDetailPreview initialData={data} viewportWidth={devicePresets[activeTab.id]} />
                         </div>
                     </div>
                 </DialogContent>

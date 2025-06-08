@@ -1,7 +1,7 @@
-import ModuleFormBase from "..";
+import ModuleFormBase from ".."
 
 const AddModule = () => {
-    return <ModuleFormBase initialData={{}} />;
-};
+  return <ModuleFormBase initialData={{}} />
+}
 
-export default AddModule;
+export default AddModule

@@ -37,7 +37,7 @@ const CoursesTable = ({ setSelectedCourse, setModalState, refreshTable }) => {
         multiView: false,
         /* Grid view configuration */
         grid: {
-            column: 5,
+            column: 4,
             card: (row) => <CourseCard data={row} />,
         },
     });

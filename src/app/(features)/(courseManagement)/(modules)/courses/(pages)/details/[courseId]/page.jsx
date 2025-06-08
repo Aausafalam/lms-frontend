@@ -4,13 +4,13 @@ import { courseDetailsData } from "./data/course-data";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Briefcase, LayoutDashboard } from "lucide-react";
 import { SidebarNavigation } from "./components/sidebar";
-import { CourseDetailPreview } from "../../form/components/preview/course-detail-preview";
-import { sampleCourseData } from "../../form/utils/seeds";
 import CourseDetailsContent from "./components/content";
 import { useState } from "react";
+import { useParams } from "next/navigation";
 
 export default function CourseDetailsPage({ course = courseDetailsData }) {
     const [activeTab, setActiveTab] = useState("overview");
+    const { courseId } = useParams();
     const breadcrumbItems = [
         {
             title: "Courses",
@@ -19,7 +19,7 @@ export default function CourseDetailsPage({ course = courseDetailsData }) {
         },
         {
             title: "Course Details",
-            href: `courses/details/1`,
+            href: `courses/details/${courseId}`,
             icon: <Briefcase className="h-3.5 w-3.5" />,
         },
     ];

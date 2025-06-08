@@ -7,7 +7,7 @@ import { Badge } from "../ui/badge";
 export const Header = ({ data = {}, isMobile, onBack, onEdit, onDuplicate, onDelete, showBackButton = true, badges = [], className = "" }) => {
     // Default badge configurations
     const defaultBadges = [
-        { key: "number", label: data.number ? `Lesson ${data.number}` : `Lesson 1`, icon: BookOpen, variant: "default" },
+        { key: "number", label: data.number, icon: BookOpen, variant: "default" },
         { key: "duration", label: data.duration + " Min", icon: Clock, variant: "secondary" },
         { key: "difficulty", label: data.difficulty, icon: Star, variant: "outline" },
         { key: "students", label: data.studentCount ? `${data.studentCount} students` : null, icon: Users, variant: "secondary" },

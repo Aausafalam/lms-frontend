@@ -3,7 +3,7 @@
 import { memo, useState } from "react";
 import { ImageIcon, Video, Upload, Link, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection"
 import FileUploadField from "@/components/ui/file";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

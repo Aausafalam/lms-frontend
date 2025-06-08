@@ -24,7 +24,7 @@ const ModulesTable = ({ setSelectedModule, setModalState, refreshTable }) => {
         },
         {
             title: "Modules",
-            href: "/modules",
+            href: `/courses/details/${courseId}`,
             icon: <Package className="h-3.5 w-3.5" />,
         },
     ];

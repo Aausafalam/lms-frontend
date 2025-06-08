@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { Target, Lightbulb, CheckCircle2, X, GraduationCap } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { FormSection } from "./form-section"
+import { FormSection } from "@/components/formSection"
 
 /**
  * Learning Outcomes Section Component

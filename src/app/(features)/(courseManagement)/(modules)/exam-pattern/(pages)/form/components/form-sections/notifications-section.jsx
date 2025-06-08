@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { Mail, Bell, MessageSquare, Clock, Users } from "lucide-react";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";

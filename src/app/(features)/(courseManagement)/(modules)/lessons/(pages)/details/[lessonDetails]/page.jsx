@@ -39,14 +39,14 @@ export default function LessonDetailsPage() {
 
                 <div className="flex gap-4">
                     {/* Sidebar - Sticky on desktop */}
-                    <div className="lg:col-span-1">
+                    <div className="">
                         <SidebarNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
                     </div>
 
                     {/* Main Content - Scrollable */}
-                    <div className="lg:col-span-4">
-                        <div className="dark:border-gray-700 overflow-hidden">
-                            <div className="max-h-[85vh] overflow-y-auto pr-2 pb-4">
+                    <div className="w-full">
+                        <div className="dark:border-gray-700 overflow-hidden ">
+                            <div className="">
                                 <LessonDetailsContent activeTab={activeTab} />
                             </div>
                         </div>

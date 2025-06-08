@@ -3,7 +3,7 @@ import { memo } from "react";
 import { FileText, Bookmark, Clock, Hash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection";
 
 /**
  * Basic Information Section Component

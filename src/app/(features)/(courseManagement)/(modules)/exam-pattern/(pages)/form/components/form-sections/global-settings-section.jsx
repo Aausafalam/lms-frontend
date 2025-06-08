@@ -2,7 +2,7 @@
 
 import { memo } from "react"
 import { Settings, Check, X } from "lucide-react"
-import { FormSection } from "./form-section"
+import { FormSection } from "@/components/formSection";
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"

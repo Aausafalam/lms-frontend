@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import ExamFormHeader from "./components/header";
+import ExamPatternFormHeader from "./components/header";
 import { Button } from "@/components/ui/button";
 import { Loader2, Sparkles } from "lucide-react";
 import { SidebarNavigation } from "./components/sidebar";
@@ -10,7 +10,7 @@ import GlobalUtils from "@/lib/utils";
 import { useExamFormData } from "./hooks";
 import { ExamPreview } from "./components/preview";
 
-const ExamFormBase = ({ initialData = {}, examId = null }) => {
+const ExamPatternFormBase = ({ initialData = {}, examPatternId = null }) => {
     const { isSaving, handleSave, formData, handlers } = useExamFormData({ initialData });
     const [previewVisible, setPreviewVisible] = useState(true);
     const [activeSection, setActiveSection] = useState("basic");
@@ -50,7 +50,7 @@ const ExamFormBase = ({ initialData = {}, examId = null }) => {
 
     return (
         <div>
-            <ExamFormHeader togglePreview={togglePreview} previewVisible={previewVisible} formData={formData} handlers={handlers} examId={examId} />
+            <ExamPatternFormHeader togglePreview={togglePreview} previewVisible={previewVisible} formData={formData} handlers={handlers} examPatternId={examPatternId} />
             <div className="grid grid-cols-7 gap-3">
                 <div className="col-span-1">
                     <SidebarNavigation activeSection={activeSection} scrollToSection={scrollToSection} formData={formData} handlers={handlers} />
@@ -88,4 +88,4 @@ const ExamFormBase = ({ initialData = {}, examId = null }) => {
     );
 };
 
-export default ExamFormBase;
+export default ExamPatternFormBase;

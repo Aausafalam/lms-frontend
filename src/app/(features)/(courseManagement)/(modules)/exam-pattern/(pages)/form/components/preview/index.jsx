@@ -18,10 +18,6 @@ export function ExamPreview({ data }) {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [activeTab, setActiveTab] = useState({ id: "mobile", label: "Mobile" });
 
-    const toggleFullscreen = () => {
-        setIsFullscreen(!isFullscreen);
-    };
-
     const tabs = [
         {
             id: "mobile",
@@ -35,7 +31,7 @@ export function ExamPreview({ data }) {
                     </div>
                     <div className="dark:bg-gray-900 border-2 border-t-0 border-white dark:border-gray-900 rounded-b-xl overflow-hidden shadow-sm w-full">
                         <div className="overflow-hidden">
-                            <ExamDetailPreview data={data} viewportWidth={devicePresets.mobile} />
+                            <ExamDetailPreview initialData={data} viewportWidth={devicePresets.mobile} />
                         </div>
                     </div>
                 </div>
@@ -111,7 +107,7 @@ export function ExamPreview({ data }) {
                             className={`bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm ${isFullscreen ? "h-full" : ""}`}
                             style={{ width: `${devicePresets[activeTab.id]}px` }}
                         >
-                            <ExamDetailPreview data={data} viewportWidth={devicePresets[activeTab.id]} />
+                            <ExamDetailPreview initialData={data} viewportWidth={devicePresets[activeTab.id]} />
                         </div>
                     </div>
                 </DialogContent>

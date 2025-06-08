@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { Settings, Tag, BarChart3, FolderOpen, Globe, User2Icon } from "lucide-react";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection";
 import { Select } from "@/components/ui/select";
 
 /**

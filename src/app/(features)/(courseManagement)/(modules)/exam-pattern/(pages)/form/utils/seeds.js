@@ -2,7 +2,7 @@
  * Sample exam pattern data for testing and development
  * Contains comprehensive exam configuration with all sections
  */
-export const sampleExamData = {
+export const sampleExamPatternData = {
   name: "RRB NTPC Stage 1 Examination",
   description:
     "Railway Recruitment Board Non-Technical Popular Categories Stage 1 examination pattern with comprehensive sections covering Mathematics, General Intelligence & Reasoning, and General Awareness.",

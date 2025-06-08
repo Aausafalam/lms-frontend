@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { Clock, ArrowLeft, ArrowRight, Navigation, AlertTriangle } from "lucide-react";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";

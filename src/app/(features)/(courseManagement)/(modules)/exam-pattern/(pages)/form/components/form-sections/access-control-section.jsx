@@ -2,11 +2,11 @@
 
 import { memo } from "react";
 import { Calendar, Users, Key, CheckCircle } from "lucide-react";
-import { FormSection } from "./form-section";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { FormSection } from "@/components/formSection";
 
 export const AccessControlSection = memo(function AccessControlSection({ handlers = {}, formData = {}, sectionRef, isActive }) {
     const { handleAccessControlSettingsChange } = handlers;

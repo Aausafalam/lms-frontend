@@ -3,7 +3,7 @@
 import { memo } from "react";
 import { Bookmark, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection";
 import { Textarea } from "@/components/ui/textarea";
 
 export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isActive, formData = {}, handlers = {} }) {

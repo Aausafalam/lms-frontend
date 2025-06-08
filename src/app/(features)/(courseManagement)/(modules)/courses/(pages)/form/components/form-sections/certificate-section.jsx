@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { BadgeIcon as Certificate, ImageIcon, FileText, CheckCircle2, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { FormSection } from "./form-section"
+import { FormSection } from "@/components/formSection"
 import { Textarea } from "@/components/ui/textarea"
 import FileUploadField from "@/components/ui/file"
 

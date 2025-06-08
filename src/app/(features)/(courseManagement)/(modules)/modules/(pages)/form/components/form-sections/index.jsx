@@ -6,25 +6,14 @@ import { MediaSection } from "./media-section"
 import { ContentSection } from "./content-section"
 import { LearningOutcomesSection } from "./learning-outcomes-section"
 import { PreRequisitesSection } from "./pre-requisites-section"
-import { MetaDataSection } from "./meta-data-section"
+import { ModuleOrderSection } from "./module-order-section"
 import { InstructorsSection } from "./instructors-section"
 import { AttachmentsSection } from "./attachments-section"
 import { ResourcesSection } from "./resources-section"
 
-/**
- * Form Sections Container Component
- * Renders all form sections in the correct order
- *
- * @param {Object} props - Component props
- * @param {Object} props.formData - Current form data
- * @param {Object} props.sectionRefs - References to each section for scrolling
- * @param {string} props.activeSection - Currently active section ID
- * @param {Object} props.handlers - Form event handlers
- */
 export const FormSections = memo(function FormSections({ formData, sectionRefs, activeSection, handlers }) {
   return (
     <>
-      {/* Basic Information */}
       <BasicInfoSection
         handlers={handlers}
         formData={formData}
@@ -32,7 +21,6 @@ export const FormSections = memo(function FormSections({ formData, sectionRefs, 
         isActive={activeSection === "basic"}
       />
 
-      {/* Media Assets */}
       <MediaSection
         handlers={handlers}
         formData={formData}
@@ -40,7 +28,6 @@ export const FormSections = memo(function FormSections({ formData, sectionRefs, 
         isActive={activeSection === "media"}
       />
 
-      {/* Module Content */}
       <ContentSection
         handlers={handlers}
         formData={formData}
@@ -48,7 +35,6 @@ export const FormSections = memo(function FormSections({ formData, sectionRefs, 
         isActive={activeSection === "content"}
       />
 
-      {/* Learning Outcomes */}
       <LearningOutcomesSection
         handlers={handlers}
         formData={formData}
@@ -56,7 +42,6 @@ export const FormSections = memo(function FormSections({ formData, sectionRefs, 
         isActive={activeSection === "learning-outcomes"}
       />
 
-      {/* Prerequisites */}
       <PreRequisitesSection
         handlers={handlers}
         formData={formData}
@@ -64,15 +49,13 @@ export const FormSections = memo(function FormSections({ formData, sectionRefs, 
         isActive={activeSection === "prerequisites"}
       />
 
-      {/* Metadata */}
-      <MetaDataSection
+      <ModuleOrderSection
         handlers={handlers}
         formData={formData}
         sectionRef={(el) => (sectionRefs.current.metadata = el)}
-        isActive={activeSection === "metadata"}
+        isActive={activeSection === "module-order"}
       />
 
-      {/* Instructors */}
       <InstructorsSection
         handlers={handlers}
         formData={formData}
@@ -80,7 +63,6 @@ export const FormSections = memo(function FormSections({ formData, sectionRefs, 
         isActive={activeSection === "instructors"}
       />
 
-      {/* Attachments */}
       <AttachmentsSection
         handlers={handlers}
         formData={formData}
@@ -88,7 +70,6 @@ export const FormSections = memo(function FormSections({ formData, sectionRefs, 
         isActive={activeSection === "attachments"}
       />
 
-      {/* Additional Resources */}
       <ResourcesSection
         handlers={handlers}
         formData={formData}

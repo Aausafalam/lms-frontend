@@ -141,14 +141,14 @@ export default function CourseCard({ data }) {
 
                     <h3
                         onClick={() => navigate(`/courses/details/${courseData.id}`)}
-                        className={`mb-1 cursor-pointer hover:underline text-sm font-bold text-gray-900 dark:text-white hover:text-orange-500  dark:hover:text-orange-400 transition-colors duration-200 ${
+                        className={`mb-1 cursor-pointer hover:underline text-[1rem] font-bold text-gray-900 dark:text-white hover:text-orange-500  dark:hover:text-orange-400 transition-colors duration-200 ${
                             isHovered && "text-orange-500"
                         }`}
                     >
                         {courseData.name}
                     </h3>
 
-                    <p title={courseData.summary} className="text-[10px] leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-2 mb-2" name={courseData.summary}>
+                    <p title={courseData.summary} className="text-[13px] leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-2 mb-2" name={courseData.summary}>
                         {courseData.summary}
                     </p>
 

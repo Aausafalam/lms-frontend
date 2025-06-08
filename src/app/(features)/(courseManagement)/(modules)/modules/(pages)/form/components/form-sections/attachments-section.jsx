@@ -5,19 +5,9 @@ import { motion } from "framer-motion"
 import { Paperclip, X, Plus, FileText, Upload } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { FormSection } from "./form-section"
+import { FormSection } from "@/components/formSection"
 import { Textarea } from "@/components/ui/textarea"
 
-/**
- * Attachments Section Component
- * Manages module attachments and resources
- *
- * @param {Object} props - Component props
- * @param {Object} props.handlers - Form event handlers
- * @param {Object} props.formData - Current form data with attachments array
- * @param {React.RefObject} props.sectionRef - Reference for section scrolling
- * @param {boolean} props.isActive - Whether this section is currently active
- */
 export const AttachmentsSection = memo(function AttachmentsSection({
   handlers = {},
   formData = { attachments: [] },
@@ -26,27 +16,24 @@ export const AttachmentsSection = memo(function AttachmentsSection({
 }) {
   const { handleAttachmentChange, removeAttachment, addAttachment } = handlers
 
-  // Animation configuration
   const listItemAnimation = {
     initial: { opacity: 0, y: 10 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.3 },
   }
 
-  // Ensure attachments array exists
   const attachments = Array.isArray(formData.attachments) ? formData.attachments : []
 
   return (
     <FormSection
       id="attachments"
-      title="Module Attachments"
+      title="Attachments"
       icon={<Paperclip className="h-5 w-5" />}
       description="Add supplementary materials and resources for your module"
       sectionRef={sectionRef}
       isActive={isActive}
     >
       <div className="space-y-6">
-        {/* Guidance Box */}
         <div className="bg-green-50 dark:bg-green-950/10 rounded-lg p-4 border border-green-100 dark:border-green-900/20">
           <p className="text-sm text-green-700 dark:text-green-400 flex items-center gap-2">
             <Upload className="h-4 w-4" />
@@ -54,7 +41,6 @@ export const AttachmentsSection = memo(function AttachmentsSection({
           </p>
         </div>
 
-        {/* Attachments List */}
         <div className="space-y-6">
           {attachments.map((attachment, index) => (
             <motion.div
@@ -74,7 +60,6 @@ export const AttachmentsSection = memo(function AttachmentsSection({
                     onClick={() => removeAttachment(index)}
                     className="h-8 w-8 rounded-full text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/20"
                     aria-label={`Remove attachment ${index + 1}`}
-                    title="Remove this attachment"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -82,7 +67,6 @@ export const AttachmentsSection = memo(function AttachmentsSection({
               </div>
 
               <div className="space-y-4">
-                {/* Title */}
                 <Input
                   placeholder="Attachment title (e.g., Module Workbook, Code Examples)"
                   value={attachment.title || ""}
@@ -90,7 +74,6 @@ export const AttachmentsSection = memo(function AttachmentsSection({
                   aria-label={`Attachment ${index + 1} title`}
                 />
 
-                {/* Description */}
                 <Textarea
                   placeholder="Brief description of this attachment"
                   value={attachment.description || ""}
@@ -99,10 +82,9 @@ export const AttachmentsSection = memo(function AttachmentsSection({
                   rows={2}
                 />
 
-                {/* File Upload */}
                 <Input
                   type="file"
-                  onChange={(e) => handleAttachmentChange(index, "file", e.target.files?.[0])}
+                  onChange={(e) => handleAttachmentChange(index, "url", e.target.files?.[0])}
                   aria-label={`Attachment ${index + 1} file`}
                   accept=".pdf,.doc,.docx,.zip,.txt,.js,.py,.html,.css"
                 />
@@ -110,7 +92,6 @@ export const AttachmentsSection = memo(function AttachmentsSection({
             </motion.div>
           ))}
 
-          {/* Empty State */}
           {attachments.length === 0 && (
             <div className="text-center py-6 text-gray-500 dark:text-gray-400">
               <Paperclip className="h-12 w-12 mx-auto mb-3 opacity-40" />
@@ -119,7 +100,6 @@ export const AttachmentsSection = memo(function AttachmentsSection({
             </div>
           )}
 
-          {/* Add Button */}
           <Button
             variant="outline"
             onClick={addAttachment}

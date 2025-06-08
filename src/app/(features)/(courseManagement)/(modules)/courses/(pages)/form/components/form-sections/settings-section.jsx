@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { Users, Tag } from "lucide-react";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection";
 import { instructors, tags } from "./sample-data";
 import { Select } from "@/components/ui/select";
 

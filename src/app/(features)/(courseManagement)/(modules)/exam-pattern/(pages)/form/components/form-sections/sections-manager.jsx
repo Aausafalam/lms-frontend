@@ -3,7 +3,7 @@
 import { memo, useState } from "react";
 import { motion } from "framer-motion";
 import { Layers, Plus, ChevronDown, ChevronUp, Trash2, Copy, Shuffle, GripVertical, ArrowUp, ArrowDown, Award } from "lucide-react";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";

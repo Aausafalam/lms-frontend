@@ -1,4 +1,4 @@
-import CourseContent from "@/app/(features)/(courseManagement)/(modules)/content/page";
+import CourseContent from "@/app/(features)/(courseManagement)/(modules)/videos/page";
 import { LessonDetailPreview } from "../../../../form/components/preview/exam-detail-preview";
 import { sampleLessonData } from "../../../../form/utils/seeds";
 

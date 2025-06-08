@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { Lightbulb, X, Plus, Star } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { FormSection } from "./form-section"
+import { FormSection } from "@/components/formSection"
 import { Select } from "@/components/ui/select"
 
 /**

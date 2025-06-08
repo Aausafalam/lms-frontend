@@ -1,12 +1,11 @@
 "use client";
 
 import { FileText, ImageIcon, BookOpen, GraduationCap, Award, BadgeIcon as Certificate, Star, Settings, Paperclip, Users, User2Icon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch as SwitchComponent } from "@/components/ui/switch";
 import { Select } from "@/components/ui/select";
-import GlobalUtils from "@/lib/utils";
+import SidebarMenu from "@/components/sidebarMenu";
 
 /**
  * Sidebar Navigation Component
@@ -45,35 +44,7 @@ export function SidebarNavigation({ activeSection, scrollToSection, formData, ha
     return (
         <div className="sticky top-8 max-w-52">
             {/* Navigation Card */}
-            <Card className="overflow-hidden border-0 bg-white dark:bg-gray-900 dark:border-gray-800">
-                <CardContent className="p-2">
-                    <nav className="space-y-1">
-                        {navigationItems.map((item) => (
-                            <Button
-                                key={item.id}
-                                variant="ghost"
-                                className={GlobalUtils.cn(
-                                    "w-full justify-start text-left mb-1 font-normal transition-all px-2",
-                                    activeSection === item.id ? "bg-orange-50 text-orange-700 dark:bg-orange-950/30 dark:text-orange-400" : "hover:bg-gray-50 dark:hover:bg-gray-800"
-                                )}
-                                onClick={() => scrollToSection(item.id)}
-                            >
-                                <div
-                                    className={GlobalUtils.cn(
-                                        "mr-2 p-1 rounded-md transition-all",
-                                        activeSection === item.id
-                                            ? "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400"
-                                            : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
-                                    )}
-                                >
-                                    {item.icon}
-                                </div>
-                                <span className="">{item.label}</span>
-                            </Button>
-                        ))}
-                    </nav>
-                </CardContent>
-            </Card>
+            <SidebarMenu navigationItems={navigationItems} activeSection={activeSection} onClick={scrollToSection} />
 
             {/* Course Status Card */}
             <Card className="overflow-hidden border-0 mt-4 bg-white dark:bg-gray-900">

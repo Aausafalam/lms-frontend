@@ -1,10 +1,6 @@
 "use client";
 import React from "react";
 import CoursesTable from "./components/table";
-import { Briefcase, FileText, LayoutDashboard, Settings, Users } from "lucide-react";
-import { Breadcrumb } from "@/components/Breadcrumb";
-import { StatsGrid } from "@/components/statCard/statsGrid";
-import CourseStats from "./components/stats";
 import DeleteCourse from "./components/delete";
 import useModalHandler from "./hooks/useModalHandler";
 

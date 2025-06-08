@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Layers, CheckCircle, AlertTriangle, Settings, Globe, Timer, Award, Target, BookOpen, TrendingUp, BookCheck } from "lucide-react";
+import { Layers, CheckCircle, AlertTriangle, Settings, Globe, Timer, Award, Target, BookOpen, TrendingUp, Shield, Bell, BarChart3, Clock, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { ExamContentCard } from "./exam-details-content-card";
-import { useExamPatternDelete, useExamPatternGetDetails } from "@/services/hooks/exam-pattern";
+import { useExamPatternGetDetails } from "@/services/hooks/exam-pattern";
 import { useQueryParams } from "@/lib/hooks/useQuery";
 import { useParams } from "next/navigation";
+import { ContentCard } from "@/components/contentCard";
 
 const devicePresets = {
     mobile: 400,
@@ -17,19 +17,20 @@ const devicePresets = {
 /**
  * ExamDetailPreview Component
  * Displays a comprehensive preview of the exam pattern
- * Features responsive design with orange theme in hero section
+ * Features hero-styled summary table at the top
  */
 export function ExamDetailPreview({ initialData, viewportWidth, onDetailsPage }) {
     const [selectedSection, setSelectedSection] = useState(0);
     const { examPatternDetail } = useExamPatternGetDetails();
-    const data = examPatternDetail?.data || initialData;
-    console.log("data gettig", data);
+    const data = examPatternDetail?.data || initialData || {};
+
     // Responsive breakpoint detection
     const isMobile = viewportWidth <= devicePresets.mobile;
     const isTablet = viewportWidth > devicePresets.mobile && viewportWidth <= devicePresets.tablet;
     const isDesktop = viewportWidth > devicePresets.tablet;
     const { courseId } = useQueryParams();
     const { examPatternDetails } = useParams();
+
     // Calculate exam statistics
     const totalQuestions = data.sections?.reduce((total, section) => total + (section.questionsCount || 0), 0) || 0;
     const totalMarks =
@@ -54,119 +55,298 @@ export function ExamDetailPreview({ initialData, viewportWidth, onDetailsPage })
 
     return (
         <div className={`w-full ${onDetailsPage ? "max-w-[1225px]" : "max-h-[75vh] overflow-scroll"}`}>
-            {/* Enhanced Header Section with Orange Theme */}
-            <div className="bg-gradient-to-br from-orange-600 via-orange-600 to-red-600 text-white p-6 rounded-t-lg relative overflow-hidden">
+            {/* Hero-Styled Exam Pattern Summary */}
+            <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg relative overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
                 {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fillRule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fillOpacity=%220.1%22%3E%3Ccircle cx=%2230%22 cy=%2230%22 r=%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+                <div className="absolute inset-0 opacity-5">
+                    <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fillRule=%22evenodd%22%3E%3Cg fill=%22%23000000%22 fillOpacity=%220.1%22%3E%3Ccircle cx=%2230%22 cy=%2230%22 r=%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] dark:bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fillRule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fillOpacity=%220.1%22%3E%3Ccircle cx=%2230%22 cy=%2230%22 r=%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
                 </div>
 
                 {/* Floating Elements */}
-                <div className="absolute top-4 right-4 w-20 h-20 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-                <div className="absolute bottom-4 left-4 w-16 h-16 bg-yellow-300/20 rounded-full blur-lg animate-bounce"></div>
+                <div className="absolute top-4 right-4 w-20 h-20 bg-blue-100 dark:bg-blue-900/50 rounded-full blur-xl animate-pulse"></div>
+                <div className="absolute bottom-4 left-4 w-16 h-16 bg-yellow-100 dark:bg-yellow-900/50 rounded-full blur-lg animate-bounce"></div>
 
-                <div className="relative z-10 space-y-4">
-                    {/* Status Badges */}
-                    <div className="flex flex-wrap gap-2">
-                        <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            {data.status || "Draft"}
-                        </Badge>
-                        {data.shuffleQuestions && (
-                            <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                                <Settings className="h-3 w-3 mr-1" />
-                                Shuffled Questions
+                <div className="relative z-10 p-6 space-y-6">
+                    {/* Header Section */}
+                    <div className="space-y-4">
+                        {/* Status Badges */}
+                        <div className="flex flex-wrap gap-2">
+                            <Badge className="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700 shadow-none">
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                                {data.status || "Draft"}
                             </Badge>
+                            {data.shuffleQuestions && (
+                                <Badge className="bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 border-purple-200 dark:border-purple-700 shadow-none">
+                                    <Settings className="h-3 w-3 mr-1" />
+                                    Shuffled Questions
+                                </Badge>
+                            )}
+                            {data.shuffleSections && (
+                                <Badge className="bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
+                                    <Layers className="h-3 w-3 mr-1" />
+                                    Shuffled Sections
+                                </Badge>
+                            )}
+                        </div>
+
+                        {/* Title and Description */}
+                        <div>
+                            <h1 className={`font-bold text-gray-900 dark:text-gray-100 leading-tight ${isMobile ? "text-xl" : "text-2xl"}`}>{data.name || "Exam Pattern Name"}</h1>
+                            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+                                {data.description || "Comprehensive examination pattern designed for competitive assessment with multiple sections covering various subjects and skill areas."}
+                            </p>
+                        </div>
+
+                        {/* Language Options */}
+                        {data.languageOptions?.length > 0 && (
+                            <div className="flex items-center space-x-2">
+                                <Globe className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                <span className="text-gray-700 dark:text-gray-300 text-sm">Available in:</span>
+                                <div className="flex flex-wrap gap-1">
+                                    {data.languageOptions.map((lang) => (
+                                        <Badge key={lang} variant="outline" className="text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 text-xs bg-gray-50 dark:bg-gray-800">
+                                            {lang}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </div>
                         )}
-                        {data.shuffleSections && (
-                            <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                                <Layers className="h-3 w-3 mr-1" />
-                                Shuffled Sections
-                            </Badge>
-                        )}
                     </div>
 
-                    {/* Title and Description */}
-                    <div>
-                        <h1 className={`font-bold text-white leading-tight ${isMobile ? "text-xl" : "text-2xl"}`}>{data.name || "Exam Pattern Name"}</h1>
-                        <p className="text-white text-sm mt-1">{data.description || "Exam pattern description will appear here"}</p>
-                    </div>
-
-                    {/* Key Statistics */}
-                    <div className={`grid grid-cols-2  gap-3 ${isDesktop ? "grid-cols-6" : isTablet ? "grid-cols-3" : "grid-cols-2"}`}>
-                        <div className="bg-white/15 backdrop-blur-md rounded-xl px-4 py-3 border border-white/20">
-                            <div className="flex items-center">
-                                <Layers className="h-4 w-4 mr-2 text-white" />
+                    {/* Hero Summary Table */}
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                        {/* Table Header */}
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-4 border-b border-gray-200 dark:border-gray-700">
+                            <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-white text-xs">Sections</p>
-                                    <p className="text-white font-semibold text-sm">{data.sections?.length || 0}</p>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Exam Pattern Overview</h2>
+                                    <p className="text-gray-600 dark:text-gray-400 text-sm">Complete section-wise breakdown</p>
+                                </div>
+                                <div className="flex items-center space-x-4">
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{data.durationInMinutes || 90}</div>
+                                        <div className="text-xs text-gray-500 dark:text-gray-400">Minutes</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-green-600 dark:text-green-400">{totalQuestions}</div>
+                                        <div className="text-xs text-gray-500 dark:text-gray-400">Questions</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{totalMarks}</div>
+                                        <div className="text-xs text-gray-500 dark:text-gray-400">Marks</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white/15 backdrop-blur-md rounded-xl px-4 py-3 border border-white/20">
-                            <div className="flex items-center">
-                                <Target className="h-4 w-4 mr-2 text-white" />
-                                <div>
-                                    <p className="text-white text-xs">Compulsory Sections</p>
-                                    <p className="text-white font-semibold text-sm">{compulsorySections || 0}</p>
-                                </div>
-                            </div>
+                        {/* Responsive Table Container */}
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead className="bg-gray-100 dark:bg-gray-700">
+                                    <tr>
+                                        <th className="px-4 py-3 text-left font-semibold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">Category</th>
+                                        <th className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">Total Q.</th>
+                                        <th className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">Question No.</th>
+                                        <th className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">No. Of Questions</th>
+                                        <th className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">+ Mark</th>
+                                        <th className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">- Mark</th>
+                                        <th className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">Total Marks</th>
+                                        <th className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">Passing Marks</th>
+                                        <th className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200">Max Att. Q.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {data.sections?.map((section, sectionIndex) => {
+                                        const sectionTotalMarks =
+                                            section.questionGroups?.reduce((total, group) => {
+                                                const questionsInGroup = (group.range?.[1] || 0) - (group.range?.[0] || 0) + 1;
+                                                return total + questionsInGroup * (group.marksPerQuestion || 0);
+                                            }, 0) || 0;
+
+                                        // Generate color for section name
+                                        const sectionColors = [
+                                            "text-green-600 dark:text-green-400",
+                                            "text-pink-600 dark:text-pink-400",
+                                            "text-purple-600 dark:text-purple-400",
+                                            "text-blue-600 dark:text-blue-400",
+                                            "text-orange-600 dark:text-orange-400",
+                                            "text-teal-600 dark:text-teal-400",
+                                            "text-indigo-600 dark:text-indigo-400",
+                                            "text-red-600 dark:text-red-400",
+                                        ];
+                                        const sectionColor = sectionColors[sectionIndex % sectionColors.length];
+
+                                        return (
+                                            section.questionGroups?.map((group, groupIndex) => {
+                                                const questionsInGroup = (group.range?.[1] || 0) - (group.range?.[0] || 0) + 1;
+                                                const isFirstGroupInSection = groupIndex === 0;
+
+                                                return (
+                                                    <tr
+                                                        key={`${sectionIndex}-${groupIndex}`}
+                                                        className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                                                    >
+                                                        {isFirstGroupInSection && (
+                                                            <td
+                                                                className={`px-4 py-3 font-medium border-r border-gray-200 dark:border-gray-600 ${sectionColor}`}
+                                                                rowSpan={section.questionGroups?.length || 1}
+                                                            >
+                                                                <div className="flex items-center space-x-2">
+                                                                    <span className="font-semibold">{section.name}</span>
+                                                                    {section.isCompulsory && (
+                                                                        <Badge className="bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700 text-xs shadow-none">
+                                                                            Compulsory
+                                                                        </Badge>
+                                                                    )}
+                                                                </div>
+                                                            </td>
+                                                        )}
+                                                        {isFirstGroupInSection && (
+                                                            <td
+                                                                className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600"
+                                                                rowSpan={section.questionGroups?.length || 1}
+                                                            >
+                                                                {section.questionsCount}
+                                                            </td>
+                                                        )}
+                                                        <td className="px-3 py-3 text-center text-gray-600 dark:text-gray-400 border-r border-gray-200 dark:border-gray-600">
+                                                            <div className="text-[0.8rem]">
+                                                                {group.range?.[0]} to {group.range?.[1]}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-3 py-3 text-center font-medium text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">
+                                                            {questionsInGroup}
+                                                        </td>
+                                                        <td className="px-3 py-3 text-center border-r border-gray-200 dark:border-gray-600">
+                                                            <span className="inline-block bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700 px-2 py-1 rounded text-xs font-medium">
+                                                                {group.marksPerQuestion}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-3 py-3 text-center border-r border-gray-200 dark:border-gray-600">
+                                                            <span className="inline-block bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-700 px-2 py-1 rounded text-xs font-medium">
+                                                                {group.negativeMarks}
+                                                            </span>
+                                                        </td>
+                                                        {isFirstGroupInSection && (
+                                                            <td
+                                                                className="px-3 py-3 text-center font-bold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600"
+                                                                rowSpan={section.questionGroups?.length || 1}
+                                                            >
+                                                                {sectionTotalMarks}
+                                                            </td>
+                                                        )}
+                                                        {isFirstGroupInSection && (
+                                                            <td
+                                                                className="px-3 py-3 text-center font-bold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600"
+                                                                rowSpan={section.questionGroups?.length || 1}
+                                                            >
+                                                                {section?.passingMarks || "10"}
+                                                            </td>
+                                                        )}
+                                                        {isFirstGroupInSection && (
+                                                            <td className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200" rowSpan={section.questionGroups?.length || 1}>
+                                                                {section.questionsToAttempt}
+                                                            </td>
+                                                        )}
+                                                    </tr>
+                                                );
+                                            }) || (
+                                                <tr key={sectionIndex} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                                    <td className={`px-4 py-3 font-medium border-r border-gray-200 dark:border-gray-600 ${sectionColor}`}>
+                                                        <div className="flex items-center space-x-2">
+                                                            <span className="font-semibold">{section.name}</span>
+                                                            {section.isCompulsory && (
+                                                                <Badge className="bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700 text-xs">
+                                                                    Compulsory
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">
+                                                        {section.questionsCount}
+                                                    </td>
+                                                    <td className="px-3 py-3 text-center text-gray-600 dark:text-gray-400 border-r border-gray-200 dark:border-gray-600">-</td>
+                                                    <td className="px-3 py-3 text-center font-medium text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">-</td>
+                                                    <td className="px-3 py-3 text-center border-r border-gray-200 dark:border-gray-600">-</td>
+                                                    <td className="px-3 py-3 text-center border-r border-gray-200 dark:border-gray-600">-</td>
+                                                    <td className="px-3 py-3 text-center font-bold text-gray-800 dark:text-gray-200 border-r border-gray-200 dark:border-gray-600">
+                                                        {sectionTotalMarks}
+                                                    </td>
+                                                    <td className="px-3 py-3 text-center font-semibold text-gray-800 dark:text-gray-200">{section.questionsToAttempt}</td>
+                                                </tr>
+                                            )
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
                         </div>
 
-                        <div className="bg-white/15 backdrop-blur-md rounded-xl px-4 py-3 border border-white/20">
-                            <div className="flex items-center">
-                                <Users className="h-4 w-4 mr-2 text-white" />
+                        {/* Footer Summary */}
+                        <div className="bg-gray-100 dark:bg-gray-700 p-4 border-t border-gray-200 dark:border-gray-600">
+                            <div className={`grid gap-4 ${isMobile ? "grid-cols-1" : "grid-cols-3"}`}>
+                                {/* Attempt Rules */}
                                 <div>
-                                    <p className="text-white text-xs">Total Questions</p>
-                                    <p className="text-white font-semibold text-sm">{totalQuestions}</p>
+                                    <h4 className="font-semibold text-gray-800 dark:text-gray-200 text-sm mb-2 flex items-center">
+                                        <Target className="h-4 w-4 mr-2 text-blue-600 dark:text-blue-400" />
+                                        Attempt Rules
+                                    </h4>
+                                    <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                                        {data.attemptRules?.minSectionsToAttempt && <p>• Minimum {data.attemptRules.minSectionsToAttempt} sections required</p>}
+                                        {data.attemptRules?.maxSectionsToAttempt && <p>• Maximum {data.attemptRules.maxSectionsToAttempt} sections allowed</p>}
+                                        {compulsorySections > 0 && (
+                                            <p>
+                                                • {compulsorySections} compulsory section{compulsorySections > 1 ? "s" : ""}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="bg-white/15 backdrop-blur-md rounded-xl px-4 py-3 border border-white/20">
-                            <div className="flex items-center">
-                                <Users className="h-4 w-4 mr-2 text-white" />
-                                <div>
-                                    <p className="text-white text-xs">Questions to attempt</p>
-                                    <p className="text-white font-semibold text-sm">{totalAttemptQuestions}</p>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div className="bg-white/15 backdrop-blur-md rounded-xl px-4 py-3 border border-white/20">
-                            <div className="flex items-center">
-                                <Award className="h-4 w-4 mr-2 text-white" />
+                                {/* Section Types */}
                                 <div>
-                                    <p className="text-white text-xs">Total Marks</p>
-                                    <p className="text-white font-semibold text-sm">{totalMarks}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white/15 backdrop-blur-md rounded-xl px-4 py-3 border border-white/20">
-                            <div className="flex items-center">
-                                <BookCheck className="h-4 w-4 mr-2 text-white" />
-                                <div>
-                                    <p className="text-white text-xs">Passing Marks</p>
-                                    <p className="text-white font-semibold text-sm">{data.passingMarks || "0"}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Language Options */}
-                    {data.languageOptions?.length > 0 && (
-                        <div className="flex items-center space-x-2">
-                            <Globe className="h-4 w-4 text-white/80" />
-                            <span className="text-white text-sm">Available in:</span>
-                            <div className="flex flex-wrap gap-1">
-                                {data.languageOptions.map((lang) => (
-                                    <Badge key={lang} variant="outline" className="text-white border-white/30 text-xs bg-white/10">
-                                        {lang}
+                                    <h4 className="font-semibold text-gray-800 dark:text-gray-200 text-sm mb-2 flex items-center">
+                                        <Layers className="h-4 w-4 mr-2 text-purple-600 dark:text-purple-400" />
+                                        Section Types
+                                    </h4>
+                                    <div className="flex flex-wrap gap-2 mb-2">
+                                        <div className="flex items-center">
+                                            <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                            <span className="text-xs text-gray-600 dark:text-gray-400">Compulsory</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <div className="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
+                                            <span className="text-xs text-gray-600 dark:text-gray-400">Optional</span>
+                                        </div>
+                                    </div>
+                                    <Badge className="bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700 text-xs shadow-sm">
+                                        <Clock className="h-3 w-3 mr-1" />
+                                        {data.durationInMinutes || 90} Minutes Test
                                     </Badge>
-                                ))}
+                                </div>
+
+                                {/* Quick Stats */}
+                                <div>
+                                    <h4 className="font-semibold text-gray-800 dark:text-gray-200 text-sm mb-2 flex items-center">
+                                        <BarChart3 className="h-4 w-4 mr-2 text-green-600 dark:text-green-400" />
+                                        Quick Stats
+                                    </h4>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between items-center p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-600">
+                                            <span className="text-xs text-gray-600 dark:text-gray-400">Avg. per Section:</span>
+                                            <span className="text-xs font-semibold text-gray-800 dark:text-gray-200">
+                                                {data.sections?.length ? Math.round(totalQuestions / data.sections.length) : 0} questions
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between items-center p-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-600">
+                                            <span className="text-xs text-gray-600 dark:text-gray-400">Time per Question:</span>
+                                            <span className="text-xs font-semibold text-gray-800 dark:text-gray-200">
+                                                {totalQuestions ? Math.round(((data.durationInMinutes || 90) / totalQuestions) * 100) / 100 : 0} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    )}
+                    </div>
                 </div>
             </div>
 
@@ -175,7 +355,7 @@ export function ExamDetailPreview({ initialData, viewportWidth, onDetailsPage })
                 <div className={isMobile || isTablet ? "space-y-6" : "grid grid-cols-3 gap-8"}>
                     <div className={isMobile || isTablet ? "space-y-6" : "col-span-2 space-y-6"}>
                         {/* Sections */}
-                        <ExamContentCard title="Exam Sections" Icon={Layers} headerColor="purple">
+                        <ContentCard title="Exam Sections" subTitle="Detailed breakdown of all exam sections with question distribution and marking scheme" Icon={Layers} headerColor="purple">
                             <div className="space-y-4">
                                 {data.sections?.map((section, index) => (
                                     <div
@@ -275,11 +455,11 @@ export function ExamDetailPreview({ initialData, viewportWidth, onDetailsPage })
                                     </div>
                                 ))}
                             </div>
-                        </ExamContentCard>
+                        </ContentCard>
 
                         {/* Global Settings */}
                         {data.globalMarkingPolicy && (
-                            <ExamContentCard title="Global Marking Scheme" headerColor="green" Icon={Award}>
+                            <ContentCard title="Global Marking Scheme" subTitle="Default marking policy applied across all sections unless overridden" headerColor="green" Icon={Award}>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-700">
                                         <div>
@@ -296,7 +476,113 @@ export function ExamDetailPreview({ initialData, viewportWidth, onDetailsPage })
                                         <span className="text-red-600 font-bold text-xl">-{data.globalMarkingPolicy.defaultNegativeMark}</span>
                                     </div>
                                 </div>
-                            </ExamContentCard>
+                            </ContentCard>
+                        )}
+
+                        {/* Security Settings */}
+                        {data.securitySettings && (
+                            <ContentCard title="Security & Proctoring" subTitle="Advanced security measures to ensure exam integrity and prevent malpractice" headerColor="red" Icon={Shield}>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-3">
+                                        <h4 className="font-medium text-gray-900 dark:text-white text-sm">Browser Security</h4>
+                                        <div className="space-y-2">
+                                            {data.securitySettings.enableBrowserLockdown && (
+                                                <div className="flex items-center text-xs">
+                                                    <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                    <span className="text-gray-700 dark:text-gray-300">Browser lockdown enabled</span>
+                                                </div>
+                                            )}
+                                            {data.securitySettings.disableRightClick && (
+                                                <div className="flex items-center text-xs">
+                                                    <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                    <span className="text-gray-700 dark:text-gray-300">Right-click disabled</span>
+                                                </div>
+                                            )}
+                                            {data.securitySettings.disableCopyPaste && (
+                                                <div className="flex items-center text-xs">
+                                                    <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                    <span className="text-gray-700 dark:text-gray-300">Copy-paste disabled</span>
+                                                </div>
+                                            )}
+                                            {data.securitySettings.enableFullScreenMode && (
+                                                <div className="flex items-center text-xs">
+                                                    <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                    <span className="text-gray-700 dark:text-gray-300">Full-screen mode required</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <h4 className="font-medium text-gray-900 dark:text-white text-sm">Monitoring</h4>
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-between text-xs">
+                                                <span className="text-gray-700 dark:text-gray-300">Max tab switches</span>
+                                                <span className="font-medium text-gray-900 dark:text-gray-100">{data.securitySettings.maxTabSwitches}</span>
+                                            </div>
+                                            <div className="flex items-center justify-between text-xs">
+                                                <span className="text-gray-700 dark:text-gray-300">Suspicious activity threshold</span>
+                                                <span className="font-medium text-gray-900 dark:text-gray-100">{data.securitySettings.suspiciousActivityThreshold}</span>
+                                            </div>
+                                            {data.securitySettings.allowedBrowsers && (
+                                                <div className="text-xs">
+                                                    <span className="text-gray-700 dark:text-gray-300">Allowed browsers: </span>
+                                                    <span className="font-medium text-gray-900 dark:text-gray-100">{data.securitySettings.allowedBrowsers.join(", ")}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </ContentCard>
+                        )}
+
+                        {/* Results & Analytics */}
+                        {data.resultsSettings && (
+                            <ContentCard title="Results & Analytics" subTitle="Comprehensive result analysis and performance tracking for detailed insights" headerColor="blue" Icon={BarChart3}>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-4">
+                                        <h4 className="font-medium text-gray-900 dark:text-white text-sm">Result Display</h4>
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                                                <span className="text-sm text-blue-800 dark:text-blue-200">Passing Percentage</span>
+                                                <span className="font-bold text-blue-600 dark:text-blue-400">{data.resultsSettings.passingPercentage}%</span>
+                                            </div>
+                                            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                                <span className="text-sm text-gray-700 dark:text-gray-300">Result Visibility Delay</span>
+                                                <span className="font-medium text-gray-900 dark:text-gray-100">{data.resultsSettings.resultVisibilityDelay}h</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <h4 className="font-medium text-gray-900 dark:text-white text-sm">Features</h4>
+                                        <div className="space-y-2">
+                                            {data.resultsSettings.showCorrectAnswers && (
+                                                <div className="flex items-center text-xs">
+                                                    <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                    <span className="text-gray-700 dark:text-gray-300">Show correct answers</span>
+                                                </div>
+                                            )}
+                                            {data.resultsSettings.showDetailedAnalysis && (
+                                                <div className="flex items-center text-xs">
+                                                    <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                    <span className="text-gray-700 dark:text-gray-300">Detailed performance analysis</span>
+                                                </div>
+                                            )}
+                                            {data.resultsSettings.showRanking && (
+                                                <div className="flex items-center text-xs">
+                                                    <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                    <span className="text-gray-700 dark:text-gray-300">Ranking & leaderboard</span>
+                                                </div>
+                                            )}
+                                            {data.resultsSettings.enableCertificateGeneration && (
+                                                <div className="flex items-center text-xs">
+                                                    <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                    <span className="text-gray-700 dark:text-gray-300">Certificate generation</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </ContentCard>
                         )}
                     </div>
 
@@ -304,7 +590,7 @@ export function ExamDetailPreview({ initialData, viewportWidth, onDetailsPage })
                     {isDesktop && (
                         <div className="space-y-6">
                             {/* Exam Rules */}
-                            <ExamContentCard title={"Exam Rules"} Icon={Settings} headerColor="orange">
+                            <ContentCard title="Exam Rules" subTitle="Navigation and attempt guidelines" Icon={Settings} headerColor="orange">
                                 <div className="space-y-3">
                                     {data.attemptRules?.allowSectionNavigation && (
                                         <div className="flex items-center text-xs">
@@ -337,31 +623,106 @@ export function ExamDetailPreview({ initialData, viewportWidth, onDetailsPage })
                                         </div>
                                     )}
                                 </div>
-                            </ExamContentCard>
+                            </ContentCard>
 
                             {/* Quick Stats */}
-                            <ExamContentCard title={"Quick Stats"} Icon={TrendingUp}>
-                                <div className="">
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-gray-600 dark:text-gray-400">Avg. per Section:</span>
-                                            <span className="font-medium text-gray-900 dark:text-gray-100">
-                                                {data.sections?.length ? Math.round(totalQuestions / data.sections.length) : 0} questions
-                                            </span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-gray-600 dark:text-gray-400">Marks per Question:</span>
-                                            <span className="font-medium text-gray-900 dark:text-gray-100">{totalQuestions ? Math.round((totalMarks / totalQuestions) * 100) / 100 : 0} avg</span>
-                                        </div>
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-gray-600 dark:text-gray-400">Time per Question:</span>
-                                            <span className="font-medium text-gray-900 dark:text-gray-100">
-                                                {totalQuestions ? Math.round(((data.durationInMinutes || 90) / totalQuestions) * 100) / 100 : 0} min
-                                            </span>
-                                        </div>
+                            <ContentCard title="Quick Stats" subTitle="Key performance metrics" Icon={TrendingUp} headerColor="teal">
+                                <div className="space-y-3">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-600 dark:text-gray-400">Avg. per Section:</span>
+                                        <span className="font-medium text-gray-900 dark:text-gray-100">{data.sections?.length ? Math.round(totalQuestions / data.sections.length) : 0} questions</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-600 dark:text-gray-400">Marks per Question:</span>
+                                        <span className="font-medium text-gray-900 dark:text-gray-100">{totalQuestions ? Math.round((totalMarks / totalQuestions) * 100) / 100 : 0} avg</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-600 dark:text-gray-400">Time per Question:</span>
+                                        <span className="font-medium text-gray-900 dark:text-gray-100">
+                                            {totalQuestions ? Math.round(((data.durationInMinutes || 90) / totalQuestions) * 100) / 100 : 0} min
+                                        </span>
                                     </div>
                                 </div>
-                            </ExamContentCard>
+                            </ContentCard>
+
+                            {/* Exam Duration */}
+                            <ContentCard title="Time Management" subTitle="Duration and timing details" Icon={Clock} headerColor="indigo">
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between p-3 bg-indigo-50 dark:bg-indigo-950/20 rounded-lg">
+                                        <div>
+                                            <span className="text-sm font-medium text-indigo-800 dark:text-indigo-200">Total Duration</span>
+                                            <p className="text-xs text-indigo-600 dark:text-indigo-400">Exam time limit</p>
+                                        </div>
+                                        <span className="text-indigo-600 font-bold text-lg">{data.durationInMinutes || 90} min</span>
+                                    </div>
+                                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                                        <p>• Auto-submit when time ends</p>
+                                        <p>• Timer visible throughout exam</p>
+                                        <p>• Section-wise time limits may apply</p>
+                                    </div>
+                                </div>
+                            </ContentCard>
+
+                            {/* Access Control */}
+                            {data.accessControlSettings && (
+                                <ContentCard title="Access Control" subTitle="Entry requirements and restrictions" Icon={Lock} headerColor="violet">
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-gray-600 dark:text-gray-400">Max Attempts:</span>
+                                            <span className="font-medium text-gray-900 dark:text-gray-100">{data.accessControlSettings.maxAttempts}</span>
+                                        </div>
+                                        {data.accessControlSettings.enableAccessCode && (
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-gray-600 dark:text-gray-400">Access Code:</span>
+                                                <span className="font-medium text-gray-900 dark:text-gray-100">Required</span>
+                                            </div>
+                                        )}
+                                        {data.accessControlSettings.allowedUserGroups && (
+                                            <div className="text-xs">
+                                                <span className="text-gray-600 dark:text-gray-400">Allowed Groups:</span>
+                                                <div className="mt-1 space-y-1">
+                                                    {data.accessControlSettings.allowedUserGroups.map((group, index) => (
+                                                        <Badge key={index} variant="outline" className="text-xs mr-1">
+                                                            {group.replace("_", " ")}
+                                                        </Badge>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </ContentCard>
+                            )}
+
+                            {/* Notifications */}
+                            {data.notificationSettings && (
+                                <ContentCard title="Notifications" subTitle="Communication and alerts setup" Icon={Bell} headerColor="yellow">
+                                    <div className="space-y-2">
+                                        {data.notificationSettings.enableEmailNotifications && (
+                                            <div className="flex items-center text-xs">
+                                                <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                <span className="text-gray-700 dark:text-gray-300">Email notifications</span>
+                                            </div>
+                                        )}
+                                        {data.notificationSettings.enableSMSNotifications && (
+                                            <div className="flex items-center text-xs">
+                                                <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                <span className="text-gray-700 dark:text-gray-300">SMS notifications</span>
+                                            </div>
+                                        )}
+                                        {data.notificationSettings.sendExamReminders && (
+                                            <div className="flex items-center text-xs">
+                                                <CheckCircle className="h-3 w-3 text-green-500 mr-2" />
+                                                <span className="text-gray-700 dark:text-gray-300">Exam reminders</span>
+                                            </div>
+                                        )}
+                                        {data.notificationSettings.reminderIntervals && (
+                                            <div className="text-xs text-gray-600 dark:text-gray-400">
+                                                <p>Reminder intervals: {data.notificationSettings.reminderIntervals.join("h, ")}h before exam</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </ContentCard>
+                            )}
                         </div>
                     )}
                 </div>

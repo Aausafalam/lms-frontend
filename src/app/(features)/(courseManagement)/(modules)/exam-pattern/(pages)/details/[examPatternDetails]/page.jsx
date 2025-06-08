@@ -38,7 +38,6 @@ export default function ExamPatternDetailsPage({}) {
             <Breadcrumb items={breadcrumbItems} className="mb-4" />
             {/* Main Content Area */}
             <div className="flex gap-4 w-full">
-                {/* <SidebarNavigation activeTab={activeTab} setActiveTab={setActiveTab} /> */}
                 {/* Content Area */}
                 <div className="max-w-[1225px] m-auto">
                     <ExamPatternDetailsContent activeTab={activeTab} />

@@ -1,7 +1,7 @@
-import ExamFormBase from ".."
+import ExamFormBase from "..";
 
-const AddExam = () => {
-  return <ExamFormBase initialData={{}} />
-}
+const AddExamPattern = () => {
+    return <ExamFormBase initialData={{}} />;
+};
 
-export default AddExam
+export default AddExamPattern;

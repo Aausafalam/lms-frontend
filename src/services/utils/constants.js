@@ -85,7 +85,7 @@ const apiConstants = {
     lesson: {
         BASE_ROUTE: "/course",
     },
-    content: {
+    video: {
         BASE_ROUTE: "/course",
     },
     examPattern: {

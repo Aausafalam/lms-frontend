@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Smartphone, Tablet, Monitor, Maximize2, X, Minimize2 } from "lucide-react";
+import { Smartphone, Tablet, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Tabs from "@/components/tab";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -44,7 +44,7 @@ export function CoursePreview({ data }) {
                     </div>
                     <div className="dark:bg-gray-900 border-2 border-t-0 border-white dark:border-gray-900 rounded-b-xl overflow-hidden shadow-sm w-full">
                         <div className="overflow-hidden">
-                            <CourseDetailPreview data={data} viewportWidth={devicePresets.mobile} />
+                            <CourseDetailPreview initialData={data} viewportWidth={devicePresets.mobile} />
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ export function CoursePreview({ data }) {
 
             {/* Modal for larger previews */}
             <Dialog open={showModal} onOpenChange={setShowModal}>
-                <DialogContent className={`p-0 ${isFullscreen ? "max-w-full w-full h-screen m-0 rounded-none" : "max-w-[90vw] w-full"}`}>
+                <DialogContent className={`p-0 ${isFullscreen ? "max-w-full w-full h-screen m-0 rounded-none" : "max-w-[90vw] w-full"}`} style={{ width: `${devicePresets[activeTab.id]}px` }}>
                     {/* Modal Header */}
                     <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
                         <DialogTitle className="flex items-center">
@@ -119,11 +119,8 @@ export function CoursePreview({ data }) {
                             maxHeight: isFullscreen ? "calc(100vh - 60px)" : "80vh",
                         }}
                     >
-                        <div
-                            className={`bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm ${isFullscreen ? "h-full" : ""}`}
-                            style={{ width: `${devicePresets[activeTab.id]}px` }}
-                        >
-                            <CourseDetailPreview data={data} viewportWidth={devicePresets[activeTab.id]} />
+                        <div className={`bg-gray-100 p-2 dark:bg-black rounded-xl overflow-hidden shadow-sm ${isFullscreen ? "h-full" : ""}`} style={{ width: `${devicePresets[activeTab.id]}px` }}>
+                            <CourseDetailPreview initialData={data} viewportWidth={devicePresets[activeTab.id]} />
                         </div>
                     </div>
                 </DialogContent>
