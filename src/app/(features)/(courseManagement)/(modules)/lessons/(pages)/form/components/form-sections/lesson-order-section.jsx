@@ -2,7 +2,7 @@
 
 import { memo, useState } from "react";
 import { Settings, GripVertical } from "lucide-react";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";

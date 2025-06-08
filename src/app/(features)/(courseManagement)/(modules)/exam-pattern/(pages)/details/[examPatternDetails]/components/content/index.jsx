@@ -5,7 +5,7 @@ import { sampleExamData } from "../../../../form/utils/seeds";
 const LessonDetailsContent = ({ activeTab }) => {
     switch (activeTab) {
         case "overview":
-            return <ExamDetailPreview data={sampleExamData} viewportWidth={1024} onDetailsPage={true} />;
+            return <ExamDetailPreview initialData={sampleExamData} viewportWidth={1024} onDetailsPage={true} />;
         case "content":
             return <CourseContent />;
         case "assignments":

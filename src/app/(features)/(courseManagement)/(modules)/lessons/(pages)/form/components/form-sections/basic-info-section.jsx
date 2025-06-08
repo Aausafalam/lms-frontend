@@ -3,8 +3,8 @@ import { memo } from "react";
 import { FileText, Bookmark, Clock, Hash, Package, Tag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FormSection } from "./form-section";
 import { Select } from "@/components/ui/select";
+import { FormSection } from "@/components/formSection";
 
 export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isActive, formData = {}, handlers = {} }) {
     const { handleInputChange } = handlers;

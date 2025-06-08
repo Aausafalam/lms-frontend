@@ -361,8 +361,8 @@ export function useModuleFormData({ initialData }) {
             // Simulate API call
             // await new Promise((resolve) => setTimeout(resolve, 2000));
 
-            setSuccess(true);
-            setTimeout(() => setSuccess(false), 5000);
+            // setSuccess(true);
+            // setTimeout(() => setSuccess(false), 5000);
         } catch (err) {
             console.error("Save error:", err);
             setError(err.message || "An error occurred while saving the module");

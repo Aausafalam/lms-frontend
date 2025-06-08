@@ -94,6 +94,15 @@ export const SecurityProctoringSection = memo(function SecurityProctoringSection
                             </div>
                             <Switch checked={securitySettings.enableFullScreenMode || false} onCheckedChange={(checked) => handleSecuritySettingsChange("enableFullScreenMode", checked)} />
                         </div>
+                        <div className="flex items-center justify-between">
+                            <div className="space-y-0.5">
+                                <Label className="text-base">Restrict Back Button Navigation</Label>
+                                <p className="text-sm text-muted-foreground">
+                                    Prevent users from navigating back using the browser's back button to ensure session flow integrity and avoid skipping critical steps.
+                                </p>
+                            </div>
+                            <Switch checked={securitySettings.preventNavigationBack || false} onCheckedChange={(checked) => handleSecuritySettingsChange("preventNavigationBack", checked)} />
+                        </div>
                     </div>
                 </div>
 

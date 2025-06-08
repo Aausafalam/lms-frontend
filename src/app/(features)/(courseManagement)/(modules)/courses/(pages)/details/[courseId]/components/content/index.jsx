@@ -3,6 +3,7 @@ import { CourseDetailPreview } from "../../../../form/components/preview/course-
 import { sampleCourseData } from "../../../../form/utils/seeds";
 import CourseModules from "@/app/(features)/(courseManagement)/(modules)/modules/page";
 import { useParams } from "next/navigation";
+import ExamPattern from "@/app/(features)/(courseManagement)/(modules)/exam-pattern/page";
 
 const CourseDetailsContent = ({ activeTab }) => {
     const { courseId } = useParams();
@@ -11,6 +12,8 @@ const CourseDetailsContent = ({ activeTab }) => {
             return <CourseDetailPreview initialData={sampleCourseData} viewportWidth={1024} onDetailsPage={true} />;
         case "modules":
             return <CourseModules onCourseDetailsPage={courseId} />;
+        case "exam-pattern":
+            return <ExamPattern onCourseDetailsPage={courseId} />;
         default:
             return <CourseDetailPreview initialData={sampleCourseData} viewportWidth={1024} onDetailsPage={true} />;
     }

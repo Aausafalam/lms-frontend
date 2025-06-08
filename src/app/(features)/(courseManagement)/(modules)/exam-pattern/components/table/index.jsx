@@ -11,9 +11,11 @@ import { useNavigation } from "@/components/navigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ImageIcon, Package, Plus } from "lucide-react";
 import { EmptyState } from "@/components/emptyState";
+import { useParams } from "next/navigation";
 
 const examPatternTable = ({ setSelectedExamPattern, setModalState, refreshTable }) => {
     const { navigate } = useNavigation();
+    const { courseId } = useParams();
     const breadcrumbItems = [
         {
             title: "Exam Pattern",
@@ -25,7 +27,7 @@ const examPatternTable = ({ setSelectedExamPattern, setModalState, refreshTable 
     const formatTableData = (data) => ({
         rows: data?.records,
         actionData: examPatternTableUtils.getTableActions({ data, setModalState, setSelectedExamPattern, navigate }),
-        url: `/exam-pattern`,
+        url: `/course/${courseId}/exam-pattern`,
         pagination: GlobalUtils.tablePagination(data),
         sorting: examPatternTableConstants.SORTING,
         externalFilters: examPatternTableConstants.FILTERS,
@@ -34,7 +36,8 @@ const examPatternTable = ({ setSelectedExamPattern, setModalState, refreshTable 
             setModalState,
             styles,
             navigate,
-            title: <Breadcrumb items={breadcrumbItems} />,
+            courseId,
+            title: courseId ? "Exam Pattern List" : <Breadcrumb items={breadcrumbItems} />,
         }),
         checkbox: true,
         refreshTable: refreshTable || false,
@@ -60,7 +63,7 @@ const examPatternTable = ({ setSelectedExamPattern, setModalState, refreshTable 
     });
 
     /* Memoize table data for performance optimization */
-    const tableData = useMemo(() => formatTableData(sampleExamPatternTableData), [refreshTable]);
+    const tableData = useMemo(() => formatTableData(sampleExamPatternTableData), [courseId, refreshTable]);
 
     return (
         <div className={styles.container}>

@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { User2Icon, Plus, X, Tag } from "lucide-react";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection";
 import { Select } from "@/components/ui/select";
 
 export const InstructorsSection = memo(function InstructorsSection({ formData, handlers, sectionRef, isActive }) {

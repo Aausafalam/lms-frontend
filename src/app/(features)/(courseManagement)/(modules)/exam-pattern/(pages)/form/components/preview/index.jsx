@@ -53,7 +53,7 @@ export function ExamPreview({ data }) {
                     </div>
                     <div className="mt-4 w-full ml-2">
                         <p className="text-sm text-gray-500 dark:text-gray-400">Click the button below to open the tablet preview</p>
-                        <Button className="mt-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onClick={() => setShowModal(true)}>
+                        <Button className="mt-2 bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600" onClick={() => setShowModal(true)}>
                             <Tablet className="h-4 w-4 mr-2" />
                             Open Tablet Preview
                         </Button>
@@ -73,7 +73,7 @@ export function ExamPreview({ data }) {
                     </div>
                     <div className="mt-4 ml-2 w-full">
                         <p className="text-sm text-gray-500 dark:text-gray-400">Click the button below to open the desktop preview</p>
-                        <Button className="mt-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" onClick={() => setShowModal(true)}>
+                        <Button className="mt-2 bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600" onClick={() => setShowModal(true)}>
                             <Monitor className="h-4 w-4 mr-2" />
                             Open Desktop Preview
                         </Button>
@@ -91,7 +91,11 @@ export function ExamPreview({ data }) {
                 <DialogContent className={`p-0 ${isFullscreen ? "max-w-full w-full h-screen m-0 rounded-none" : "max-w-[90vw] w-full"}`}>
                     <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
                         <DialogTitle className="flex items-center">
-                            {activeTab.id === "tablet" ? <Tablet className="h-5 w-5 mr-2 text-blue-600 dark:text-blue-400" /> : <Monitor className="h-5 w-5 mr-2 text-blue-600 dark:text-blue-400" />}
+                            {activeTab.id === "tablet" ? (
+                                <Tablet className="h-5 w-5 mr-2 text-orange-600 dark:text-orange-400" />
+                            ) : (
+                                <Monitor className="h-5 w-5 mr-2 text-orange-600 dark:text-orange-400" />
+                            )}
                             {activeTab.id.charAt(0).toUpperCase() + activeTab.id.slice(1)} Preview ({devicePresets[activeTab.id]}px)
                         </DialogTitle>
                         <div></div>

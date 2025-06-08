@@ -7,7 +7,7 @@ class ExamPatternTableUtils {
     /**
      * Generates table header configuration.
      */
-    static getTableHeader({ data, setModalState, styles, navigate, title }) {
+    static getTableHeader({ data, setModalState, styles, navigate, title, courseId }) {
         const autoSuggestions = TableUtils.formatDataForAutoSuggestion(data?.data || [], ["name"]);
 
         return {
@@ -17,7 +17,7 @@ class ExamPatternTableUtils {
                 {
                     icon: TableIcon.PLUS,
                     label: "New Exam Pattern",
-                    onClick: () => navigate(`/exam-pattern/form/add`),
+                    onClick: () => navigate(`/exam-pattern/form/add?courseId=${courseId}`),
                 },
                 TableUtils.getExportButton({ url: "/exam-pattern" }),
                 {

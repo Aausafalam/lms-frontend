@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, ImageIcon, BookOpen, Target, Link2, Users, PresentationIcon, Award } from "lucide-react";
+import { FileText, ImageIcon, BookOpen, Target, Link2, Users, PresentationIcon, Award, BookCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import GlobalUtils from "@/lib/utils";
@@ -11,7 +11,7 @@ export function SidebarNavigation({ activeTab, setActiveTab }) {
     const navigationItems = [
         { id: "overview", label: "Overview", icon: <FileText className="h-4 w-4" /> },
         { id: "modules", label: "Modules", icon: <ImageIcon className="h-4 w-4" /> },
-        // { id: "lessons", label: "Lessons", icon: <ImageIcon className="h-4 w-4" /> },
+        { id: "exam-pattern", label: "Exam Pattern", icon: <BookCheck className="h-4 w-4" /> },
         { id: "assignments", label: "Assignments", icon: <BookOpen className="h-4 w-4" /> },
         { id: "quiz", label: "Quiz", icon: <Target className="h-4 w-4" /> },
         { id: "syllabus", label: "Syllabus", icon: <Award className="h-4 w-4" /> },

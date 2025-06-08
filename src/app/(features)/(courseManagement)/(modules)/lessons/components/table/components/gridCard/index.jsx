@@ -36,7 +36,7 @@ export default function LessonCard({ data }) {
         topicsCount: "15",
         thumbImage: "https://img.freepik.com/free-vector/website-development-banner-1687.jpg",
         featured: true,
-        progress: 65, // Progress percentage (0-100)
+        progress: 65,
     });
 
     useEffect(() => {

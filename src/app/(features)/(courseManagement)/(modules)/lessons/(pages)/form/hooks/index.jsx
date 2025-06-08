@@ -322,15 +322,10 @@ export function useLessonFormData({ initialData }) {
                 onSuccess: () => setSuccess(true),
                 onError: () => setTimeout(() => setSuccess(false), 5000),
             });
-
-            setSuccess(true);
-            setTimeout(() => setSuccess(false), 5000);
         } catch (err) {
             console.error("Save error:", err);
             setError(err.message || "An error occurred while saving the lesson");
             throw err;
-        } finally {
-            setIsSaving(false);
         }
     }, [formData, validateForm]);
 

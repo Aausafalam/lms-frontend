@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { Lightbulb, CheckCircle2, X, Award } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { FormSection } from "./form-section"
+import { FormSection } from "@/components/formSection";
 
 export const PreRequisitesSection = memo(function PreRequisitesSection({
   handlers = {},

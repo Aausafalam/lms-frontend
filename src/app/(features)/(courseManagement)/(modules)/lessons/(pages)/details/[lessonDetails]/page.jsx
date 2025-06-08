@@ -1,13 +1,11 @@
 "use client";
-
-import { lessonDetailsData } from "./data/lesson-data";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Briefcase, LayoutDashboard } from "lucide-react";
 import { SidebarNavigation } from "./components/sidebar";
 import LessonDetailsContent from "./components/content";
 import { useState } from "react";
 
-export default function LessonDetailsPage({ lesson = lessonDetailsData }) {
+export default function LessonDetailsPage() {
     const [activeTab, setActiveTab] = useState("overview");
     const breadcrumbItems = [
         {

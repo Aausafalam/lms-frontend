@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Paperclip, X, Plus, FileText, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FormSection } from "./form-section";
+import { FormSection } from "@/components/formSection";
 import { Textarea } from "@/components/ui/textarea";
 
 /**
