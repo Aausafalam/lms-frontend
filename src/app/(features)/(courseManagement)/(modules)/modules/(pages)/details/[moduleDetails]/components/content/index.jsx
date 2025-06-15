@@ -1,7 +1,7 @@
 import ModuleContent from "@/app/(features)/(courseManagement)/(modules)/videos/page";
 import { sampleModuleData } from "../../../../form/utils/seeds";
 import { ModuleDetailPreview } from "../../../../form/components/preview/module-detail-preview";
-import CourseLessons from "@/app/(features)/(courseManagement)/(modules)/exam-builder/page";
+import CourseLessons from "@/app/(features)/(courseManagement)/(modules)/lessons/page";
 
 const ModuleDetailsContent = ({ activeTab }) => {
     switch (activeTab) {

@@ -1,24 +1,24 @@
-import { courseApiService } from "@/services/api/course";
+import { questionApiService } from "@/services/api/question-panel";
 import { useLoading } from "@/services/context/loading";
 import { useNotification } from "@/services/context/notification";
 import apiConstants from "@/services/utils/constants";
 import { useCallback, useState } from "react";
 
 /**
- * Custom hook to handle Course creation
+ * Custom hook to handle Question creation
  */
-export const useCourseCreate = () => {
+export const useQuestionCreate = () => {
     const { showErrorNotification, showSuccessNotification, successMessages, errorMessages } = useNotification();
     const { isLoading, setLoading } = useLoading();
     const CREATE_COURSE_KEY = apiConstants.loadingStateKeys.CREATE_COURSE;
 
-    const executeCourseCreate = useCallback(
-        async ({ payload, onSuccess, onError, options }, params) => {
+    const executeQuestionCreate = useCallback(
+        async ({ dynamicRoute, payload, onSuccess, onError, options }, params) => {
             setLoading(CREATE_COURSE_KEY, true);
             const controller = new AbortController();
 
             try {
-                const data = await courseApiService.create(payload, params, controller.signal);
+                const data = await questionApiService.create(dynamicRoute, payload, params, controller.signal);
                 showSuccessNotification({
                     key: CREATE_COURSE_KEY,
                     value: data,
@@ -29,7 +29,7 @@ export const useCourseCreate = () => {
             } catch (error) {
                 showErrorNotification({
                     key: CREATE_COURSE_KEY,
-                    value: error?.message || "Failed to create course",
+                    value: error?.message || "Failed to create question",
                 });
                 onError?.(error);
                 throw error;
@@ -41,8 +41,8 @@ export const useCourseCreate = () => {
     );
 
     return {
-        courseCreate: {
-            execute: executeCourseCreate,
+        questionCreate: {
+            execute: executeQuestionCreate,
             isLoading: isLoading(CREATE_COURSE_KEY),
             successMessages: successMessages?.[CREATE_COURSE_KEY],
             errorMessages: errorMessages?.[CREATE_COURSE_KEY],
@@ -51,20 +51,20 @@ export const useCourseCreate = () => {
 };
 
 /**
- * Custom hook to handle Course updates
+ * Custom hook to handle Question updates
  */
-export const useCourseUpdate = () => {
+export const useQuestionUpdate = () => {
     const { showErrorNotification, showSuccessNotification, successMessages, errorMessages } = useNotification();
     const { isLoading, setLoading } = useLoading();
     const UPDATE_COURSE_KEY = apiConstants.loadingStateKeys.UPDATE_COURSE;
 
-    const executeCourseUpdate = useCallback(
-        async ({ dynamicRoute, payload, onSuccess, onError, options, params }) => {
+    const executeQuestionUpdate = useCallback(
+        async ({ payload, onSuccess, onError, options, params }) => {
             setLoading(UPDATE_COURSE_KEY, true);
             const controller = new AbortController();
 
             try {
-                const data = await courseApiService.update(dynamicRoute, payload, params, controller.signal);
+                const data = await questionApiService.update(payload, params, controller.signal);
                 showSuccessNotification({
                     key: UPDATE_COURSE_KEY,
                     value: data,
@@ -75,7 +75,7 @@ export const useCourseUpdate = () => {
             } catch (error) {
                 showErrorNotification({
                     key: UPDATE_COURSE_KEY,
-                    value: error?.message || "Failed to update course",
+                    value: error?.message || "Failed to update question",
                 });
                 onError?.(error);
                 throw error;
@@ -87,8 +87,8 @@ export const useCourseUpdate = () => {
     );
 
     return {
-        courseUpdate: {
-            execute: executeCourseUpdate,
+        questionUpdate: {
+            execute: executeQuestionUpdate,
             isLoading: isLoading(UPDATE_COURSE_KEY),
             successMessages: successMessages?.[UPDATE_COURSE_KEY],
             errorMessages: errorMessages?.[UPDATE_COURSE_KEY],
@@ -97,10 +97,10 @@ export const useCourseUpdate = () => {
 };
 
 /**
- * Custom hook to fetch Course details
+ * Custom hook to fetch Question details
  */
-export const useCourseGetDetails = () => {
-    const [details, setDetails] = useState({});
+export const useQuestionGetDetails = () => {
+    const [details, setDetails] = useState(undefined);
     const { showErrorNotification } = useNotification();
     const { isLoading, setLoading } = useLoading();
     const GET_COURSE_DETAILS_KEY = apiConstants.loadingStateKeys.GET_COURSE_DETAILS;
@@ -111,22 +111,13 @@ export const useCourseGetDetails = () => {
             const controller = new AbortController();
 
             try {
-                let data = await courseApiService.getDetails(dynamicRoute, params, controller.signal);
-
-                data = {
-                    ...data,
-                    data: {
-                        ...data.data,
-                        instructorIds: data?.data?.instructors?.map((item) => item.id?.toString()) || [],
-                        categoryIds: data?.data?.categories?.map((item) => item.id?.toString()) || [],
-                    },
-                };
-                setDetails(data);
+                const data = await questionApiService.getDetails(dynamicRoute, params, controller.signal);
+                setDetails(data.data);
                 onSuccess?.(data);
             } catch (error) {
                 showErrorNotification({
                     key: GET_COURSE_DETAILS_KEY,
-                    value: error?.message || "Failed to fetch course details",
+                    value: error?.message || "Failed to fetch question details",
                 });
                 onError?.(error);
             } finally {
@@ -137,7 +128,7 @@ export const useCourseGetDetails = () => {
     );
 
     return {
-        courseDetails: {
+        questionDetail: {
             data: details,
             fetch: fetchDetails,
             isLoading: isLoading(GET_COURSE_DETAILS_KEY),
@@ -146,20 +137,20 @@ export const useCourseGetDetails = () => {
 };
 
 /**
- * Custom hook to delete Course
+ * Custom hook to delete Question
  */
-export const useCourseDelete = () => {
+export const useQuestionDelete = () => {
     const { showErrorNotification, showSuccessNotification } = useNotification();
     const { isLoading, setLoading } = useLoading();
     const DELETE_COURSE_KEY = apiConstants.loadingStateKeys.DELETE_COURSE;
 
-    const executeCourseDeletion = useCallback(
+    const executeQuestionDeletion = useCallback(
         async ({ dynamicRoute, onSuccess, onError, options, params }) => {
             setLoading(DELETE_COURSE_KEY, true);
             const controller = new AbortController();
 
             try {
-                const data = await courseApiService.delete(dynamicRoute, params, controller.signal);
+                const data = await questionApiService.delete(dynamicRoute, params, controller.signal);
                 showSuccessNotification({
                     key: DELETE_COURSE_KEY,
                     value: data,
@@ -170,7 +161,7 @@ export const useCourseDelete = () => {
             } catch (error) {
                 showErrorNotification({
                     key: DELETE_COURSE_KEY,
-                    value: error?.message || "Failed to delete course",
+                    value: error?.message || "Failed to delete question",
                 });
                 onError?.(error);
                 throw error;
@@ -182,17 +173,17 @@ export const useCourseDelete = () => {
     );
 
     return {
-        courseDelete: {
-            execute: executeCourseDeletion,
+        questionDelete: {
+            execute: executeQuestionDeletion,
             isLoading: isLoading(DELETE_COURSE_KEY),
         },
     };
 };
 
 /**
- * Custom hook to fetch Course statistics
+ * Custom hook to fetch Question statistics
  */
-export const useCourseGetStats = () => {
+export const useQuestionGetStats = () => {
     const [stats, setStats] = useState({});
     const { showErrorNotification } = useNotification();
     const { isLoading, setLoading } = useLoading();
@@ -204,13 +195,13 @@ export const useCourseGetStats = () => {
             const controller = new AbortController();
 
             try {
-                const data = await courseApiService.getStats(params, controller.signal);
+                const data = await questionApiService.getStats(params, controller.signal);
                 setStats(data);
                 onSuccess?.(data);
             } catch (error) {
                 showErrorNotification({
                     key: GET_COURSE_STATS_KEY,
-                    value: error?.message || "Failed to fetch course stats",
+                    value: error?.message || "Failed to fetch question stats",
                 });
                 onError?.(error);
             } finally {
@@ -221,7 +212,7 @@ export const useCourseGetStats = () => {
     );
 
     return {
-        courseStats: {
+        questionStats: {
             data: stats,
             fetch: fetchStats,
             isLoading: isLoading(GET_COURSE_STATS_KEY),

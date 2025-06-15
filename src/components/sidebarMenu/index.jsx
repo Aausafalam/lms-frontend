@@ -18,10 +18,12 @@ const SidebarMenu = ({ navigationItems, className, onClick, activeSection }) => 
     };
 
     useEffect(() => {
-        const params = new URLSearchParams(searchParams);
-        params.set("tab", activeSection);
-        router.push(`?${params.toString()}`);
-    }, [activeSection]);
+        if (activeSection && activeSection !== tab) {
+            const params = new URLSearchParams(searchParams);
+            params.set("tab", activeSection);
+            router.push(`?${params.toString()}`);
+        }
+    }, [activeSection, tab, searchParams, router]);
 
     return (
         <Card className={`overflow-hidden border-0 bg-white dark:bg-gray-900 dark:border-gray-800 ${className}`}>

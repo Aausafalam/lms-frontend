@@ -5,6 +5,8 @@ import { Play, Star, Users, Clock, Globe, Hash, CheckCircle, Flame, TrendingUp, 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import apiConstants from "@/services/utils/constants";
+import ApiUtils from "@/services/utils";
 
 /**
  * Hero Section Component for Course Preview
@@ -46,7 +48,10 @@ export function HeroSection({ data, isMobile, isTablet, isDesktop }) {
         <div
             className={`relative w-full bg-cover bg-center overflow-hidden ${isDesktop ? "rounded-xl" : ""} `}
             style={{
-                backgroundImage: data.bannerImagePreview ? `url('${data.bannerImagePreview}')` : "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop')",
+                backgroundImage: data.bannerImagePreview
+                    ? `url('${data.bannerImagePreview}')`
+                    : `url('${apiConstants.BACKEND_API_BASE_URL}/course/${data.id}/getImage?type=bannerImage&token=${ApiUtils.getAuthToken()}')` ||
+                      "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop')",
                 // minHeight: isMobile ? "500px" : isTablet ? "600px" : "",
             }}
         >

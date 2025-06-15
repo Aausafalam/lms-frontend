@@ -94,6 +94,9 @@ const apiConstants = {
     examBuilder: {
         BASE_ROUTE: "/course",
     },
+    question: {
+        BASE_ROUTE: "/course",
+    },
     routes: {
         BASE_ROUTE: "/route",
         CREATE_ROUTES: "/create-routes",

@@ -40,7 +40,7 @@ export const Header = ({ data = {}, isMobile, onBack, onEdit, onDuplicate, onDel
                 <div className="min-w-0 flex-1">
                     {/* Title and Badges Row */}
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-0">
-                        <h1 className="text-lg font-semibold tracking-tight bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent truncate">{data.name || "Lesson Title"}</h1>
+                        {data.name && <h1 className="text-lg font-semibold tracking-tight bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent truncate">{data.name}</h1>}
 
                         {/* Badges */}
                         {!isMobile && allBadges.length > 0 && (
@@ -59,7 +59,10 @@ export const Header = ({ data = {}, isMobile, onBack, onEdit, onDuplicate, onDel
                     </div>
 
                     {/* Summary */}
-                    <p className="text-muted-foreground text-[0.8rem] text-gray-600 dark:text-gray-400 line-clamp-2">{data.summary || data.description || "Lesson summary will appear here"}</p>
+                    {data.summary ||
+                        (data.description && (
+                            <p className="text-muted-foreground text-[0.8rem] text-gray-600 dark:text-gray-400 line-clamp-2">{data.summary || data.description || "Lesson summary will appear here"}</p>
+                        ))}
                 </div>
             </div>
 
