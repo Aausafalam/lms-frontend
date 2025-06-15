@@ -1,21 +1,30 @@
-"use client";
-import React from "react";
-import LessonsTable from "./components/table";
-import useModalHandler from "./hooks/useModalHandler";
-import DeleteLesson from "./components/delete";
+"use client"
+import { useState } from "react"
+import ExamBuilderTable from "./components/table"
+import useModalHandler from "./hooks/useModalHandler"
+import DeleteExamBuilder from "./components/delete"
 
-const CourseLessons = ({ onModuleDetailsPage }) => {
-    const { modalType, lessonId, closeModal, setModalState } = useModalHandler();
-    const [refreshTable, setRefreshTable] = React.useState(false);
-    const [selectedLesson, setSelectedLesson] = React.useState(null);
+const ExamBuilder = () => {
+  const { modalType, examBuilderId, closeModal, setModalState } = useModalHandler()
+  const [refreshTable, setRefreshTable] = useState(false)
+  const [selectedExamBuilder, setSelectedExamBuilder] = useState(null)
 
-    return (
-        <div className="w-full">
-            <LessonsTable onModuleDetailsPage={onModuleDetailsPage} setModalState={setModalState} refreshTable={refreshTable} setSelectedLesson={setSelectedLesson} />
-            {/* Delete Lesson Modal */}
-            <DeleteLesson modalState={{ delete: modalType === "delete" }} closeModal={closeModal} lessonId={lessonId} setRefreshTable={setRefreshTable} />
-        </div>
-    );
-};
+  return (
+    <div>
+      <ExamBuilderTable
+        setModalState={setModalState}
+        refreshTable={refreshTable}
+        setSelectedExamBuilder={setSelectedExamBuilder}
+      />
+      {/* Delete Exam Builder Modal */}
+      <DeleteExamBuilder
+        modalState={{ delete: modalType === "delete" }}
+        closeModal={closeModal}
+        examBuilderId={examBuilderId}
+        setRefreshTable={setRefreshTable}
+      />
+    </div>
+  )
+}
 
-export default CourseLessons;
+export default ExamBuilder

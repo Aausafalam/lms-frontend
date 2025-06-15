@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, User, LogOut, X } fr
 import { lmsMenuItems, ICON } from "../../config/menu";
 import { useAuth } from "@/services/context/auth";
 import { createPortal } from "react-dom";
+import ApiUtils from "@/services/utils";
 
 export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen, sidebarCollapsed, setSidebarCollapsed, activeMenu, expandedMenus, toggleSubmenu, setActiveAndExpand, pathname, router }) {
     const { authenticate } = useAuth();
@@ -44,6 +45,11 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen, sidebarColl
         } else {
             setActiveCollapsedSubmenu(itemId);
         }
+    };
+
+    const handleLogout = () => {
+        ApiUtils.deleteAuthToken();
+        router.push("/auth/login");
     };
 
     return (
@@ -202,15 +208,15 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen, sidebarColl
                         <User className="h-5 w-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white" />
                     </div>
                 </div>
-                <Link
-                    href="/auth/logout"
+                <div
+                    onClick={handleLogout}
                     className={`flex ${
                         sidebarCollapsed ? "justify-center" : "w-full"
-                    } items-center rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-gray-800/80 transition-colors`}
+                    } items-center rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-gray-800/80 transition-colors cursor-pointer`}
                 >
                     <LogOut className={`${sidebarCollapsed ? "" : "mr-3"} h-5 w-5`} />
                     {!sidebarCollapsed && <span>Logout</span>}
-                </Link>
+                </div>
             </div>
         </aside>
     );

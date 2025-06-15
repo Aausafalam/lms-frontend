@@ -120,7 +120,7 @@ export function useExamFormData({ initialData }) {
                 sections: initialData.sections?.length ? initialData.sections : [],
             }));
         }
-    }, [initialData]);
+    }, []);
 
     /**
      * Calculate form completion progress

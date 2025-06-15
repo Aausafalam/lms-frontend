@@ -12,10 +12,11 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { ImageIcon, Package, Plus } from "lucide-react";
 import { EmptyState } from "@/components/emptyState";
 import { useQueryParams } from "@/lib/hooks/useQuery";
+import { useParams } from "next/navigation";
 
 const ModulesTable = ({ setSelectedModule, setModalState, refreshTable }) => {
     const { navigate } = useNavigation();
-    const { courseId } = useQueryParams();
+    const { courseId } = useParams();
     const breadcrumbItems = [
         {
             title: "Courses",
@@ -55,7 +56,7 @@ const ModulesTable = ({ setSelectedModule, setModalState, refreshTable }) => {
                 description="You haven't created any  modules yet. Start by creating your first module."
                 actionLabel="Create Module"
                 actionIcon={Plus}
-                onAction={() => navigate("/modules/form/add")}
+                onAction={() => navigate(`/modules/form/add?courseId=${courseId}`)}
                 className="bg-orange-50/50 dark:bg-orange-950/10 border-orange-200 dark:border-orange-800/30 my-3"
             />
         ),

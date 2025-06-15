@@ -5,6 +5,8 @@ import { Star, Clock, Heart, Share2, Award, ChevronRight, BookOpen } from "lucid
 import Image from "next/image";
 import { useNavigation } from "@/components/navigation";
 import GlobalUtils from "@/lib/utils";
+import apiConstants from "@/services/utils/constants";
+import ApiUtils from "@/services/utils";
 
 export default function CourseCard({ data }) {
     const { navigate } = useNavigation();
@@ -82,7 +84,7 @@ export default function CourseCard({ data }) {
                     <Image
                         width={500}
                         height={300}
-                        src={courseData.banner || "/placeholder.svg"}
+                        src={`${apiConstants.BACKEND_API_BASE_URL}/course/${courseData.id}/getImage?type=thumbnailUrl&token=${ApiUtils.getAuthToken()}` || "/placeholder.svg?height=400&width=600"}
                         alt={courseData.name}
                         className="h-full w-full object-cover transition-transform duration-700 ease-in-out hover:scale-105"
                     />

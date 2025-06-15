@@ -8,7 +8,7 @@ export const Header = ({ data = {}, isMobile, onBack, onEdit, onDuplicate, onDel
     // Default badge configurations
     const defaultBadges = [
         { key: "number", label: data.number, icon: BookOpen, variant: "default" },
-        { key: "duration", label: data.duration + " Min", icon: Clock, variant: "secondary" },
+        { key: "duration", label: data.duration ? data.duration + " Min" : null, icon: Clock, variant: "secondary" },
         { key: "difficulty", label: data.difficulty, icon: Star, variant: "outline" },
         { key: "students", label: data.studentCount ? `${data.studentCount} students` : null, icon: Users, variant: "secondary" },
     ];
@@ -59,7 +59,7 @@ export const Header = ({ data = {}, isMobile, onBack, onEdit, onDuplicate, onDel
                     </div>
 
                     {/* Summary */}
-                    <p className="text-muted-foreground text-[0.8rem] text-gray-600 dark:text-gray-400 line-clamp-2">{data.summary || "Lesson summary will appear here"}</p>
+                    <p className="text-muted-foreground text-[0.8rem] text-gray-600 dark:text-gray-400 line-clamp-2">{data.summary || data.description || "Lesson summary will appear here"}</p>
                 </div>
             </div>
 

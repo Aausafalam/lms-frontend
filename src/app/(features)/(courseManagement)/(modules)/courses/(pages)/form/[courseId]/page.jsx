@@ -4,38 +4,21 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import CourseFormBase from "..";
 import { sampleCourseData } from "../utils/seeds";
+import { useCourse } from "@/services/context/course";
 
 const EditCourse = () => {
     const { courseId } = useParams();
-    const [initialData, setInitialData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const { courseDetails } = useCourse();
+    const data = { ...courseDetails.data.data };
 
     useEffect(() => {
-        // Replace with actual data fetch
-        async function fetchCourseData() {
-            setLoading(true);
-            try {
-                // const res = await fetch(`/api/courses/${courseId}`);
-                // if (!res.ok) throw new Error("Failed to fetch course data");
-                // const data = await res.json();
-                const data = sampleCourseData;
-                setInitialData(data);
-            } catch (error) {
-                console.error(error);
-                // handle error state
-            } finally {
-                setLoading(false);
-            }
-        }
-        if (courseId) {
-            fetchCourseData();
-        }
+        courseDetails.fetch?.({ dynamicRoute: courseId });
     }, [courseId]);
 
-    if (loading) return <div>Loading course data...</div>;
-    if (!initialData) return <div>Course data not found.</div>;
+    if (courseDetails.isLoading) return <div>Loading course data...</div>;
+    if (!data) return <div>Course data not found.</div>;
 
-    return <CourseFormBase initialData={initialData} courseId={courseId} />;
+    return <CourseFormBase initialData={data} courseId={courseId} />;
 };
 
 export default EditCourse;

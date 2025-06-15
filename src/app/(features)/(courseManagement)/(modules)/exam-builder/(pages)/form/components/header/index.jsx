@@ -1,20 +1,27 @@
 "use client"
 
 import { Breadcrumb } from "@/components/Breadcrumb"
-import { Copy, Eye, EyeOff, FileText, School, Trash2 } from "lucide-react"
+import { Copy, Eye, EyeOff, FileText, LayoutDashboard, List, Trash2 } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
+import { useQueryParams } from "@/lib/hooks/useQuery"
 
-const ExamFormHeader = ({ children, togglePreview, previewVisible, examId }) => {
+const ExamBuilderFormHeader = ({ children, togglePreview, previewVisible, examBuilderId }) => {
+  const { courseId } = useQueryParams()
   const breadcrumbItems = [
     {
-      title: "Exams",
-      href: "/exams",
-      icon: <School className="h-3.5 w-3.5" />,
+      title: "Courses",
+      href: "/courses",
+      icon: <LayoutDashboard className="h-3.5 w-3.5" />,
     },
     {
-      title: examId ? `Edit Exam ${examId}` : "Add Exam",
-      href: examId ? `/exam/form/${examId}` : "/exam/form/add",
+      title: "Exam Builder List",
+      href: `/courses/details/${courseId}`,
+      icon: <List className="h-3.5 w-3.5" />,
+    },
+    {
+      title: examBuilderId ? `Edit Exam ${examBuilderId}` : "Create New Exam",
+      href: examBuilderId ? `/exam-builder/form/${examBuilderId}` : "/exam-builder/form/add",
       icon: <FileText className="h-3.5 w-3.5" />,
     },
   ]
@@ -75,4 +82,4 @@ const ExamFormHeader = ({ children, togglePreview, previewVisible, examId }) => 
   )
 }
 
-export default ExamFormHeader
+export default ExamBuilderFormHeader

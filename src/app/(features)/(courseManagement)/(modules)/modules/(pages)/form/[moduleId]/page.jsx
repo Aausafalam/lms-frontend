@@ -1,37 +1,29 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import ModuleFormBase from ".."
-import { sampleModuleData } from "../utils/seeds"
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import ModuleFormBase from "..";
+import { sampleModuleData } from "../utils/seeds";
+import { useModuleGetDetails } from "@/services/hooks/module";
+import { useQueryParams } from "@/lib/hooks/useQuery";
 
 const EditModule = () => {
-  const { moduleId } = useParams()
-  const [initialData, setInitialData] = useState(null)
-  const [loading, setLoading] = useState(true)
+    const { moduleId } = useParams();
+    const { moduleDetails } = useModuleGetDetails();
+    const { courseId } = useQueryParams();
+    const data = moduleDetails?.data;
+    useEffect(() => {
+        if (moduleId && courseId) {
+            moduleDetails.fetch?.({
+                dynamicRoute: `/${courseId}/module/${moduleId}`,
+            });
+        }
+    }, [moduleId, courseId]);
 
-  useEffect(() => {
-    async function fetchModuleData() {
-      setLoading(true)
-      try {
-        const data = sampleModuleData
-        setInitialData(data)
-      } catch (error) {
-        console.error("Failed to fetch module data:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
+    if (moduleDetails.isLoading) return <div className="flex items-center justify-center h-64">Loading module data...</div>;
+    if (!data) return <div className="flex items-center justify-center h-64">Module data not found.</div>;
 
-    if (moduleId) {
-      fetchModuleData()
-    }
-  }, [moduleId])
+    return <ModuleFormBase initialData={data} moduleId={moduleId} />;
+};
 
-  if (loading) return <div className="flex items-center justify-center h-64">Loading module data...</div>
-  if (!initialData) return <div className="flex items-center justify-center h-64">Module data not found.</div>
-
-  return <ModuleFormBase initialData={initialData} moduleId={moduleId} />
-}
-
-export default EditModule
+export default EditModule;

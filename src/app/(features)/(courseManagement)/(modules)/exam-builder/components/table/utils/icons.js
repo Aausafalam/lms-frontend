@@ -1,2 +1,2 @@
-const LessonsICONS = {};
-export default LessonsICONS;
+const ExamPatternICONS = {};
+export default ExamPatternICONS;

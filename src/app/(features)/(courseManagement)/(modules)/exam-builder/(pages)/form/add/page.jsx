@@ -1,7 +1,7 @@
-import ExamFormBase from ".."
+import ExamBuilderFormBase from ".."
 
-const AddExam = () => {
-  return <ExamFormBase initialData={{}} />
+const AddExamBuilder = () => {
+  return <ExamBuilderFormBase initialData={{}} />
 }
 
-export default AddExam
+export default AddExamBuilder

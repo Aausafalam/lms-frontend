@@ -1,5 +1,5 @@
 const apiConstants = {
-    BACKEND_API_BASE_URL: "http://192.168.192.220:5000/api/v1",
+    BACKEND_API_BASE_URL: "http://localhost:5000/api/v1",
     TOKEN_KEY: "userToken",
     auth: {
         BASE_ROUTE: "/auth",
@@ -89,6 +89,9 @@ const apiConstants = {
         BASE_ROUTE: "/course",
     },
     examPattern: {
+        BASE_ROUTE: "/course",
+    },
+    examBuilder: {
         BASE_ROUTE: "/course",
     },
     routes: {

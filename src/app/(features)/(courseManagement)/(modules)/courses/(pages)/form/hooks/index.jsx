@@ -1,8 +1,7 @@
 "use client";
 
 import apiClient from "@/services/api/config";
-import { courseApiService } from "@/services/api/course";
-import { useCourseCreate } from "@/services/hooks/course";
+import { useCourseCreate, useCourseUpdate } from "@/services/hooks/course";
 import { useState, useEffect, useCallback } from "react";
 
 /**
@@ -73,7 +72,7 @@ export function useCourseFormData({ initialData }) {
     const [success, setSuccess] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
     const { courseCreate, successMessages, errorMessages } = useCourseCreate();
-
+    const { courseUpdate } = useCourseUpdate();
     // Initialize form with initial data if provided
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
@@ -418,50 +417,18 @@ export function useCourseFormData({ initialData }) {
         }
 
         setIsSaving(true);
-
+        delete formData?.promoVideoUrl;
         try {
-            // Prepare form data for submission
-            const formDataToSubmit = new FormData();
-
-            // Add all text fields
-            Object.keys(formData).forEach((key) => {
-                if (key.includes("Preview") || key.includes("Image") || key.includes("File")) {
-                    return; // Skip preview and file fields
-                }
-
-                const value = formData[key];
-                if (value !== null && value !== undefined) {
-                    // if (typeof value === "object" && !Array.isArray(value)) {
-                    //     formDataToSubmit.append(key, JSON.stringify(value));
-                    // } else if (Array.isArray(value)) {
-                    //     formDataToSubmit.append(key, JSON.stringify(value));
-                    // } else {
-                    formDataToSubmit.append(key, value);
-                    // }
-                }
-            });
-
-            // Add file uploads
-            if (formData.bannerImage instanceof File) {
-                formDataToSubmit.append("bannerImage", formData.bannerImage);
+            if (formData.id) {
+                courseUpdate.execute({
+                    dynamicRoute: formData.id,
+                    payload: formData,
+                    onSuccess: () => setSuccess(true),
+                    onError: () => setTimeout(() => setSuccess(false), 5000),
+                });
+            } else {
+                courseCreate.execute({ payload: formData, onSuccess: () => setSuccess(true), onError: () => setTimeout(() => setSuccess(false), 5000) });
             }
-            if (formData.thumbnailUrl instanceof File) {
-                formDataToSubmit.append("thumbnailImage", formData.thumbnailUrl);
-            }
-            if (formData.introVideoFile instanceof File) {
-                formDataToSubmit.append("introVideoFile", formData.introVideoFile);
-            }
-
-            let result;
-            const url = formData.id ? `/api/courses/${formData.id}` : "/api/courses";
-            const method = formData.id ? "PATCH" : "POST";
-
-            courseApiService.create(formData);
-            courseCreate.execute(
-                formData,
-                () => setSuccess(true),
-                () => setTimeout(() => setSuccess(false), 5000)
-            );
         } catch (err) {
             console.error("Save error:", err);
             setError(err.message || "An error occurred while saving the course");

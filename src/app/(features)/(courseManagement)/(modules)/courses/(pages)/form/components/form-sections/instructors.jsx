@@ -20,7 +20,7 @@ export const InstructorsSection = memo(function InstructorsSection({ formData, h
 
     // Sample data - in real app, these would come from API
     const instructors = [
-        { id: "5ee308d5-9ddb-4380-a01e-05e425b5412b", name: "Dr. Jane Smith", role: "Lead Instructor", avatar: "/placeholder.svg?height=40&width=40" },
+        { id: "8e8abe4a-8464-44fe-a572-0037acadabda", name: "Dr. Jane Smith", role: "Lead Instructor", avatar: "/placeholder.svg?height=40&width=40" },
         { id: "2", name: "Prof. John Doe", role: "Subject Expert", avatar: "/placeholder.svg?height=40&width=40" },
         { id: "3", name: "Dr. Emily Johnson", role: "Course Designer", avatar: "/placeholder.svg?height=40&width=40" },
         { id: "4", name: "Prof. Michael Brown", role: "Guest Lecturer", avatar: "/placeholder.svg?height=40&width=40" },

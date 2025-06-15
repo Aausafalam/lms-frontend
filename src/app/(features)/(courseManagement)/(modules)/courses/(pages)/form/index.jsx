@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import CourseFormHeader from "./components/header";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, CheckCircle, AlertCircle } from "lucide-react";
+import { Loader2, Sparkles, AlertCircle } from "lucide-react";
 import { SidebarNavigation } from "./components/sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FormSections } from "./components/form-sections";
@@ -81,16 +81,16 @@ const CourseFormBase = ({ initialData = {}, courseId = null }) => {
     useEffect(() => {
         if (error) {
             addToast(error, "error");
-            setError(null); // Clear error after showing toast
+            setError(null);
         }
-    }, [error, setError]);
+    }, [error]);
 
     useEffect(() => {
         if (success) {
             addToast("Course saved successfully!", "success");
-            setSuccess(false); // Clear success after showing toast
+            setSuccess(false);
         }
-    }, [success, setSuccess]);
+    }, [success]);
 
     // Set up intersection observer for active section tracking
     useEffect(() => {
@@ -183,7 +183,7 @@ const CourseFormBase = ({ initialData = {}, courseId = null }) => {
                                                 : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transform hover:scale-105"
                                         } text-white`}
                                         disabled={isSaving || hasValidationErrors}
-                                        onClick={handleSaveWithToast}
+                                        onClick={handleSave}
                                     >
                                         {isSaving ? (
                                             <>

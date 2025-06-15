@@ -52,8 +52,8 @@ const examPatternTable = ({ setSelectedExamPattern, setModalState, refreshTable 
         emptyStateComponent: () => (
             <EmptyState
                 icon={ImageIcon}
-                title="No examPattern Found"
-                description="You haven't created any  examPattern yet. Start by creating your first examPattern."
+                title="No Exam Pattern Found"
+                description="You haven't created any  examPattern yet. Start by creating your first Exam Pattern."
                 actionLabel="Create Exam Pattern"
                 actionIcon={Plus}
                 onAction={() => navigate("/exam-pattern/form/add")}

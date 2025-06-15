@@ -1,25 +1,25 @@
-"use client";
-import { useEffect } from "react";
-import GlobalUtils from "@/lib/utils";
-import { useCourse } from "@/services/context/course";
+"use client"
+import { useEffect } from "react"
+import GlobalUtils from "@/lib/utils"
+import { useCourse } from "@/services/context/course"
 
-const DeleteLesson = ({ modalState, lessonId, setRefreshTable, closeModal }) => {
-    const { lessonDelete } = useCourse();
+const DeleteExamBuilder = ({ modalState, examBuilderId, setRefreshTable, closeModal }) => {
+  const { examBuilderDelete } = useCourse()
 
-    useEffect(() => {
-        if (modalState.delete && lessonId) {
-            const deletePayload = {
-                recordId: lessonId,
-                onShowDetails: () => {},
-                deleteAction: lessonDelete,
-                toggleRefreshData: setRefreshTable,
-            };
-            GlobalUtils.handleDelete(deletePayload);
-            closeModal();
-        }
-    }, [modalState.delete, lessonId]);
+  useEffect(() => {
+    if (modalState.delete && examBuilderId) {
+      const deletePayload = {
+        recordId: examBuilderId,
+        onShowDetails: () => {},
+        deleteAction: examBuilderDelete,
+        toggleRefreshData: setRefreshTable,
+      }
+      GlobalUtils.handleDelete(deletePayload)
+      closeModal()
+    }
+  }, [modalState.delete, examBuilderId])
 
-    return null;
-};
+  return null
+}
 
-export default DeleteLesson;
+export default DeleteExamBuilder

@@ -59,12 +59,12 @@ export const useModuleUpdate = () => {
     const UPDATE_COURSE_KEY = apiConstants.loadingStateKeys.UPDATE_COURSE;
 
     const executeModuleUpdate = useCallback(
-        async ({ payload, onSuccess, onError, options, params }) => {
+        async ({ dynamicRoute, payload, onSuccess, onError, options, params }) => {
             setLoading(UPDATE_COURSE_KEY, true);
             const controller = new AbortController();
 
             try {
-                const data = await moduleApiService.update(payload, params, controller.signal);
+                const data = await moduleApiService.update(dynamicRoute, payload, params, controller.signal);
                 showSuccessNotification({
                     key: UPDATE_COURSE_KEY,
                     value: data,

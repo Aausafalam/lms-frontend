@@ -1,19 +1,19 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
-import ExamFormHeader from "./components/header"
+import ExamBuilderFormHeader from "./components/header"
 import { Button } from "@/components/ui/button"
 import { Loader2, Sparkles } from "lucide-react"
 import { SidebarNavigation } from "./components/sidebar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { FormSections } from "./components/form-sections"
 import GlobalUtils from "@/lib/utils"
-import { useExamFormData } from "./hooks"
-import { ExamPreview } from "./components/preview"
+import { useExamBuilderFormData } from "./hooks"
+import { ExamBuilderPreview } from "./components/preview"
 
-const ExamFormBase = ({ initialData = {}, examId = null }) => {
-  const { isSaving, handleSave, formData, handlers } = useExamFormData({ initialData })
+const ExamBuilderFormBase = ({ initialData = {}, examBuilderId = null }) => {
+  const { isSaving, handleSave, formData, handlers } = useExamBuilderFormData({ initialData })
   const [previewVisible, setPreviewVisible] = useState(true)
-  const [activeSection, setActiveSection] = useState("basic")
+  const [activeSection, setActiveSection] = useState("basic-details")
   const sectionRefs = useRef({})
 
   const scrollToSection = (sectionId) => {
@@ -50,12 +50,12 @@ const ExamFormBase = ({ initialData = {}, examId = null }) => {
 
   return (
     <div>
-      <ExamFormHeader
+      <ExamBuilderFormHeader
         togglePreview={togglePreview}
         previewVisible={previewVisible}
         formData={formData}
         handlers={handlers}
-        examId={examId}
+        examBuilderId={examBuilderId}
       />
       <div className="grid grid-cols-7 gap-3">
         <div className="col-span-1">
@@ -87,11 +87,11 @@ const ExamFormBase = ({ initialData = {}, examId = null }) => {
                   {isSaving ? (
                     <>
                       <Loader2 className="h-5 w-5 animate-spin" />
-                      Saving Exam...
+                      Creating Exam...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" /> Save Exam
+                      <Sparkles className="h-5 w-5" /> Create Exam
                     </>
                   )}
                 </Button>
@@ -101,7 +101,7 @@ const ExamFormBase = ({ initialData = {}, examId = null }) => {
         </div>
         {previewVisible && (
           <div className="col-span-2">
-            <ExamPreview data={formData} />
+            <ExamBuilderPreview data={formData} />
           </div>
         )}
       </div>
@@ -109,4 +109,4 @@ const ExamFormBase = ({ initialData = {}, examId = null }) => {
   )
 }
 
-export default ExamFormBase
+export default ExamBuilderFormBase

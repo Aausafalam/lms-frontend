@@ -4,7 +4,7 @@ import React from "react";
 const ModulesLayout = ({ children }) => {
     return (
         <DashboardLayout>
-            <div id="lessons_module">{children}</div>
+            <div id="exam_patten_module">{children}</div>
         </DashboardLayout>
     );
 };

@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Layers, CheckCircle, AlertTriangle, Settings, Globe, Timer, Award, Target, BookOpen, TrendingUp, Shield, Bell, BarChart3, Clock, Lock } from "lucide-react";
+import { Layers, CheckCircle, AlertTriangle, Settings, Globe, Timer, Award, Target, BookOpen, TrendingUp, Shield, Bell, BarChart3, Clock, Lock, File } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useExamPatternGetDetails } from "@/services/hooks/exam-pattern";
 import { useQueryParams } from "@/lib/hooks/useQuery";
 import { useParams } from "next/navigation";
 import { ContentCard } from "@/components/contentCard";
+import { Header } from "@/components/header";
 
 const devicePresets = {
     mobile: 400,
@@ -55,64 +56,30 @@ export function ExamDetailPreview({ initialData, viewportWidth, onDetailsPage })
 
     return (
         <div className={`w-full ${onDetailsPage ? "max-w-[1225px]" : "max-h-[75vh] overflow-scroll"}`}>
+            <Header
+                data={data}
+                className="mb-5"
+                badges={[
+                    {
+                        key: "Draft",
+                        label: data.status || "Draft",
+                        icon: CheckCircle,
+                    },
+                    data.shuffleQuestions && {
+                        key: "shuffleQuestions",
+                        label: "Shuffled Questions",
+                        icon: Settings,
+                    },
+                    data.shuffleSections && {
+                        key: "Shuffled Sections",
+                        label: "Shuffled Sections",
+                        icon: Layers,
+                    },
+                ].filter(Boolean)}
+            />
             {/* Hero-Styled Exam Pattern Summary */}
-            <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg relative overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-5">
-                    <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fillRule=%22evenodd%22%3E%3Cg fill=%22%23000000%22 fillOpacity=%220.1%22%3E%3Ccircle cx=%2230%22 cy=%2230%22 r=%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] dark:bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fillRule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fillOpacity=%220.1%22%3E%3Ccircle cx=%2230%22 cy=%2230%22 r=%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
-                </div>
-
-                {/* Floating Elements */}
-                <div className="absolute top-4 right-4 w-20 h-20 bg-blue-100 dark:bg-blue-900/50 rounded-full blur-xl animate-pulse"></div>
-                <div className="absolute bottom-4 left-4 w-16 h-16 bg-yellow-100 dark:bg-yellow-900/50 rounded-full blur-lg animate-bounce"></div>
-
-                <div className="relative z-10 p-6 space-y-6">
-                    {/* Header Section */}
-                    <div className="space-y-4">
-                        {/* Status Badges */}
-                        <div className="flex flex-wrap gap-2">
-                            <Badge className="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700 shadow-none">
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                                {data.status || "Draft"}
-                            </Badge>
-                            {data.shuffleQuestions && (
-                                <Badge className="bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 border-purple-200 dark:border-purple-700 shadow-none">
-                                    <Settings className="h-3 w-3 mr-1" />
-                                    Shuffled Questions
-                                </Badge>
-                            )}
-                            {data.shuffleSections && (
-                                <Badge className="bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
-                                    <Layers className="h-3 w-3 mr-1" />
-                                    Shuffled Sections
-                                </Badge>
-                            )}
-                        </div>
-
-                        {/* Title and Description */}
-                        <div>
-                            <h1 className={`font-bold text-gray-900 dark:text-gray-100 leading-tight ${isMobile ? "text-xl" : "text-2xl"}`}>{data.name || "Exam Pattern Name"}</h1>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
-                                {data.description || "Comprehensive examination pattern designed for competitive assessment with multiple sections covering various subjects and skill areas."}
-                            </p>
-                        </div>
-
-                        {/* Language Options */}
-                        {data.languageOptions?.length > 0 && (
-                            <div className="flex items-center space-x-2">
-                                <Globe className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                                <span className="text-gray-700 dark:text-gray-300 text-sm">Available in:</span>
-                                <div className="flex flex-wrap gap-1">
-                                    {data.languageOptions.map((lang) => (
-                                        <Badge key={lang} variant="outline" className="text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 text-xs bg-gray-50 dark:bg-gray-800">
-                                            {lang}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
+            <div>
+                <div className="relative z-10  space-y-6">
                     {/* Hero Summary Table */}
                     <div className="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
                         {/* Table Header */}

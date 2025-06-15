@@ -1,11 +1,11 @@
 import CourseContent from "@/app/(features)/(courseManagement)/(modules)/videos/page";
-import { LessonDetailPreview } from "../../../../form/components/preview/exam-detail-preview";
-import { sampleLessonData } from "../../../../form/utils/seeds";
+import { sampleExamBuilderData } from "../../../../form/utils/seeds";
+import { ExamBuilderDetailPreview } from "../../../../form/components/preview/exam-builder-detail-preview";
 
 const LessonDetailsContent = ({ activeTab }) => {
     switch (activeTab) {
         case "overview":
-            return <LessonDetailPreview initialData={sampleLessonData} viewportWidth={1024} onDetailsPage={true} />;
+            return <ExamBuilderDetailPreview initialData={sampleExamBuilderData} viewportWidth={1024} onDetailsPage={true} />;
         case "content":
             return <CourseContent />;
         case "assignments":
@@ -13,7 +13,7 @@ const LessonDetailsContent = ({ activeTab }) => {
         case "quiz":
             return <div className="p-6">Quiz content will be displayed here</div>;
         default:
-            return <LessonDetailPreview initialData={sampleLessonData} viewportWidth={1024} onDetailsPage={true} />;
+            return <ExamBuilderDetailPreview initialData={sampleExamBuilderData} viewportWidth={1024} onDetailsPage={true} />;
     }
 };
 

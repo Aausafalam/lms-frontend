@@ -36,7 +36,7 @@ export const MetaDataSection = memo(function MetaDataSection({ formData, handler
     ];
 
     const categories = [
-        { label: "Programming", value: "f5c81acb-2451-402f-9b6f-a4ee980f44b0" },
+        { label: "Programming", value: "115d9494-9fbd-40ef-ba5d-c9004580a7d9" },
         { label: "Design", value: "design" },
         { label: "Business", value: "business" },
         { label: "Marketing", value: "marketing" },

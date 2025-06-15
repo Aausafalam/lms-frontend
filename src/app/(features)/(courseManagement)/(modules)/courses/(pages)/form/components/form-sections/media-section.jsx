@@ -65,12 +65,12 @@ export const MediaSection = memo(function MediaSection({ formData = {}, sectionR
                     labelIcon={<ImageIcon className="h-3.5 w-3.5" />}
                     label="Banner Image"
                     value={formData.bannerImagePreview || ""}
-                    onChange={handleImageUpload}
+                    onChange={handleInputChange}
                     name="bannerImage"
                     helperText="Main course image displayed in course listings (recommended: 1200x600px)"
                     required
                     uploadPath="/course/banner-image/upload"
-                    acceptedFormats={["png"]}
+                    acceptedFormats={["png", "jpg", "jpeg"]}
                 />
 
                 {/* Thumbnail Upload */}
@@ -78,11 +78,11 @@ export const MediaSection = memo(function MediaSection({ formData = {}, sectionR
                     labelIcon={<ImageIcon className="h-3.5 w-3.5" />}
                     label="Course Thumbnail"
                     value={formData.thumbnailPreview || ""}
-                    onChange={handleImageUpload}
+                    onChange={handleInputChange}
                     name="thumbnailUrl"
                     helperText="Smaller image for course cards and previews (recommended: 400x300px)"
                     uploadPath="/course/thumbnail/upload"
-                    acceptedFormats={["png"]}
+                    acceptedFormats={["png", "jpg", "jpeg"]}
                 />
 
                 {/* Introduction Video - URL or File Upload */}

@@ -1,153 +1,37 @@
 "use client";
 
+import { useQueryParams } from "@/lib/hooks/useQuery";
+import { useExamBuilderCreate } from "@/services/hooks/exam-builder";
 import { useState, useEffect, useCallback } from "react";
 
-export function useExamFormData({ initialData }) {
+/**
+ * Custom hook for managing exam builder form data and operations
+ */
+export function useExamBuilderFormData({ initialData }) {
     const [formData, setFormData] = useState({
-        // Basic Information
-        examPatternName: "",
+        // Basic Details
+        name: "",
+        examCode: "",
         description: "",
-        durationInMinutes: 90,
-        languageOptions: ["English"],
+        startDate: "",
+        startTime: "",
+        endTime: "",
+        examType: "",
+        durationInMinutes: "",
+        isPublished: false,
+        version: "1.0.0",
+        languageOptions: [],
+        tags: [],
 
-        // Global Settings
-        shuffleQuestions: true,
-        shuffleSections: false,
-        globalMarkingPolicy: {
-            defaultCorrectMark: 1,
-            defaultNegativeMark: 0.33,
-        },
-
-        // Sections
-        sections: [],
-
-        // Security & Proctoring
-        securitySettings: {
-            enableBrowserLockdown: false,
-            disableRightClick: true,
-            disableCopyPaste: true,
-            preventTabSwitching: true,
-            enableWebcamMonitoring: false,
-            enableScreenRecording: false,
-            enableAIProctoring: false,
-            allowedBrowsers: ["chrome", "firefox"],
-            maxTabSwitches: 3,
-            suspiciousActivityThreshold: 5,
-            enableFullScreenMode: true,
-            disableVirtualKeyboard: false,
-        },
-
-        // Scheduling & Access
-        schedulingSettings: {
-            enableScheduling: false,
-            startDate: "",
-            endDate: "",
-            startTime: "",
-            endTime: "",
-            timeZone: "UTC",
-            maxAttempts: 1,
-            attemptCooldown: 0,
-            enableAccessCode: false,
-            accessCode: "",
-            allowedUserGroups: [],
-            enablePrerequisites: false,
-            prerequisiteExams: [],
-            enableGracePeriod: false,
-            gracePeriodMinutes: 15,
-            enableLateSubmission: false,
-            lateSubmissionPenalty: 0,
-        },
-
-        // Attempt Rules
-        attemptRules: {
-            maxSectionsToAttempt: 0,
-            minSectionsToAttempt: 0,
-            allowSectionNavigation: true,
-            allowQuestionNavigation: true,
-            allowBackNavigation: true,
-            autoSubmitOnTimeEnd: true,
-            showUnattemptedCount: true,
-        },
-
-        // Submission Rules
-        submissionRules: {
-            allowManualSubmit: true,
-            autoSubmitOnTimeout: true,
-            confirmBeforeSubmit: true,
-        },
-
-        // Results & Analytics
-        resultsSettings: {
-            showResultsImmediately: false,
-            showCorrectAnswers: false,
-            showDetailedAnalysis: true,
-            enableResultsDownload: true,
-            resultDisplayFormat: "percentage",
-            showRanking: false,
-            showPerformanceAnalytics: true,
-            enableCertificateGeneration: false,
-            passingPercentage: 60,
-            gradingScale: "percentage",
-            showSectionWiseResults: true,
-            enableResultsEmail: false,
-            resultVisibilityDelay: 0,
-            showTimeSpentAnalysis: true,
-            enableComparisonAnalytics: false,
-        },
-
-        // Accessibility
-        accessibilitySettings: {
-            enableExtendedTime: false,
-            extendedTimeMultiplier: 1.5,
-            enableScreenReader: false,
-            enableHighContrast: false,
-            enableLargeText: false,
-            fontSizeMultiplier: 1.2,
-            enableAudioQuestions: false,
-            enableTextToSpeech: false,
-            enableKeyboardNavigation: true,
-            enableColorBlindSupport: false,
-            enableBreakTime: false,
-            breakTimeMinutes: 10,
-            maxBreaks: 2,
-            enableSpecialInstructions: false,
-            specialInstructionsText: "",
-            enableAlternativeFormats: false,
-            supportedFormats: [],
-        },
-
-        // Notifications
-        notificationSettings: {
-            enableEmailNotifications: true,
-            enableSMSNotifications: false,
-            enablePushNotifications: true,
-            sendExamReminders: true,
-            reminderIntervals: [24, 1],
-            sendResultNotifications: true,
-            sendStartNotifications: true,
-            sendSubmissionConfirmation: true,
-            customEmailTemplate: false,
-            emailSubjectTemplate: "",
-            emailBodyTemplate: "",
-            notifyInstructors: true,
-            notifyAdmins: false,
-            enableAutoReminders: true,
-            reminderFrequency: "daily",
-        },
-
-        // UI Configuration
-        uiConfig: {
-            theme: "default",
-            fontSize: "medium",
-            showTimer: true,
-            languageSelector: true,
-            accessibleMode: false,
-        },
+        // Exam Pattern (JSON field)
+        examPattern: null,
 
         // Status
         status: "DRAFT",
     });
 
+    const { courseId } = useQueryParams();
+    const { examBuilderCreate } = useExamBuilderCreate();
     const [progress, setProgress] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -155,42 +39,47 @@ export function useExamFormData({ initialData }) {
     const [success, setSuccess] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
 
+    /**
+     * Initialize form data with provided initial data
+     */
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
             setFormData((prev) => ({
                 ...prev,
                 ...initialData,
-                sections: initialData.sections?.length ? initialData.sections : [],
             }));
         }
     }, [initialData]);
 
+    /**
+     * Calculate form completion progress
+     */
     useEffect(() => {
         let totalFields = 0;
         let completedFields = 0;
 
-        // Basic fields
-        const basicFields = ["examPatternName", "durationInMinutes"];
-        totalFields += basicFields.length;
-        completedFields += basicFields.filter((field) => formData[field]).length;
+        // Basic required fields
+        const requiredFields = ["name", "examCode", "examType", "durationInMinutes"];
+        totalFields += requiredFields.length;
+        completedFields += requiredFields.filter((field) => formData[field]).length;
 
-        // Language options
+        // Exam pattern
         totalFields += 1;
-        if (formData.languageOptions?.length > 0) completedFields++;
-
-        // Sections
-        totalFields += 1;
-        if (formData.sections?.length > 0) completedFields++;
+        if (formData.examPattern) completedFields++;
 
         const calculatedProgress = Math.round((completedFields / totalFields) * 100);
         setProgress(calculatedProgress);
     }, [formData]);
 
+    /**
+     * Handle basic input changes with validation cleanup
+     */
     const handleInputChange = useCallback(
         (e) => {
             const { name, value } = e.target;
             setFormData((prev) => ({ ...prev, [name]: value }));
 
+            // Clear validation errors for the field
             if (validationErrors[name]) {
                 setValidationErrors((prev) => {
                     const newErrors = { ...prev };
@@ -202,203 +91,68 @@ export function useExamFormData({ initialData }) {
         [validationErrors]
     );
 
+    /**
+     * Handle switch/toggle changes
+     */
     const handleSwitchChange = useCallback((name, checked) => {
         setFormData((prev) => ({ ...prev, [name]: checked }));
     }, []);
 
-    // Section management
-    const handleSectionChange = useCallback((sectionIndex, field, value) => {
-        setFormData((prev) => {
-            const updatedSections = [...prev.sections];
-            updatedSections[sectionIndex] = {
-                ...updatedSections[sectionIndex],
-                [field]: value,
-            };
-            return { ...prev, sections: updatedSections };
-        });
+    /**
+     * Handle array field changes (for multi-select fields)
+     */
+    const handleArrayChange = useCallback((name, value) => {
+        setFormData((prev) => ({ ...prev, [name]: value }));
     }, []);
 
-    const addSection = useCallback((newSection) => {
-        setFormData((prev) => ({
-            ...prev,
-            sections: [...prev.sections, newSection],
-        }));
+    /**
+     * Handle exam pattern selection
+     */
+    const handleExamPatternSelect = useCallback((pattern) => {
+        setFormData((prev) => ({ ...prev, examPattern: pattern }));
     }, []);
 
-    const removeSection = useCallback((sectionIndex) => {
-        setFormData((prev) => {
-            const updatedSections = [...prev.sections];
-            updatedSections.splice(sectionIndex, 1);
-            return { ...prev, sections: updatedSections };
-        });
-    }, []);
-
-    // Question group management
-    const addQuestionGroup = useCallback((sectionIndex) => {
-        setFormData((prev) => {
-            const updatedSections = [...prev.sections];
-            const section = updatedSections[sectionIndex];
-            const newGroup = {
-                range: [1, 10],
-                marksPerQuestion: 1,
-                negativeMarks: 0.33,
-                questionType: "MCQ",
-            };
-
-            updatedSections[sectionIndex] = {
-                ...section,
-                questionGroups: [...(section.questionGroups || []), newGroup],
-            };
-            return { ...prev, sections: updatedSections };
-        });
-    }, []);
-
-    const removeQuestionGroup = useCallback((sectionIndex, groupIndex) => {
-        setFormData((prev) => {
-            const updatedSections = [...prev.sections];
-            const section = updatedSections[sectionIndex];
-            const updatedGroups = [...(section.questionGroups || [])];
-            updatedGroups.splice(groupIndex, 1);
-
-            updatedSections[sectionIndex] = {
-                ...section,
-                questionGroups: updatedGroups,
-            };
-            return { ...prev, sections: updatedSections };
-        });
-    }, []);
-
-    const handleQuestionGroupChange = useCallback((sectionIndex, groupIndex, field, value) => {
-        setFormData((prev) => {
-            const updatedSections = [...prev.sections];
-            const section = updatedSections[sectionIndex];
-            const updatedGroups = [...(section.questionGroups || [])];
-
-            updatedGroups[groupIndex] = {
-                ...updatedGroups[groupIndex],
-                [field]: value,
-            };
-
-            updatedSections[sectionIndex] = {
-                ...section,
-                questionGroups: updatedGroups,
-            };
-            return { ...prev, sections: updatedSections };
-        });
-    }, []);
-
-    // Attempt rules management
-    const handleAttemptRuleChange = useCallback((field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            attemptRules: {
-                ...prev.attemptRules,
-                [field]: value,
-            },
-        }));
-    }, []);
-
-    // Submission rules management
-    const handleSubmissionRuleChange = useCallback((field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            submissionRules: {
-                ...prev.submissionRules,
-                [field]: value,
-            },
-        }));
-    }, []);
-
-    // Security settings management
-    const handleSecuritySettingsChange = useCallback((field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            securitySettings: {
-                ...prev.securitySettings,
-                [field]: value,
-            },
-        }));
-    }, []);
-
-    // Scheduling settings management
-    const handleSchedulingSettingsChange = useCallback((field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            schedulingSettings: {
-                ...prev.schedulingSettings,
-                [field]: value,
-            },
-        }));
-    }, []);
-
-    // Results settings management
-    const handleResultsSettingsChange = useCallback((field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            resultsSettings: {
-                ...prev.resultsSettings,
-                [field]: value,
-            },
-        }));
-    }, []);
-
-    // Accessibility settings management
-    const handleAccessibilitySettingsChange = useCallback((field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            accessibilitySettings: {
-                ...prev.accessibilitySettings,
-                [field]: value,
-            },
-        }));
-    }, []);
-
-    // Notification settings management
-    const handleNotificationSettingsChange = useCallback((field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            notificationSettings: {
-                ...prev.notificationSettings,
-                [field]: value,
-            },
-        }));
-    }, []);
-
-    // UI config management
-    const handleUIConfigChange = useCallback((field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            uiConfig: {
-                ...prev.uiConfig,
-                [field]: value,
-            },
-        }));
-    }, []);
-
+    /**
+     * Validate form data before saving
+     */
     const validateForm = useCallback(() => {
         const errors = {};
 
-        if (!formData.examPatternName?.trim()) {
-            errors.examPatternName = "Exam name is required";
+        // Required field validation
+        if (!formData.name?.trim()) {
+            errors.name = "Exam name is required";
         }
         if (!formData.examCode?.trim()) {
             errors.examCode = "Exam code is required";
         }
-        if (!formData.durationInMinutes || formData.durationInMinutes < 1) {
-            errors.durationInMinutes = "Duration is required and must be at least 1 minute";
+        if (!formData.examType?.trim()) {
+            errors.examType = "Exam type is required";
         }
-        if (!formData.sections?.length) {
-            errors.sections = "At least one section is required";
+        if (!formData.durationInMinutes || formData.durationInMinutes < 1) {
+            errors.durationInMinutes = "Duration must be at least 1 minute";
+        }
+
+        // Date/time validation
+        if (formData.startDate && formData.endTime && formData.startTime) {
+            const startDateTime = new Date(`${formData.startDate}T${formData.startTime}`);
+            const endDateTime = new Date(`${formData.startDate}T${formData.endTime}`);
+
+            if (endDateTime <= startDateTime) {
+                errors.endTime = "End time must be after start time";
+            }
         }
 
         setValidationErrors(errors);
         return Object.keys(errors).length === 0;
     }, [formData]);
 
+    /**
+     * Save form data
+     */
     const handleSave = useCallback(async () => {
         setError(null);
         setSuccess(false);
-
+        console.log("Prof. John Doe");
         if (!validateForm()) {
             setError("Please fix the validation errors before saving");
             return;
@@ -407,14 +161,21 @@ export function useExamFormData({ initialData }) {
         setIsSaving(true);
 
         try {
-            // In a real app, you would make an API call here
-            console.log("Saving exam data:", formData);
+            console.log("Saving exam builder data:", formData);
 
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            // Prepare payload with examPattern as JSON
+            const payload = {
+                ...formData,
+                durationInMinutes: Number.parseInt(formData.durationInMinutes, 10),
+                examPattern: formData.examPattern, // This will be stored as JSON
+            };
 
-            setSuccess(true);
-            setTimeout(() => setSuccess(false), 5000);
+            examBuilderCreate.execute({
+                dynamicRoute: `/${courseId}/exam`,
+                payload,
+                onSuccess: () => setSuccess(true),
+                onError: () => setTimeout(() => setSuccess(false), 5000),
+            });
         } catch (err) {
             console.error("Save error:", err);
             setError(err.message || "An error occurred while saving the exam");
@@ -422,7 +183,7 @@ export function useExamFormData({ initialData }) {
         } finally {
             setIsSaving(false);
         }
-    }, [formData, validateForm]);
+    }, [formData, validateForm, courseId]);
 
     return {
         formData,
@@ -435,20 +196,8 @@ export function useExamFormData({ initialData }) {
         handlers: {
             handleInputChange,
             handleSwitchChange,
-            handleSectionChange,
-            addSection,
-            removeSection,
-            addQuestionGroup,
-            removeQuestionGroup,
-            handleQuestionGroupChange,
-            handleAttemptRuleChange,
-            handleSubmissionRuleChange,
-            handleSecuritySettingsChange,
-            handleSchedulingSettingsChange,
-            handleResultsSettingsChange,
-            handleAccessibilitySettingsChange,
-            handleNotificationSettingsChange,
-            handleUIConfigChange,
+            handleArrayChange,
+            handleExamPatternSelect,
         },
         handleSave,
         setFormData,

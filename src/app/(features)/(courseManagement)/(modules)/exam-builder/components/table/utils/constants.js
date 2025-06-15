@@ -1,12 +1,11 @@
 import globalConstants from "@/lib/utils/constants";
 import FILTER_OPTIONS from "./filters";
-import LessonsICONS from "./icons";
 import apiConstants from "@/services/utils/constants";
 
-const lessonsTableConstants = {
-    API_URL: apiConstants.lesson.BASE_ROUTE,
+const examBuilderTableConstants = {
+    API_URL: apiConstants.examBuilder?.BASE_ROUTE || "/exam",
     LIMITS: globalConstants.TABLE_LIMITS,
-    SORTING: { initialSort: "Lessons ID", initialSortOrder: "asc" },
+    SORTING: { initialSort: "Exam Name", initialSortOrder: "asc" },
     FILTERS: {
         icon: false,
         filterFields: Object.entries(FILTER_OPTIONS).map(([key, filter]) => ({
@@ -19,4 +18,4 @@ const lessonsTableConstants = {
     },
 };
 
-export default lessonsTableConstants;
+export default examBuilderTableConstants;

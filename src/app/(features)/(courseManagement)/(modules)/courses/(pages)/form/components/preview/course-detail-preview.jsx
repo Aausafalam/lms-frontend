@@ -87,12 +87,12 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
     ];
 
     useEffect(() => {
-        courseDetails.fetch?.({ dynamicRoute: courseId });
+        onDetailsPage && courseDetails.fetch?.({ dynamicRoute: courseId });
     }, [courseId]);
     console.log(courseDetails.data);
 
     return (
-        <div className={`w-full ${onDetailsPage ? "max-w-[1225px]" : "max-h-[75vh]  overflow-scroll"} `}>
+        <div className={`w-full ${onDetailsPage ? "max-h-[86vh]  overflow-scroll" : "max-h-[75vh]  overflow-scroll"} `}>
             {/* Hero Section */}
             <HeroSection data={data} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} />
 

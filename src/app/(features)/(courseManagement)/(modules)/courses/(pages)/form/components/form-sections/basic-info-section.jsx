@@ -25,7 +25,7 @@ export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isA
             <div className="space-y-6">
                 {/* Course Name - Required */}
                 <Input
-                    label="Course Name *"
+                    label="Course Name"
                     labelIcon={<Bookmark className="h-3.5 w-3.5" />}
                     id="name"
                     name="name"
@@ -40,7 +40,7 @@ export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isA
                 <div className="flex gap-4 mb-0">
                     {/* Course Code - Required */}
                     <Input
-                        label="Course Code *"
+                        label="Course Code"
                         labelIcon={<Hash className="h-3.5 w-3.5" />}
                         id="code"
                         name="code"
@@ -72,7 +72,7 @@ export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isA
 
                 {/* Summary - Required */}
                 <Textarea
-                    label="Course Summary *"
+                    label="Course Summary"
                     labelIcon={<FileText className="h-3.5 w-3.5" />}
                     id="summary"
                     name="summary"

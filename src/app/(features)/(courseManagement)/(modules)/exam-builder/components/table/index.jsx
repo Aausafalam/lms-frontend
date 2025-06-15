@@ -1,58 +1,44 @@
 "use client";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import styles from "./styles/index.module.css";
 import Table from "@/components/table";
-import LessonsTableUtils from "./utils";
-import sampleLessonsTableData from "./utils/seeds";
+import examBuilderTableUtils from "./utils";
+import sampleExamBuilderTableData from "./utils/seeds";
 import GlobalUtils from "@/lib/utils";
-import lessonsTableConstants from "./utils/constants";
-import LessonCard from "./components/gridCard";
+import examBuilderTableConstants from "./utils/constants";
+import ExamBuilderCard from "./components/gridCard";
 import { useNavigation } from "@/components/navigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ImageIcon, Package, Plus } from "lucide-react";
 import { EmptyState } from "@/components/emptyState";
 import { useParams } from "next/navigation";
-import { useQueryParams } from "@/lib/hooks/useQuery";
 
-const LessonsTable = ({ onModuleDetailsPage = false, setSelectedLesson, setModalState, refreshTable, hideBreadcrumb }) => {
+const ExamBuilderTable = ({ setSelectedExamBuilder, setModalState, refreshTable }) => {
     const { navigate } = useNavigation();
-    const { moduleDetailsId } = useParams();
-    const { courseId } = useQueryParams();
+    const { courseId } = useParams();
     const breadcrumbItems = [
         {
-            title: "Courses",
-            href: "/courses",
-            icon: <Package className="h-3.5 w-3.5" />,
-        },
-        {
-            title: "Modules",
-            href: "/modules",
-            icon: <Package className="h-3.5 w-3.5" />,
-        },
-        {
-            title: "Lessons",
-            href: "/lessons",
+            title: "Exam Builder",
+            href: "/exam-builder",
             icon: <Package className="h-3.5 w-3.5" />,
         },
     ];
+
     /* Function to format data for the table */
     const formatTableData = (data) => ({
         rows: data?.records,
-        actionData: LessonsTableUtils.getTableActions({ data, setModalState, setSelectedLesson, navigate, moduleId: moduleDetailsId, courseId }),
-        url: `course/${courseId}/module/${moduleDetailsId}/lesson`,
+        actionData: examBuilderTableUtils.getTableActions({ data, setModalState, setSelectedExamBuilder, navigate }),
+        url: `/course/${courseId}/exam`,
         pagination: GlobalUtils.tablePagination(data),
-        sorting: lessonsTableConstants.SORTING,
-        // rowClickHandler: (row) => LessonsTableUtils.handleRowClick({ row, data, setModalState, setSelectedLesson }),
-        externalFilters: lessonsTableConstants.FILTERS,
-        tableHeader: LessonsTableUtils.getTableHeader({
+        sorting: examBuilderTableConstants.SORTING,
+        externalFilters: examBuilderTableConstants.FILTERS,
+        tableHeader: examBuilderTableUtils.getTableHeader({
             data,
-            courseId,
-            moduleDetailsId,
             setModalState,
             styles,
             navigate,
-            title: onModuleDetailsPage ? "Lesson List" : <Breadcrumb items={breadcrumbItems} />,
-            hideBreadcrumb,
+            courseId,
+            title: courseId ? "Exam Builder List" : <Breadcrumb items={breadcrumbItems} />,
         }),
         checkbox: true,
         refreshTable: refreshTable || false,
@@ -61,24 +47,24 @@ const LessonsTable = ({ onModuleDetailsPage = false, setSelectedLesson, setModal
         multiView: false,
         /* Grid view configuration */
         grid: {
-            column: onModuleDetailsPage ? 4 : 5,
-            card: (row) => <LessonCard data={row} />,
+            column: 4,
+            card: (row) => <ExamBuilderCard data={row} />,
         },
         emptyStateComponent: () => (
             <EmptyState
                 icon={ImageIcon}
-                title="No Lessons Found"
-                description="You haven't created any  lessons yet. Start by creating your first lesson."
-                actionLabel="Create Lesson"
+                title="No Exams Found"
+                description="You haven't created any exams yet. Start by creating your first exam."
+                actionLabel="Create Exam"
                 actionIcon={Plus}
-                onAction={() => navigate("/lessons/form/add")}
+                onAction={() => navigate("/exam-builder/form/add")}
                 className="bg-orange-50/50 dark:bg-orange-950/10 border-orange-200 dark:border-orange-800/30 my-3"
             />
         ),
     });
 
     /* Memoize table data for performance optimization */
-    const tableData = useMemo(() => formatTableData(sampleLessonsTableData), [refreshTable, onModuleDetailsPage, courseId]);
+    const tableData = useMemo(() => formatTableData(sampleExamBuilderTableData), [courseId, refreshTable]);
 
     return (
         <div className={styles.container}>
@@ -87,4 +73,4 @@ const LessonsTable = ({ onModuleDetailsPage = false, setSelectedLesson, setModal
     );
 };
 
-export default LessonsTable;
+export default ExamBuilderTable;

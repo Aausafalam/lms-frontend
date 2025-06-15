@@ -15,7 +15,7 @@ const CourseFormUtils = {
         { value: "expert", label: "Expert", icon: <Award className="h-4 w-4" /> },
     ],
     categories: [
-        { value: "f5c81acb-2451-402f-9b6f-a4ee980f44b0", label: "Programming", icon: <Laptop /> },
+        { value: "115d9494-9fbd-40ef-ba5d-c9004580a7d9", label: "Programming", icon: <Laptop /> },
         { value: "design", label: "Design", icon: <Palette /> },
         { value: "business", label: "Business", icon: <Briefcase /> },
         { value: "marketing", label: "Marketing", icon: <Target /> },

@@ -10,6 +10,7 @@ import { useQueryParams } from "@/lib/hooks/useQuery";
 import { useParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { ContentCard } from "@/components/contentCard";
+import { useNavigation } from "@/components/navigation";
 
 const devicePresets = {
     mobile: 400,
@@ -20,7 +21,7 @@ const devicePresets = {
 export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage }) {
     const [showFullDescription, setShowFullDescription] = useState(false);
     const { moduleDetails } = useModuleGetDetails();
-
+    const { navigate } = useNavigation();
     const data = moduleDetails?.data || initialData;
     const { courseId } = useQueryParams();
     const params = useParams();
@@ -44,7 +45,7 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
     };
 
     useEffect(() => {
-        if (params?.moduleDetails && courseId) {
+        if (params?.moduleDetails && courseId && onDetailsPage) {
             moduleDetails.fetch?.({
                 dynamicRoute: `/${courseId}/module/${params.moduleDetails}`,
             });
@@ -52,7 +53,7 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
     }, [params?.moduleDetails, courseId]);
 
     const handleBack = () => console.log("Back clicked");
-    const handleEdit = () => console.log("Edit clicked");
+    const handleEdit = () => navigate(`/modules/form/${params.moduleDetails}?courseId=${courseId}`);
     const handleDuplicate = () => console.log("Duplicate clicked");
     const handleDelete = () => console.log("Delete clicked");
 
@@ -184,10 +185,10 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                                         <ExternalLink className="h-4 w-4 text-white" />
                                                     </div>
                                                     <div>
-                                                        <p className={`text-gray-800 dark:text-gray-200 font-bold ${isMobile ? "text-sm" : "text-base"}`}>{resource.title}</p>
-                                                        {resource.url && (
-                                                            <p title={resource.url} className="text-gray-600 dark:text-gray-400 text-sm mt-1 truncate max-w-44 break-words">
-                                                                {resource.url}
+                                                        <p className={`text-gray-800 dark:text-gray-200 font-semibold ${isMobile ? "text-sm" : "text-md"}`}>{resource.title}</p>
+                                                        {resource.link && (
+                                                            <p title={resource.link} className="text-gray-600 dark:text-gray-400 text-sm mt-1 truncate max-w-44 break-words">
+                                                                {resource.link}
                                                             </p>
                                                         )}
                                                     </div>
@@ -276,13 +277,13 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                 <div className="space-y-3">
                                     <div>
                                         <div className="flex flex-wrap gap-1">
-                                            {data.categoryIds?.map((category) => (
+                                            {(data?.categoryIds || data?.categories)?.map((category) => (
                                                 <Badge
-                                                    key={category}
+                                                    key={category?.name || category}
                                                     variant="outline"
                                                     className="border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-3 py-1.5 text-[0.8rem] rounded-full capitalize"
                                                 >
-                                                    {category || "Category"}
+                                                    {category?.name || category || "Category"}
                                                 </Badge>
                                             ))}
                                         </div>

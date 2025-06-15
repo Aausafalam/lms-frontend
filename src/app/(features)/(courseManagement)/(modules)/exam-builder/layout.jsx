@@ -1,12 +1,11 @@
-import DashboardLayout from "@/app/layouts/index";
-import React from "react";
+import DashboardLayout from "@/app/layouts/index"
 
-const ModulesLayout = ({ children }) => {
-    return (
-        <DashboardLayout>
-            <div id="lessons_module">{children}</div>
-        </DashboardLayout>
-    );
-};
+const ExamBuilderLayout = ({ children }) => {
+  return (
+    <DashboardLayout>
+      <div id="exam_builder_module">{children}</div>
+    </DashboardLayout>
+  )
+}
 
-export default ModulesLayout;
+export default ExamBuilderLayout

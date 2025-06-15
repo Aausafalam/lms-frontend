@@ -31,7 +31,7 @@ class CourseApiService {
      * @returns {Promise<Object>} Update status
      */
     async update(dynamicRoute, payload, params, signal) {
-        const response = await this._apiClient.post(`${endpoints.UPDATE_COURSE}/${dynamicRoute}`, payload, { params, signal });
+        const response = await this._apiClient.put(`/${dynamicRoute}`, payload, { params, signal });
         return response.data;
     }
 
