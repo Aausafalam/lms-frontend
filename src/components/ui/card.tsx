@@ -3,7 +3,7 @@ import * as React from "react";
 import GlobalUtils from "@/lib/utils";
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-    <div ref={ref} className={GlobalUtils.cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)} {...props} />
+    <div ref={ref} className={GlobalUtils.cn("rounded-lg border bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 text-card-foreground shadow-sm", className)} {...props} />
 ));
 Card.displayName = "Card";
 

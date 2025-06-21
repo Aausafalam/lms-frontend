@@ -1,0 +1,78 @@
+const sampleRolesTableData = {
+  totalPages: 2,
+  totalDocuments: 6,
+  records: [
+    {
+      id: "1",
+      name: "Administrator",
+      description: "Full system access with all administrative privileges and user management capabilities",
+      privilegeCount: 15,
+      userCount: 3,
+      privilegeGroups: [
+        { id: "1", name: "User Management", privilegeCount: 4 },
+        { id: "2", name: "System Configuration", privilegeCount: 8 },
+        { id: "3", name: "Content Administration", privilegeCount: 3 },
+      ],
+      isActive: true,
+      createdAt: "2024-01-10",
+    },
+    {
+      id: "2",
+      name: "Course Manager",
+      description: "Manage courses, content, and educational materials with limited administrative access",
+      privilegeCount: 8,
+      userCount: 12,
+      privilegeGroups: [
+        { id: "2", name: "Course Management", privilegeCount: 6 },
+        { id: "3", name: "Content Administration", privilegeCount: 2 },
+      ],
+      isActive: true,
+      createdAt: "2024-01-15",
+    },
+    {
+      id: "3",
+      name: "Content Editor",
+      description: "Create and edit educational content, manage course materials and media files",
+      privilegeCount: 5,
+      userCount: 25,
+      privilegeGroups: [{ id: "3", name: "Content Administration", privilegeCount: 5 }],
+      isActive: true,
+      createdAt: "2024-01-20",
+    },
+    {
+      id: "4",
+      name: "Instructor",
+      description: "Teach courses, manage student progress, and access teaching tools and resources",
+      privilegeCount: 6,
+      userCount: 45,
+      privilegeGroups: [
+        { id: "2", name: "Course Management", privilegeCount: 4 },
+        { id: "5", name: "Reporting & Analytics", privilegeCount: 2 },
+      ],
+      isActive: true,
+      createdAt: "2024-02-01",
+    },
+    {
+      id: "5",
+      name: "Student",
+      description: "Access courses, submit assignments, and participate in learning activities",
+      privilegeCount: 3,
+      userCount: 156,
+      privilegeGroups: [{ id: "2", name: "Course Management", privilegeCount: 3 }],
+      isActive: true,
+      createdAt: "2024-02-05",
+    },
+    {
+      id: "6",
+      name: "Guest",
+      description: "Limited access to public content and basic platform features",
+      privilegeCount: 1,
+      userCount: 0,
+      privilegeGroups: [{ id: "2", name: "Course Management", privilegeCount: 1 }],
+      isActive: false,
+      createdAt: "2024-02-10",
+    },
+  ],
+}
+
+export default sampleRolesTableData

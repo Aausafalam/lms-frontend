@@ -281,7 +281,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
             <div
                 ref={selectRef}
                 className={GlobalUtils.cn(
-                    "selectWrapper relative transition-all duration-200 rounded-md border bg-white dark:bg-gray-800 mt-[-0.2rem] mb-[-0.2rem]",
+                    `selectWrapper relative transition-all duration-200 rounded-md border bg-white dark:bg-gray-800   ${label ? "mt-[-0.2rem] mb-[-0.2rem]" : ""}`,
                     isFocused && !hasError && "border-transparent ring-2 ring-primary-500 dark:ring-primary-600 shadow-sm",
                     hasError && "border-transparent ring-2 ring-red-500 dark:ring-red-500",
                     !isFocused && !hasError && "border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600",

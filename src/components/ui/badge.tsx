@@ -5,7 +5,7 @@ import GlobalUtils from "@/lib/utils";
 const badgeVariants = cva("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", {
     variants: {
         variant: {
-            default: "bg-gradient-to-r from-[#ff9500] to-[#ff5f6d] text-white shadow-sm shadow-orange-500/20 hover:shadow-orange-500/30 hover:scale-105",
+            default: "bg-gradient-to-r from-[#ff9500] to-[#ff5f6d] text-white shadow-sm shadow-orange-500/20 hover:shadow-orange-500/30 hover:scale-105 border-transparent",
             destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
             primary: "bg-gradient-to-r from-[#ff9500] to-[#ff5f6d] text-white shadow-sm shadow-orange-500/20 hover:shadow-orange-500/30 hover:scale-105",
             secondary: "bg-white/15 backdrop-blur-md dark:text-white border dark:border-white/20 hover:bg-white/20",

@@ -75,12 +75,12 @@
 @media (min-width: 992px) {
     .grid-4 {
         flex: 1 1 calc(25% - 1rem);
-        max-width: 25%;
+        max-width: calc(25% - 1rem);
     }
 
     .grid-5 {
         flex: 1 1 calc(20% - 1rem);
-        max-width: 20%;
+        max-width: calc(20% - 1rem);
     }
 
     .grid-6 {

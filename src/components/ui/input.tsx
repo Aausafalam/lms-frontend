@@ -202,7 +202,7 @@ const InputField: React.FC<InputFieldProps> = ({
 
             <div
                 className={GlobalUtils.cn(
-                    "inputWrapper relative transition-all duration-200 rounded-md border bg-white dark:bg-gray-800 mt-[-0.2rem] mb-[-0.2rem]",
+                    `inputWrapper relative transition-all duration-200 rounded-md border bg-white dark:bg-gray-800 ${label ? "mt-[-0.2rem] mb-[-0.2rem]" : ""}`,
                     isFocused && !hasError && "border-transparent ring-2 ring-primary-500 dark:ring-primary-600 shadow-sm",
                     hasError && "border-transparent ring-2 ring-red-500 dark:ring-red-500",
                     !isFocused && !hasError && "border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600",
@@ -227,7 +227,7 @@ const InputField: React.FC<InputFieldProps> = ({
                         placeholder={placeholder}
                         maxLength={maxLength}
                         className={GlobalUtils.cn(
-                            "w-full px-4 py-2.5 text-sm bg-transparent border-0 focus:outline-none focus:ring-0",
+                            "w-full px-4 py-[0.7rem] text-sm bg-transparent border-0 focus:outline-none focus:ring-0",
                             "text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500",
                             icon && "pl-10",
                             showPasswordToggle && "pr-10",
@@ -259,7 +259,7 @@ const InputField: React.FC<InputFieldProps> = ({
                 <ul
                     ref={suggestionsRef}
                     id={`${id}-suggestions`}
-                    className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-md py-1 text-xs overflow-auto focus:outline-none"
+                    className="absolute z-10 top-12 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-md py-1 text-xs overflow-auto focus:outline-none"
                     role="listbox"
                 >
                     {isLoading ? (
