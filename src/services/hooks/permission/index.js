@@ -59,12 +59,12 @@ export const usePermissionUpdate = () => {
     const UPDATE_PERMISSION_KEY = apiConstants.loadingStateKeys.UPDATE_PERMISSION;
 
     const executePermissionUpdate = useCallback(
-        async ({ payload, onSuccess, onError, options, params }) => {
+        async ({ dynamicRoute, payload, onSuccess, onError, options, params }) => {
             setLoading(UPDATE_PERMISSION_KEY, true);
             const controller = new AbortController();
 
             try {
-                const data = await permissionApiService.update(payload, params, controller.signal);
+                const data = await permissionApiService.update(dynamicRoute, payload, params, controller.signal);
                 showSuccessNotification({
                     key: UPDATE_PERMISSION_KEY,
                     value: data,

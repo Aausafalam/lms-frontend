@@ -24,12 +24,12 @@ export const lmsMenuItems = [
         id: "permissions",
         label: "Roles & Permissions",
         icon: Shield,
-        path: "/permissions",
+        path: "/rbac",
         subMenus: [
-            { id: "roles", label: "Roles", path: "/roles" },
-            { id: "permission-list", label: "Permissions", path: "/permissions" },
-            { id: "permission-groups", label: "Permission Groups", path: "/permissions-group" },
-            { id: "api-routes", label: "API Routes", path: "/routes" },
+            { id: "api-routes", label: "API Routes", path: "/rbac/routes" },
+            { id: "privilege-groups", label: "Privilege Groups", path: "/rbac/privilege-groups" },
+            { id: "privilege", label: "Privilege", path: "/rbac/privileges" },
+            { id: "roles", label: "Roles", path: "/rbac/roles" },
         ],
     },
     {

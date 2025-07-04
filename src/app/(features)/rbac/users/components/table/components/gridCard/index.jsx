@@ -1,166 +1,191 @@
-"use client"
-import { Edit, Trash2, Eye, Mail, Phone, Shield, Clock, User, Crown } from "lucide-react"
+"use client";
 
-const UserGridCard = ({ user, onDeleteClick }) => {
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "ACTIVE":
-        return "bg-green-100 text-green-800 border-green-200"
-      case "INACTIVE":
-        return "bg-gray-100 text-gray-800 border-gray-200"
-      case "SUSPENDED":
-        return "bg-red-100 text-red-800 border-red-200"
-      case "PENDING":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200"
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200"
-    }
-  }
+import { useState, useEffect } from "react";
+import { User, Mail, Phone, Shield, Clock, ChevronRight, Crown, UsersIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useNavigation } from "@/components/navigation";
 
-  const getRoleIcon = (role) => {
-    switch (role.toLowerCase()) {
-      case "admin":
-        return <Crown className="w-3 h-3" />
-      case "manager":
-        return <Shield className="w-3 h-3" />
-      default:
-        return <User className="w-3 h-3" />
-    }
-  }
+export default function UserCard({ data }) {
+    const { navigate } = useNavigation();
+    const [userData, setUserData] = useState({
+        id: "1",
+        name: "John Doe",
+        email: "john.doe@example.com",
+        mobile: "+1234567890",
+        gender: "MALE",
+        status: "ACTIVE",
+        roles: ["Admin", "Manager"],
+        lastLogin: "2024-01-15T10:30:00Z",
+        createdAt: "2024-01-01T00:00:00Z",
+    });
 
-  const getRoleColor = (role) => {
-    switch (role.toLowerCase()) {
-      case "admin":
-        return "bg-purple-100 text-purple-800"
-      case "manager":
-        return "bg-blue-100 text-blue-800"
-      default:
-        return "bg-gray-100 text-gray-800"
-    }
-  }
+    useEffect(() => {
+        if (data) {
+            setUserData((prevData) => ({ ...prevData, ...data }));
+        }
+    }, [data]);
 
-  const formatLastLogin = (dateString) => {
-    if (!dateString) return "Never"
-    const date = new Date(dateString)
-    const now = new Date()
-    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60))
+    const handleCardClick = () => {
+        navigate(`/rbac/users/details/${userData.id}`);
+    };
 
-    if (diffInHours < 1) return "Just now"
-    if (diffInHours < 24) return `${diffInHours}h ago`
-    if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`
-    return date.toLocaleDateString()
-  }
+    const getStatusColor = (status) => {
+        const colors = {
+            ACTIVE: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+            INACTIVE: "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400",
+            SUSPENDED: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+            PENDING: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+        };
+        return colors[status] || "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
+    };
 
-  const getGradientByRole = (roles) => {
-    if (roles.includes("Admin")) return "from-purple-500 to-pink-500"
-    if (roles.includes("Manager")) return "from-blue-500 to-cyan-500"
-    return "from-orange-500 to-red-500"
-  }
+    const getRoleIcon = (role) => {
+        switch (role.toLowerCase()) {
+            case "admin":
+                return <Crown className="h-3 w-3" />;
+            case "manager":
+                return <Shield className="h-3 w-3" />;
+            default:
+                return <User className="h-3 w-3" />;
+        }
+    };
 
-  return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 group">
-      {/* Header with gradient */}
-      <div className={`h-20 bg-gradient-to-r ${getGradientByRole(user.roles)} relative`}>
-        <div className="absolute inset-0 bg-black bg-opacity-10"></div>
-        <div className="absolute top-3 right-3">
-          <span
-            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(user.status)}`}
-          >
-            {user.status}
-          </span>
-        </div>
-      </div>
+    const getRoleColor = (role) => {
+        switch (role.toLowerCase()) {
+            case "admin":
+                return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400";
+            case "manager":
+                return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
+            default:
+                return "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
+        }
+    };
 
-      {/* Profile Section */}
-      <div className="p-6 -mt-8 relative">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-16 h-16 rounded-full overflow-hidden bg-white border-4 border-white shadow-lg flex-shrink-0">
-              {user.profilePic ? (
-                <img
-                  src={user.profilePic || "/placeholder.svg"}
-                  alt={user.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-500 font-bold text-xl bg-gray-100">
-                  {user.name.charAt(0).toUpperCase()}
+    const formatLastLogin = (dateString) => {
+        if (!dateString) return "Never";
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+
+        if (diffInHours < 1) return "Just now";
+        if (diffInHours < 24) return `${diffInHours}h ago`;
+        if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
+        return date.toLocaleDateString();
+    };
+
+    return (
+        <div
+            className="group relative w-full overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-xl dark:bg-gray-800/90 dark:hover:bg-gray-800 cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-500"
+            onClick={handleCardClick}
+        >
+            {/* Card Content */}
+            <div className="relative p-6">
+                {/* Profile Section */}
+                <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                            {userData.profilePic ? (
+                                <img src={userData.profilePic || "/placeholder.svg"} alt={userData.name} className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-gray-500 font-bold text-lg">{userData.name.charAt(0).toUpperCase()}</div>
+                            )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-200 truncate">
+                                {userData.name}
+                            </h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">{userData.gender.toLowerCase().replace("_", " ")}</p>
+                        </div>
+                    </div>
+                    <Badge variant="outline" className={`text-xs ${getStatusColor(userData.status)} border-current`}>
+                        {userData.status}
+                    </Badge>
                 </div>
-              )}
+
+                {/* Contact Info */}
+                <div className="mb-4 space-y-2">
+                    <div className="flex items-center space-x-2">
+                        <Mail className="h-3 w-3 text-gray-400" />
+                        <span className="text-sm text-gray-600 dark:text-gray-400 truncate">{userData.email}</span>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                        <Phone className="h-3 w-3 text-gray-400" />
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{userData.mobile || "---"}</span>
+                    </div>
+                </div>
+
+                {/* Roles Section */}
+                <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Assigned Roles</h4>
+                        <Badge variant="secondary" className="text-xs">
+                            {userData.roles?.length || 0} roles
+                        </Badge>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                        {userData.roles?.slice(0, 2).map((role, index) => (
+                            <Badge key={index} className={`text-xs px-2 py-1 ${getRoleColor(role)} flex items-center gap-1`}>
+                                {getRoleIcon(role)}
+                                {role}
+                            </Badge>
+                        ))}
+                        {userData.roles?.length > 2 && (
+                            <Badge variant="secondary" className="text-xs">
+                                +{userData.roles.length - 2} more
+                            </Badge>
+                        )}
+                    </div>
+                </div>
+
+                {/* Stats */}
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="flex items-center space-x-2 p-3 rounded-lg bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30">
+                        <div className="p-1.5 rounded-md bg-orange-100 dark:bg-orange-900/40">
+                            <Clock className="h-3 w-3 text-orange-600 dark:text-orange-400" />
+                        </div>
+                        <div>
+                            <div className="text-sm font-bold text-orange-700 dark:text-orange-300">{formatLastLogin(userData.lastLogin)}</div>
+                            <div className="text-xs text-orange-600 dark:text-orange-400">Last Login</div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2 p-3 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-100 dark:border-green-900/30">
+                        <div className="p-1.5 rounded-md bg-green-100 dark:bg-green-900/40">
+                            <UsersIcon className="h-3 w-3 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                            <div className="text-sm font-bold text-green-700 dark:text-green-300">{userData.status === "ACTIVE" ? "Active" : "Inactive"}</div>
+                            <div className="text-xs text-green-600 dark:text-green-400">Status</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <div className="flex items-center space-x-2">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Joined {new Date(userData.createdAt).toLocaleDateString()}</div>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/rbac/users/form/${userData.id}`);
+                            }}
+                            className="text-xs text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 font-medium px-3 py-1 rounded-md hover:bg-orange-50 dark:hover:bg-orange-950/30 transition-all"
+                        >
+                            Edit
+                        </button>
+                        <div className="flex items-center justify-center rounded-full h-8 w-8 bg-orange-500 text-white transition-all duration-300 hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 group-hover:scale-110">
+                            <ChevronRight className="h-4 w-4" />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div className="mt-2">
-              <h3 className="font-semibold text-gray-900 text-lg">{user.name}</h3>
-              <p className="text-sm text-gray-500 capitalize">{user.gender.toLowerCase().replace("_", " ")}</p>
-            </div>
-          </div>
-        </div>
 
-        {/* Contact Info */}
-        <div className="space-y-2 mb-4">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Mail className="w-4 h-4 text-gray-400" />
-            <span className="truncate">{user.email}</span>
-          </div>
-          {user.mobile && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Phone className="w-4 h-4 text-gray-400" />
-              <span>{user.mobile}</span>
-            </div>
-          )}
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
         </div>
-
-        {/* Roles */}
-        <div className="mb-4">
-          <div className="flex flex-wrap gap-1">
-            {user.roles.map((role, index) => (
-              <span
-                key={index}
-                className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${getRoleColor(role)}`}
-              >
-                {getRoleIcon(role)}
-                {role}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Last Login */}
-        <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-          <Clock className="w-4 h-4" />
-          <span>Last login: {formatLastLogin(user.lastLogin)}</span>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <div className="flex items-center gap-2">
-            <a
-              href={`/rbac/users/details/${user.id}`}
-              className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-              title="View Details"
-            >
-              <Eye className="w-4 h-4" />
-            </a>
-            <a
-              href={`/rbac/users/form/${user.id}`}
-              className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              title="Edit User"
-            >
-              <Edit className="w-4 h-4" />
-            </a>
-            <button
-              onClick={() => onDeleteClick(user)}
-              className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-              title="Delete User"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="text-xs text-gray-400">ID: {user.id}</div>
-        </div>
-      </div>
-    </div>
-  )
+    );
 }
-
-export default UserGridCard

@@ -1,12 +1,12 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { useRolesAssignUsers, useRolesAttachPermissions, useRolesDelete, useRolesGetDetails, useRolesGetStats, useRolesUpdate } from "../hooks/roles";
+import { useRolesAssignUsers, useRolesAttachPermissions, useRolesDelete, useRolesGetDetails, useRolesGetStats, useRoleUpdate } from "../hooks/roles";
 
 const RolesContext = createContext(null);
 
 export const RolesProvider = ({ children, initialData = { rolesList: [] } }) => {
-    const useRolesUpdateState = useRolesUpdate();
+    const useRoleUpdateState = useRoleUpdate();
     const useRolesGetDetailsState = useRolesGetDetails();
     const useRolesDeleteState = useRolesDelete();
     const useRolesGetStatsState = useRolesGetStats();
@@ -16,7 +16,7 @@ export const RolesProvider = ({ children, initialData = { rolesList: [] } }) => 
     return (
         <RolesContext.Provider
             value={{
-                ...useRolesUpdateState,
+                ...useRoleUpdateState,
                 ...useRolesGetDetailsState,
                 ...useRolesDeleteState,
                 ...useRolesGetStatsState,

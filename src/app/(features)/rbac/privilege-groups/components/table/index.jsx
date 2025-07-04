@@ -17,8 +17,8 @@ const PrivilegeGroupsTable = ({ setSelectedPrivilegeGroup, setModalState, refres
     const formatTableData = (data) => ({
         rows: data?.records,
         actionData: PrivilegeGroupsTableUtils.getTableActions({ data, setModalState, setSelectedPrivilegeGroup, navigate }),
-        url: "/rbac/privilege-groups",
-        pagination: GlobalUtils.tablePagination(data),
+        url: privilegeGroupsTableConstants.API_URL,
+        pagination: GlobalUtils.tablePagination(data.pagination),
         sorting: privilegeGroupsTableConstants.SORTING,
         rowClickHandler: (row) => PrivilegeGroupsTableUtils.handleRowClick({ row, data, setModalState, setSelectedPrivilegeGroup }),
         externalFilters: privilegeGroupsTableConstants.FILTERS,
@@ -30,7 +30,7 @@ const PrivilegeGroupsTable = ({ setSelectedPrivilegeGroup, setModalState, refres
         multiView: true,
         grid: {
             column: 4,
-            card: (row) => <PrivilegeGroupCard data={row} />,
+            card: (row, view) => <PrivilegeGroupCard data={row} view={view} />,
         },
         emptyStateComponent: () => (
             <EmptyState

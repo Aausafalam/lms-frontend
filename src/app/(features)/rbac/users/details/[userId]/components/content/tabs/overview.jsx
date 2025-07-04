@@ -51,7 +51,7 @@ const OverviewTab = ({ user }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Account Status</p>
-              <p className={`text-lg font-bold mt-1 px-2 py-1 rounded-full text-sm ${getStatusColor(user.status)}`}>
+              <p className={`w-fit  mt-1 px-2 py-1 rounded-full text-sm ${getStatusColor(user.status)}`}>
                 {user.status}
               </p>
             </div>

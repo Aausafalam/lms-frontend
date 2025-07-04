@@ -190,9 +190,9 @@ export const TableICON = {
     ),
 
     DELETE: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+        <svg className="fill-white dark:fill-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
             <path
-                fill="none"
+                fill=""
                 stroke="currentColor"
                 stroke-linecap="round"
                 stroke-linejoin="round"

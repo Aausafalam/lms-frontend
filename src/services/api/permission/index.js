@@ -31,7 +31,7 @@ class PermissionApiService {
      * @returns {Promise<Object>} Update status
      */
     async update(dynamicRoute, payload, params, signal) {
-        const response = await this._apiClient.post(`${endpoints.UPDATE_PERMISSION}/${dynamicRoute}`, payload, { params, signal });
+        const response = await this._apiClient.put(`${endpoints.UPDATE_PERMISSION}${dynamicRoute}`, payload, { params, signal });
         return response.data;
     }
 
@@ -42,7 +42,7 @@ class PermissionApiService {
      * @returns {Promise<Object>} Permission details
      */
     async getDetails(dynamicRoute, params, signal) {
-        const response = await this._apiClient.get(`${endpoints.GET_PERMISSION_DETAILS}/${dynamicRoute}`, { params, signal });
+        const response = await this._apiClient.get(`${endpoints.GET_PERMISSION_DETAILS}${dynamicRoute}`, { params, signal });
         return response.data;
     }
 

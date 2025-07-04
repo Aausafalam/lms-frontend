@@ -1,20 +1,20 @@
-import globalConstants from "@/lib/utils/constants"
-import FILTER_OPTIONS from "./filters"
+import globalConstants from "@/lib/utils/constants";
+import FILTER_OPTIONS from "./filters";
 
 const rolesTableConstants = {
-  API_URL: "/rbac/roles",
-  LIMITS: globalConstants.TABLE_LIMITS,
-  SORTING: { initialSort: "Role Name", initialSortOrder: "asc" },
-  FILTERS: {
-    icon: false,
-    filterFields: Object.entries(FILTER_OPTIONS).map(([key, filter]) => ({
-      type: filter.type || "select",
-      name: key,
-      grid: filter.grid || 3,
-      options: filter.options,
-      placeholder: filter.placeholder || `Select ${key.replace(/([A-Z])/g, " $1").trim()}`,
-    })),
-  },
-}
+    API_URL: "/role",
+    LIMITS: globalConstants.TABLE_LIMITS,
+    SORTING: { initialSort: "Role Name", initialSortOrder: "asc" },
+    FILTERS: {
+        icon: false,
+        filterFields: Object.entries(FILTER_OPTIONS).map(([key, filter]) => ({
+            type: filter.type || "select",
+            name: key,
+            grid: filter.grid || 3,
+            options: filter.options,
+            placeholder: filter.placeholder || `Select ${key.replace(/([A-Z])/g, " $1").trim()}`,
+        })),
+    },
+};
 
-export default rolesTableConstants
+export default rolesTableConstants;

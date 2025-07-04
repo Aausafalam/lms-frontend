@@ -91,11 +91,14 @@ const apiConstants = {
     examPattern: {
         BASE_ROUTE: "/course",
     },
-    examBuilder: {
+    exam: {
         BASE_ROUTE: "/course",
     },
     question: {
         BASE_ROUTE: "/course",
+    },
+    subscription: {
+        BASE_ROUTE: "/subscription",
     },
     routes: {
         BASE_ROUTE: "/route",
@@ -174,6 +177,12 @@ const apiConstants = {
         FILE_UPLOAD_KEY: "fileUpload",
         CURRENT_ONBOARDED_USER: "currentOnboardedUser",
         GET_TEMPLATE_LIST: "getTemplateList",
+
+        CREATE_SUBSCRIPTION: "createSubscription",
+        UPDATE_SUBSCRIPTION: "updateSubscription",
+        GET_SUBSCRIPTION_DETAILS: "getSubscriptionDetails",
+        GET_SUBSCRIPTION_STATS: "getSubscriptionStats",
+        DELETE_SUBSCRIPTION: "deleteSubscription",
 
         AUTHENTICATE: "authenticate",
     },

@@ -3,13 +3,15 @@ import { useNavigation } from "@/components/navigation";
 import { useParams } from "next/navigation";
 import { Tag, Globe, BookOpen, Target, Clock, Award, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useQueryParams } from "@/lib/hooks/useQuery";
 
 export default function QuestionCard({ data }) {
     const { navigate } = useNavigation();
-    const { courseId } = useParams();
+    const { examId } = useParams();
+    const { courseId } = useQueryParams();
 
     const handleCardClick = () => {
-        navigate(`/question-panel/details/${data.id}?courseId=${courseId}`);
+        navigate(`/question-panel/details/${data.id}?courseId=${courseId}&examId=${examId}`);
     };
 
     // Helper function to get status color and styles
@@ -104,18 +106,10 @@ export default function QuestionCard({ data }) {
 
                 {/* Question Text Preview */}
                 <div className="mb-3">
-                    <p className="text-sm leading-tight text-gray-900 dark:text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all duration-300 line-clamp-3 min-h-8">
+                    <p className="text-sm leading-tight text-gray-900 dark:text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-600 group-hover:to-pink-600 group-hover:bg-clip-text transition-all duration-300 line-clamp-2 h-9">
                         {data.text || "No question text provided"}
                     </p>
                 </div>
-
-                {/* Question ID */}
-                {/* <div className="flex items-center gap-1 mb-2">
-          <Target className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-          <span className="text-xs text-gray-600 dark:text-gray-400 font-mono">
-            {data.questionId || "Auto-generated"}
-          </span>
-        </div> */}
             </div>
 
             {/* Stats Section */}
@@ -153,16 +147,6 @@ export default function QuestionCard({ data }) {
                             </span>
                             <Badge className={`text-xs ${getDifficultyColor(data.difficulty)}`}>{data.difficulty?.replace("_", " ") || "Easy"}</Badge>
                         </div>
-
-                        {data.timeLimit && (
-                            <div className="flex items-center justify-between text-xs">
-                                <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1">
-                                    <Clock className="w-3 h-3" />
-                                    Time:
-                                </span>
-                                <span className="font-medium text-gray-900 dark:text-white">{data.timeLimit}s</span>
-                            </div>
-                        )}
 
                         {data.language && (
                             <div className="flex items-center justify-between text-xs">

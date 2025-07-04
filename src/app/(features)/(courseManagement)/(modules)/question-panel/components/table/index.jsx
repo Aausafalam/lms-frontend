@@ -12,13 +12,15 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { HelpCircle, Package, Plus } from "lucide-react";
 import { EmptyState } from "@/components/emptyState";
 import { useParams } from "next/navigation";
+import { useQueryParams } from "@/lib/hooks/useQuery";
 
 const QuestionPanelTable = ({ setSelectedQuestion, setModalState, refreshTable }) => {
     const { navigate } = useNavigation();
-    const { courseId } = useParams();
+    const { courseId } = useQueryParams();
+    const { examId } = useParams();
     const breadcrumbItems = [
         {
-            title: "Question Bank",
+            title: "Questions",
             href: "/question-panel",
             icon: <Package className="h-3.5 w-3.5" />,
         },
@@ -27,8 +29,8 @@ const QuestionPanelTable = ({ setSelectedQuestion, setModalState, refreshTable }
     /* Function to format data for the table */
     const formatTableData = (data) => ({
         rows: data?.records,
-        actionData: questionTableUtils.getTableActions({ data, setModalState, setSelectedQuestion, navigate }),
-        url: `/questions`,
+        actionData: questionTableUtils.getTableActions({ data, setModalState, setSelectedQuestion, navigate, examId, courseId }),
+        url: `/course/${courseId}/exam/${examId}/question`,
         pagination: GlobalUtils.tablePagination(data),
         sorting: questionTableConstants.SORTING,
         externalFilters: questionTableConstants.FILTERS,
@@ -37,8 +39,9 @@ const QuestionPanelTable = ({ setSelectedQuestion, setModalState, refreshTable }
             setModalState,
             styles,
             navigate,
+            examId,
             courseId,
-            title: courseId ? "Question Bank" : <Breadcrumb items={breadcrumbItems} />,
+            title: courseId ? "Question List" : <Breadcrumb items={breadcrumbItems} />,
         }),
         checkbox: true,
         refreshTable: refreshTable || false,
@@ -64,7 +67,7 @@ const QuestionPanelTable = ({ setSelectedQuestion, setModalState, refreshTable }
     });
 
     /* Memoize table data for performance optimization */
-    const tableData = useMemo(() => formatTableData(sampleQuestionTableData), [courseId, refreshTable]);
+    const tableData = useMemo(() => formatTableData(sampleQuestionTableData), [courseId, examId, refreshTable]);
 
     return (
         <div className={styles.container}>

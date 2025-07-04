@@ -13,7 +13,6 @@ export function useQuestionFormData({ initialData }) {
         type: "MCQ",
         text: "",
         image: "",
-        category: "",
         subject: "",
         difficulty: "easy",
         language: "en",
@@ -23,16 +22,15 @@ export function useQuestionFormData({ initialData }) {
 
         // Question Content
         options: [
-            { id: "a", text: "", isCorrect: false },
-            { id: "b", text: "", isCorrect: false },
-            { id: "c", text: "", isCorrect: false },
-            { id: "d", text: "", isCorrect: false },
+            { id: "a", text: "" },
+            { id: "b", text: "" },
+            { id: "c", text: "" },
+            { id: "d", text: "" },
         ],
         answer: {},
         explanation: {},
     });
 
-    const { courseId } = useQueryParams();
     const { questionCreate } = useQuestionCreate();
     const [progress, setProgress] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +38,7 @@ export function useQuestionFormData({ initialData }) {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
-
+    const { examId, courseId } = useQueryParams();
     /**
      * Initialize form data with provided initial data
      */
@@ -159,8 +157,8 @@ export function useQuestionFormData({ initialData }) {
         if (!formData.text?.trim()) {
             errors.text = "Question text is required";
         }
-        if (!formData.category?.trim()) {
-            errors.category = "Category is required";
+        if (!formData.section?.trim()) {
+            errors.section = "Section is required";
         }
         if (!formData.difficulty?.trim()) {
             errors.difficulty = "Difficulty level is required";
@@ -204,23 +202,49 @@ export function useQuestionFormData({ initialData }) {
         setError(null);
         setSuccess(false);
 
-        if (!validateForm()) {
+        // Update the correct option before validation
+        let updatedFormData = formData;
+        if (formData.options?.length) {
+            const correctOption = formData.options.find((option) => option.isCorrect)?.id || "not given";
+            updatedFormData = {
+                ...formData,
+                options: formData.options?.map((option) => ({ ...option, isCorrect: undefined })),
+                answer: {
+                    ...formData.answer,
+                    correctOption,
+                },
+            };
+
+            // Update the state (this is asynchronous but we'll use the local updatedFormData for immediate use)
+            handleInputChange({
+                target: {
+                    name: "answer",
+                    value: {
+                        ...formData.answer,
+                        correctOption,
+                    },
+                },
+            });
+        }
+
+        // Validate using the updated data
+        if (!validateForm(updatedFormData)) {
+            // Pass updatedFormData if validateForm accepts it
             setError("Please fix the validation errors before saving");
             return;
         }
 
         setIsSaving(true);
-
         try {
-            console.log("Saving question data:", formData);
+            console.log("Saving question data:", updatedFormData);
 
-            // Prepare payload
+            // Use the updated data for the payload
             const payload = {
-                ...formData,
+                ...updatedFormData,
             };
 
             questionCreate.execute({
-                dynamicRoute: `/questions`,
+                dynamicRoute: `/${courseId}/exam/${examId}/question`,
                 payload,
                 onSuccess: () => setSuccess(true),
                 onError: () => setTimeout(() => setSuccess(false), 5000),
@@ -232,7 +256,7 @@ export function useQuestionFormData({ initialData }) {
         } finally {
             setIsSaving(false);
         }
-    }, [formData, validateForm, courseId]);
+    }, [formData, validateForm, handleInputChange]);
 
     return {
         formData,

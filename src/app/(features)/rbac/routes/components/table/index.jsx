@@ -26,11 +26,11 @@ const RoutesTable = ({ setSelectedRoute, setModalState, refreshTable }) => {
         checkbox: true,
         refreshTable: refreshTable || false,
         formatTableData,
-        initialView: "grid",
+        initialView: "table",
         multiView: true,
         grid: {
             column: 5,
-            card: (row) => <RouteCard data={row} />,
+            card: (row, view) => <RouteCard data={row} view={view} />,
         },
         emptyStateComponent: () => (
             <EmptyState
@@ -40,7 +40,6 @@ const RoutesTable = ({ setSelectedRoute, setModalState, refreshTable }) => {
                 actionLabel="Add Route"
                 actionIcon={Plus}
                 onAction={() => navigate("/rbac/routes/form/add")}
-                className="bg-blue-50/50 dark:bg-blue-950/10 border-blue-200 dark:border-blue-800/30 my-3"
             />
         ),
     });

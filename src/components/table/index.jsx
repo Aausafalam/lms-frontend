@@ -75,7 +75,9 @@ const Table = ({ tableData }) => {
             {/* {dataView.table && <TableView isLoading={isLoading} checkboxState={checkboxState} setCheckboxState={setCheckboxState} data={data} router={router} initialValues={initialValues} />} */}
 
             {/* Grid View */}
-            {dataView.grid && <GridView isLoading={isLoading} checkboxState={checkboxState} setCheckboxState={setCheckboxState} data={data} router={router} initialValues={initialValues} />}
+            {/* {dataView.grid && ( */}
+            <GridView dataView={dataView} isLoading={isLoading} checkboxState={checkboxState} setCheckboxState={setCheckboxState} data={data} router={router} initialValues={initialValues} />
+            {/* )} */}
 
             {/* Custom View */}
             {dataView.customView && <div className={styles.grid_view_container}>{data.rows?.length > 0 ? data.customView() : <DataNotFound message="Empty List" />}</div>}

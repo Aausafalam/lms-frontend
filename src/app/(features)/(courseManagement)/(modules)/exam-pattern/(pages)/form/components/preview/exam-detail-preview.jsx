@@ -30,7 +30,7 @@ export function ExamDetailPreview({ initialData, viewportWidth, onDetailsPage })
     const isTablet = viewportWidth > devicePresets.mobile && viewportWidth <= devicePresets.tablet;
     const isDesktop = viewportWidth > devicePresets.tablet;
     const { courseId } = useQueryParams();
-    const { examPatternDetails } = useParams();
+    const { examId } = useParams();
 
     // Calculate exam statistics
     const totalQuestions = data.sections?.reduce((total, section) => total + (section.questionsCount || 0), 0) || 0;
@@ -49,10 +49,10 @@ export function ExamDetailPreview({ initialData, viewportWidth, onDetailsPage })
     const compulsorySections = data.sections?.filter((section) => section.isCompulsory).length || 0;
 
     useEffect(() => {
-        if (courseId && examPatternDetails) {
-            examPatternDetail.fetch({ dynamicRoute: `/${courseId}/exam-pattern/${examPatternDetails}` });
+        if (courseId && examId) {
+            examPatternDetail.fetch({ dynamicRoute: `/${courseId}/exam-pattern/${examId}` });
         }
-    }, [courseId, examPatternDetails]);
+    }, [courseId, examId]);
 
     return (
         <div className={`w-full ${onDetailsPage ? "max-w-[1225px]" : "max-h-[75vh] overflow-scroll"}`}>

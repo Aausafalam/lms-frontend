@@ -259,8 +259,8 @@ class GlobalUtils {
     }
     static tablePagination(data) {
         return {
-            totalPage: data.totalPages || "0",
-            totalItemCount: data.totalDocuments || "0",
+            totalPage: data?.totalPages || "0",
+            totalItemCount: data?.totalDocuments || "0",
         };
     }
     static async handleDelete({ recordId, onShowDetails, deleteAction, toggleRefreshData }) {

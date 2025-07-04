@@ -104,6 +104,7 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen, sidebarColl
                                             toggleSubmenu(item.id);
                                         }
                                         setActiveAndExpand(item.id);
+                                        item.path && router.push(item.path);
                                     } else {
                                         router.push(item.path);
                                         setActiveAndExpand(item.id);

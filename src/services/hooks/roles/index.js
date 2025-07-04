@@ -51,6 +51,52 @@ export const useRolesAttachPermissions = () => {
     };
 };
 
+/**
+ * Custom hook to handle Roles creation
+ */
+export const useRoleCreate = () => {
+    const { showErrorNotification, showSuccessNotification, successMessages, errorMessages } = useNotification();
+    const { isLoading, setLoading } = useLoading();
+    const ATTACH_PERMISSION_ROLES_KEY = apiConstants.loadingStateKeys.ATTACH_PERMISSION_ROLES;
+
+    const executeRoleCreate = useCallback(
+        async ({ payload, onSuccess, onError, options, params }) => {
+            setLoading(ATTACH_PERMISSION_ROLES_KEY, true);
+            const controller = new AbortController();
+
+            try {
+                const data = await rolesApiService.createRole(payload, params, controller.signal);
+                showSuccessNotification({
+                    key: ATTACH_PERMISSION_ROLES_KEY,
+                    value: data,
+                    hideNotification: !options?.showNotification,
+                });
+                onSuccess?.(data);
+                return data;
+            } catch (error) {
+                showErrorNotification({
+                    key: ATTACH_PERMISSION_ROLES_KEY,
+                    value: error?.message || "Failed to create permission Group",
+                });
+                onError?.(error);
+                throw error;
+            } finally {
+                setLoading(ATTACH_PERMISSION_ROLES_KEY, false);
+            }
+        },
+        [ATTACH_PERMISSION_ROLES_KEY, showErrorNotification, showSuccessNotification, setLoading]
+    );
+
+    return {
+        roleCreate: {
+            execute: executeRoleCreate,
+            isLoading: isLoading(ATTACH_PERMISSION_ROLES_KEY),
+            successMessages: successMessages?.[ATTACH_PERMISSION_ROLES_KEY],
+            errorMessages: errorMessages?.[ATTACH_PERMISSION_ROLES_KEY],
+        },
+    };
+};
+
 export const useRolesAssignUsers = () => {
     const { showErrorNotification, showSuccessNotification, successMessages, errorMessages } = useNotification();
     const { isLoading, setLoading } = useLoading();
@@ -97,18 +143,18 @@ export const useRolesAssignUsers = () => {
 /**
  * Custom hook to handle Roles updates
  */
-export const useRolesUpdate = () => {
+export const useRoleUpdate = () => {
     const { showErrorNotification, showSuccessNotification, successMessages, errorMessages } = useNotification();
     const { isLoading, setLoading } = useLoading();
     const UPDATE_ROLES_KEY = apiConstants.loadingStateKeys.UPDATE_ROLES;
 
     const executeRolesUpdate = useCallback(
-        async ({ payload, onSuccess, onError, options, params }) => {
+        async ({ dynamicRoute, payload, onSuccess, onError, options, params }) => {
             setLoading(UPDATE_ROLES_KEY, true);
             const controller = new AbortController();
 
             try {
-                const data = await rolesApiService.update(payload, params, controller.signal);
+                const data = await rolesApiService.update(dynamicRoute, payload, params, controller.signal);
                 showSuccessNotification({
                     key: UPDATE_ROLES_KEY,
                     value: data,
@@ -131,7 +177,7 @@ export const useRolesUpdate = () => {
     );
 
     return {
-        rolesUpdate: {
+        roleUpdate: {
             execute: executeRolesUpdate,
             isLoading: isLoading(UPDATE_ROLES_KEY),
             successMessages: successMessages?.[UPDATE_ROLES_KEY],
@@ -156,7 +202,7 @@ export const useRolesGetDetails = () => {
 
             try {
                 const data = await rolesApiService.getDetails(dynamicRoute, params, controller.signal);
-                setDetails(data);
+                setDetails({ ...data, data: { ...data.data, privileges: data.data.rolePrivileges } });
                 onSuccess?.(data);
             } catch (error) {
                 showErrorNotification({

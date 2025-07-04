@@ -1,0 +1,23 @@
+export const sampleUserData = {
+  id: "1",
+  name: "John Doe",
+  email: "john.doe@example.com",
+  mobile: "+1234567890",
+  gender: "MALE",
+  status: "ACTIVE",
+  profilePic: "/placeholder.svg?height=40&width=40",
+  roles: [
+    { id: "1", name: "Administrator", description: "Full system access" },
+    { id: "2", name: "Manager", description: "Management level access" },
+  ],
+  requirePasswordChange: false,
+  enableTwoFactor: true,
+  accountLockout: true,
+  language: "en",
+  timezone: "America/New_York",
+  theme: "light",
+  emailNotifications: true,
+  pushNotifications: false,
+  smsNotifications: true,
+  isActive: true,
+}

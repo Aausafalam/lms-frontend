@@ -8,7 +8,7 @@ import Utils from "../../utils";
 import Link from "next/link";
 import CheckBoxField from "@/components/form/components/FieldTemplates/CheckBoxField";
 
-const GridView = ({ isLoading, checkboxState, setCheckboxState, data, router, onRowClick, initialValues, onActionClick }) => {
+const GridView = ({ isLoading, dataView, checkboxState, setCheckboxState, data, router, onRowClick, initialValues, onActionClick }) => {
     if (isLoading) {
         return <TableLoading />;
     }
@@ -64,7 +64,7 @@ const GridView = ({ isLoading, checkboxState, setCheckboxState, data, router, on
                 <div>
                     {/* Render the first two actions directly */}
                     {primaryActions.map((action, index) => (
-                        <p key={`${action.name}-${index}`} className={styles.action_icon} onClick={(e) => handleActionClick(action, row, e)} title={action.label}>
+                        <p key={`${action.name}-${index}`} className={`${styles.action_icon} dark:text-white text-gray-950`} onClick={(e) => handleActionClick(action, row, e)} title={action.label}>
                             {ICON[action.name.toUpperCase()]}
                         </p>
                     ))}
@@ -89,11 +89,11 @@ const GridView = ({ isLoading, checkboxState, setCheckboxState, data, router, on
         },
         [getVisibleActions, handleActionClick]
     );
-    const gridClass = `grid-${data.grid?.column || 3}`;
+    const gridClass = `grid-${dataView?.table ? 1 : data.grid?.column || 3}`;
     return (
         <>
             {data?.rows?.length > 0 ? (
-                <div className={styles.grid + "   py-4"}>
+                <div style={{ rowGap: dataView?.table ? "0.5rem" : "0.8rem" }} className={styles.grid + "   py-4"}>
                     {data.rows.map((row, rowIndex) => (
                         <div
                             className={`${styles[gridClass]} ${styles.grid_card}`}
@@ -101,37 +101,42 @@ const GridView = ({ isLoading, checkboxState, setCheckboxState, data, router, on
                             onClick={() => handleRowClick(row)}
                             style={{ cursor: data.rowClickHandler ? "pointer" : "" }}
                         >
-                            <div className={styles.grid_card_overlay}>
-                                {data.checkbox && (
-                                    <div
-                                        className={`${styles.checkbox_cell} ${checkboxState?.[`${data.url}_row${initialValues.page || "1"}${rowIndex + 1}`] ? styles.active_checkbox : ""}`}
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        <CheckBoxField
-                                            formField={{
-                                                id: `${data.url}_row${initialValues.page || "1"}${rowIndex + 1}`,
-                                                name: `${data.url}_row${initialValues.page || "1"}${rowIndex + 1}`,
-                                                onChange: (event) => {
-                                                    const { name, value } = event.target;
-                                                    setCheckboxState((prev) => ({
-                                                        ...prev,
-                                                        [name]: value ? row.Id?.value || value : value,
-                                                    }));
-                                                },
-                                                className: styles.checkbox,
-                                            }}
-                                            formValues={checkboxState}
-                                        />
-                                    </div>
-                                )}
-                                {data.actionData && (
-                                    <div onClick={(e) => e.stopPropagation()} className={styles.action_cell} data-cell="Action">
-                                        <ActionButtons actions={data.actionData} row={row} />
-                                    </div>
-                                )}
-                            </div>
+                            {
+                                <div className={styles.grid_card_overlay}>
+                                    {data.checkbox && (
+                                        <div
+                                            className={`bg-gray-950/5 dark:bg-gray-700/40 rounded-full ${styles.checkbox_cell} ${
+                                                checkboxState?.[`${data.url}_row${initialValues.page || "1"}${rowIndex + 1}`] ? styles.active_checkbox : ""
+                                            }`}
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <CheckBoxField
+                                                formField={{
+                                                    id: `${data.url}_row${initialValues.page || "1"}${rowIndex + 1}`,
+                                                    name: `${data.url}_row${initialValues.page || "1"}${rowIndex + 1}`,
+                                                    onChange: (event) => {
+                                                        const { name, value } = event.target;
+                                                        setCheckboxState((prev) => ({
+                                                            ...prev,
+                                                            [name]: value ? row.Id?.value || value : value,
+                                                        }));
+                                                    },
+                                                    className: styles.checkbox,
+                                                }}
+                                                formValues={checkboxState}
+                                            />
+                                        </div>
+                                    )}
+                                    {data.actionData && (
+                                        <div onClick={(e) => e.stopPropagation()} className={`${styles.action_cell} bg-gray-950/5 dark:bg-gray-700/40 rounded-full pl-3 pr-0`} data-cell="Action">
+                                            <ActionButtons actions={data.actionData} row={row} />
+                                        </div>
+                                    )}
+                                </div>
+                            }
+
                             {data?.grid?.card ? (
-                                data?.grid?.card(row)
+                                data?.grid?.card(row, dataView, rowIndex)
                             ) : (
                                 <div className="bg:white rounded-lg shadow-md hover:shadow-lg p-4">
                                     {Object.entries(row).map(([key, value], index) => {

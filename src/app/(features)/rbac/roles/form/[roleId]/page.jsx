@@ -1,19 +1,28 @@
-"use client"
-import { useParams } from "next/navigation"
-import RoleFormBase from ".."
-import { sampleRoleData } from "../utils/seeds"
+"use client";
+import { useParams } from "next/navigation";
+import RoleFormBase from "..";
+import { sampleRoleData } from "../utils/seeds";
+import { useRolesGetDetails } from "@/services/hooks/roles";
+import { useEffect } from "react";
 
 const EditRole = () => {
-  const { roleId } = useParams()
+    const { roleId } = useParams();
+    const { rolesDetails } = useRolesGetDetails();
 
-  // In a real app, you would fetch the role data here
-  const data = sampleRoleData // Replace with actual API call
+    useEffect(() => {
+        rolesDetails.fetch({
+            dynamicRoute: roleId,
+        });
+    }, []);
 
-  if (!data) {
-    return <div className="flex items-center justify-center h-64">Role data not found.</div>
-  }
+    // In a real app, you would fetch the privilege data here
+    const data = rolesDetails?.data?.data || sampleRoleData;
 
-  return <RoleFormBase initialData={data} roleId={roleId} />
-}
+    if (!data) {
+        return <div className="flex items-center justify-center h-64">Role data not found.</div>;
+    }
 
-export default EditRole
+    return <RoleFormBase initialData={data} roleId={roleId} />;
+};
+
+export default EditRole;

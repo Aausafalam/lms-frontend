@@ -12,7 +12,7 @@ export function SidebarNavigation({ activeTab, setActiveTab }) {
         { id: "overview", label: "Overview", icon: <FileText className="h-4 w-4" /> },
         { id: "modules", label: "Modules", icon: <ImageIcon className="h-4 w-4" /> },
         { id: "exam-pattern", label: "Exam Pattern", icon: <BookCheck className="h-4 w-4" /> },
-        { id: "exam-builder", label: "Exam Builder", icon: <PresentationIcon className="h-4 w-4" /> },
+        { id: "exam", label: "Exam", icon: <PresentationIcon className="h-4 w-4" /> },
         { id: "assignments", label: "Assignments", icon: <BookOpen className="h-4 w-4" /> },
         { id: "quiz", label: "Quiz", icon: <Target className="h-4 w-4" /> },
         { id: "syllabus", label: "Syllabus", icon: <Award className="h-4 w-4" /> },

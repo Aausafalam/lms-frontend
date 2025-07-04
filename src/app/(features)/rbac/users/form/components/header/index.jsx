@@ -1,69 +1,64 @@
 "use client"
 
-import { ArrowLeft, Save, X, User } from "lucide-react"
+import { Breadcrumb } from "@/components/Breadcrumb"
+import { Shield, Users, Copy, Trash2 } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button"
 
-const UserFormHeader = ({ isEdit, formData, onSubmit, onCancel, loading }) => {
+const UserFormHeader = ({ userId }) => {
+  const breadcrumbItems = [
+    {
+      title: "RBAC Management",
+      href: "/rbac",
+      icon: <Shield className="h-3.5 w-3.5" />,
+    },
+    {
+      title: "Users",
+      href: "/rbac/users",
+      icon: <Users className="h-3.5 w-3.5" />,
+    },
+    {
+      title: userId ? `Edit User` : "Add User",
+      href: userId ? `/rbac/users/form/${userId}` : "/rbac/users/form/add",
+      icon: <Users className="h-3.5 w-3.5" />,
+    },
+  ]
+
   return (
-    <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-      <div className="px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onCancel}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Users</span>
-            </button>
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+      <Breadcrumb items={breadcrumbItems} />
+      <div className="flex items-center gap-3">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full h-9 w-9 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all border border-gray-200 dark:border-gray-800 hover:border-blue-300"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Duplicate User</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
-            <div className="h-6 w-px bg-gray-300" />
-
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-orange-600" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {isEdit ? `Edit User: ${formData.name || "Unnamed User"}` : "Create New User"}
-                </h1>
-                <p className="text-sm text-gray-500">
-                  {isEdit ? "Update user information and settings" : "Add a new user to the system"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              disabled={loading}
-            >
-              <X className="w-4 h-4 mr-2" />
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              onClick={onSubmit}
-              disabled={loading}
-              className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  {isEdit ? "Updating..." : "Creating..."}
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" />
-                  {isEdit ? "Update User" : "Create User"}
-                </>
-              )}
-            </button>
-          </div>
-        </div>
+        {userId && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-9 w-9 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all border border-gray-200 dark:border-gray-800"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete User</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </div>
     </div>
   )

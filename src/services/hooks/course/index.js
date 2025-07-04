@@ -228,3 +228,40 @@ export const useCourseGetStats = () => {
         },
     };
 };
+
+export const useCourseGetList = () => {
+    const [list, setList] = useState({});
+    const { showErrorNotification } = useNotification();
+    const { isLoading, setLoading } = useLoading();
+    const GET_COURSE_STATS_KEY = apiConstants.loadingStateKeys.GET_COURSE_STATS;
+
+    const fetchList = useCallback(
+        async ({ onSuccess, onError, params }) => {
+            setLoading(GET_COURSE_STATS_KEY, true);
+            const controller = new AbortController();
+
+            try {
+                const data = await courseApiService.getList(params, controller.signal);
+                setList(data);
+                onSuccess?.(data);
+            } catch (error) {
+                showErrorNotification({
+                    key: GET_COURSE_STATS_KEY,
+                    value: error?.message || "Failed to fetch course list",
+                });
+                onError?.(error);
+            } finally {
+                setLoading(GET_COURSE_STATS_KEY, false);
+            }
+        },
+        [GET_COURSE_STATS_KEY, showErrorNotification, setLoading]
+    );
+
+    return {
+        courseList: {
+            data: list,
+            fetch: fetchList,
+            isLoading: isLoading(GET_COURSE_STATS_KEY),
+        },
+    };
+};

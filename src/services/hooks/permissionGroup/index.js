@@ -59,12 +59,12 @@ export const usePermissionGroupUpdate = () => {
     const UPDATE_PERMISSION_GROUP_KEY = apiConstants.loadingStateKeys.UPDATE_PERMISSION_GROUP;
 
     const executePermissionGroupUpdate = useCallback(
-        async ({ payload, onSuccess, onError, options, params }) => {
+        async ({ dynamicRoute, payload, onSuccess, onError, options, params }) => {
             setLoading(UPDATE_PERMISSION_GROUP_KEY, true);
             const controller = new AbortController();
 
             try {
-                const data = await permissionGroupApiService.update(payload, params, controller.signal);
+                const data = await permissionGroupApiService.update(dynamicRoute, payload, params, controller.signal);
                 showSuccessNotification({
                     key: UPDATE_PERMISSION_GROUP_KEY,
                     value: data,

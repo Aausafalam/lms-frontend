@@ -155,15 +155,10 @@ export const ICON = {
         </svg>
     ),
     EMPTY_CHECKBOX: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="v-icon notranslate v-theme--light v-icon--size-default">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
             <g clip-path="url(#a)">
                 <path stroke="currentColor" stroke-opacity=".4" stroke-width="2" d="M4 7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"></path>
             </g>
-            <defs>
-                <clipPath id="a">
-                    <path fill="#fff" d="M0 0h24v24H0z"></path>
-                </clipPath>
-            </defs>
         </svg>
     ),
 };

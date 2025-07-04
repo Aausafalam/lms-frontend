@@ -14,6 +14,10 @@
 
 /* Small devices (tablets, 576px and up) */
 @media (min-width: 576px) {
+    .grid-1 {
+        flex: 1 1 calc(100% - 1rem);
+        max-width: 100%;
+    }
     .grid-2 {
         flex: 1 1 calc(50% - 1rem);
         max-width: 50%;
@@ -44,7 +48,7 @@
 @media (min-width: 768px) {
     .grid-3 {
         flex: 1 1 calc(33.333% - 1rem);
-        max-width: 33.333%;
+        max-width: calc(33.333% - 0.4rem);
     }
 
     .grid-4 {
@@ -75,12 +79,12 @@
 @media (min-width: 992px) {
     .grid-4 {
         flex: 1 1 calc(25% - 1rem);
-        max-width: calc(25% - 1rem);
+        max-width: calc(25% - 0.6rem);
     }
 
     .grid-5 {
         flex: 1 1 calc(20% - 1rem);
-        max-width: calc(20% - 1rem);
+        max-width: calc(20% - 0.7rem);
     }
 
     .grid-6 {
@@ -155,8 +159,6 @@
     display: inline-flex;
     align-items: center;
     cursor: pointer;
-    color: white;
-    /* color: rgba(var(--text-primary), 0.7); */
     transition: color 0.2s ease;
     padding: 0.6rem;
     border-radius: 2rem;
@@ -208,16 +210,22 @@
     width: 100%;
     display: flex;
     border-radius: 0.6rem;
-    z-index: 5;
+    /* z-index: 0; */
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .grid_card:hover .grid_card_overlay {
-    background-color: rgba(0, 0, 0, 0.2);
+    /* background-color: rgba(0, 0, 0, 0.2); */
 }
 .grid_card:hover .checkbox_cell,
 .grid_card:hover .action_cell {
     display: block;
+    position: relative;
+    z-index: 10;
+    /* background-color: rgba(0, 0, 0, 0.2); */
 }
 @media (max-width: 768px) {
     .grid-2,

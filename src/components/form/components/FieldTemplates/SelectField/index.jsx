@@ -60,6 +60,8 @@ const FormSelectField = ({
         labelChild,
         contentChild,
     } = formField;
+
+    console.log(":optionsUrl>>>", optionsUrl);
     // Internal state
     const [inputValue, setInputValue] = useState(groupFieldDefaultValue || defaultValue || value || "");
     const [error, setError] = useState("");
@@ -129,11 +131,11 @@ const FormSelectField = ({
             });
     };
 
-    useEffect(() => {
-        if (optionsUrl) {
-            fetchOptionData();
-        }
-    }, [optionsUrl]);
+    // useEffect(() => {
+    //     if (optionsUrl) {
+    //         fetchOptionData();
+    //     }
+    // }, [optionsUrl]);
     console.log(formValues);
     return (
         <>
@@ -167,6 +169,7 @@ const FormSelectField = ({
                 autoFocus={formField?.autoFocus}
                 groupBy={formField?.groupBy}
                 noOptionsMessage={formField?.noOptionsMessage}
+                optionsUrl={optionsUrl}
             />
             {/* <div className={formGroupClasses} style={style}>
                 <div className={styles.inputWrapper}>

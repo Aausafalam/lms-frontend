@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { Check, ChevronDown, ChevronUp, X } from "lucide-react";
 import GlobalUtils from "@/lib/utils";
 import { Label } from "./label";
+import apiClient from "@/services/api/config";
 
 interface SelectOption {
     value: string;
@@ -40,6 +41,7 @@ interface SelectFieldProps {
     noOptionsMessage?: string;
     labelIcon?: React.ReactNode;
     fieldClassName?: string;
+    optionsUrl?: { url: string; valueKey?: string; labelKey?: string; customLabel?: (data: any) => void; onLoadData?: (data: any) => void };
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
@@ -59,7 +61,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
     error,
     touched,
     className,
-    options = [],
+    options: initialOptions = [],
     isLoading = false,
     isMulti = false,
     isSearchable = false,
@@ -70,11 +72,13 @@ const SelectField: React.FC<SelectFieldProps> = ({
     groupBy,
     noOptionsMessage = "No options available",
     fieldClassName,
+    optionsUrl,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchValue, setSearchValue] = useState("");
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const [isFocused, setIsFocused] = useState(false);
+    const [options, setOptions] = useState([]);
     const selectRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const optionsRef = useRef<HTMLDivElement>(null);
@@ -86,7 +90,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
     const filteredOptions = options.filter((option) => !isSearchable || searchValue === "" || option.label.toLowerCase().includes(searchValue.toLowerCase()));
 
     // Group options if groupBy function is provided
-    const groupedOptions = groupBy
+    const groupedOptions: Record<string, SelectOption[]> | null = groupBy
         ? filteredOptions.reduce((groups, option) => {
               const groupName = groupBy(option);
               if (!groups[groupName]) {
@@ -102,6 +106,10 @@ const SelectField: React.FC<SelectFieldProps> = ({
             inputRef.current.focus();
         }
     }, [autoFocus]);
+
+    useEffect(() => {
+        setOptions(initialOptions);
+    }, [initialOptions]);
 
     useEffect(() => {
         // Click outside listener to close dropdown
@@ -258,6 +266,43 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
     const hasError = touched && error;
 
+    const fetchOptionData = () => {
+        // setIsLoading(true);
+        apiClient
+            .get(optionsUrl.url)
+            .then((response) => {
+                if (response.data?.data?.records) {
+                    optionsUrl.onLoadData?.(response.data?.data?.records);
+                    setOptions(
+                        response.data?.data?.records?.map((data) => ({
+                            value: data?.[optionsUrl.valueKey || "id"],
+                            label: optionsUrl?.customLabel ? optionsUrl?.customLabel?.(data) : GlobalUtils.capitalizeEachWord(data?.[optionsUrl.labelKey || "name"]),
+                        }))
+                    );
+                } else {
+                    optionsUrl.onLoadData?.(response.data?.data);
+                    setOptions(
+                        response.data?.data?.map((data) => ({
+                            value: data?.[optionsUrl.valueKey || "id"],
+                            label: optionsUrl?.customLabel ? optionsUrl?.customLabel?.(data) : GlobalUtils.capitalizeEachWord(data?.[optionsUrl.labelKey || "name"]),
+                        }))
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() => {
+                // setIsLoading(false);
+            });
+    };
+
+    useEffect(() => {
+        if (optionsUrl) {
+            fetchOptionData();
+        }
+    }, [optionsUrl]);
+
     return (
         <div className={GlobalUtils.cn("formGroup relative w-full mb-4", className)}>
             {/* Label positioned above the select */}
@@ -383,7 +428,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
                             <div className="p-3 text-center text-gray-500 dark:text-gray-400">{noOptionsMessage}</div>
                         ) : groupedOptions ? (
                             // Grouped options
-                            Object.entries(groupedOptions).map(([groupName, groupOptions]) => (
+                            Object.entries(groupedOptions || {}).map(([groupName, groupOptions]) => (
                                 <div key={groupName}>
                                     <div className="px-3 py-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700">{groupName}</div>
                                     {groupOptions.map((option, index) => (

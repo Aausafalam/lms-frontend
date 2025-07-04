@@ -1,19 +1,28 @@
-"use client"
-import { useParams } from "next/navigation"
-import PrivilegeGroupFormBase from ".."
-import { samplePrivilegeGroupData } from "../utils/seeds"
+"use client";
+import { useParams } from "next/navigation";
+import PrivilegeGroupFormBase from "..";
+import { samplePrivilegeGroupData } from "../utils/seeds";
+import { usePermissionGroupGetDetails } from "@/services/hooks/permissionGroup";
+import { useEffect } from "react";
 
 const EditPrivilegeGroup = () => {
-  const { privilegeGroupId } = useParams()
+    const { privilegeGroupId } = useParams();
+    const { permissionGroupDetails } = usePermissionGroupGetDetails();
 
-  // In a real app, you would fetch the privilege group data here
-  const data = samplePrivilegeGroupData // Replace with actual API call
+    useEffect(() => {
+        permissionGroupDetails.fetch({
+            dynamicRoute: privilegeGroupId,
+        });
+    }, []);
 
-  if (!data) {
-    return <div className="flex items-center justify-center h-64">Privilege Group data not found.</div>
-  }
+    // In a real app, you would fetch the privilege group data here
+    const data = permissionGroupDetails?.data?.data || samplePrivilegeGroupData;
 
-  return <PrivilegeGroupFormBase initialData={data} privilegeGroupId={privilegeGroupId} />
-}
+    if (!data) {
+        return <div className="flex items-center justify-center h-64">Privilege Group data not found.</div>;
+    }
 
-export default EditPrivilegeGroup
+    return <PrivilegeGroupFormBase initialData={data} privilegeGroupId={privilegeGroupId} />;
+};
+
+export default EditPrivilegeGroup;

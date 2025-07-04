@@ -23,6 +23,18 @@ class RolesApiService {
         return response.data;
     }
 
+    /**
+     * Register a new roles
+     * @param {Object} payload - Roles data
+     * @param {Object} [params] - Query params
+     * @param {AbortSignal} [signal] - Request cancellation
+     * @returns {Promise<Object>} Created roles
+     */
+    async createRole(payload, params, signal) {
+        const response = await this._apiClient.post("", payload, { params, signal });
+        return response.data;
+    }
+
     async assignUsers(payload, params, signal) {
         const response = await this._apiClient.post(endpoints.ASSIGN_USERS, payload, { params, signal });
         return response.data;
@@ -36,7 +48,7 @@ class RolesApiService {
      * @returns {Promise<Object>} Update status
      */
     async update(dynamicRoute, payload, params, signal) {
-        const response = await this._apiClient.post(`${endpoints.UPDATE_ROLES}/${dynamicRoute}`, payload, { params, signal });
+        const response = await this._apiClient.put(`/${dynamicRoute}`, payload, { params, signal });
         return response.data;
     }
 
@@ -47,7 +59,7 @@ class RolesApiService {
      * @returns {Promise<Object>} Roles details
      */
     async getDetails(dynamicRoute, params, signal) {
-        const response = await this._apiClient.get(`${endpoints.GET_ROLES_DETAILS}/${dynamicRoute}`, { params, signal });
+        const response = await this._apiClient.get(`/${dynamicRoute}`, { params, signal });
         return response.data;
     }
 

@@ -46,7 +46,7 @@ const CheckBoxField = ({ formField, formValues, error }) => {
                         }
                     }}
                 >
-                    {isChecked ? <span className={styles.active}>{ICON.FILL_CHECKBOX}</span> : <span>{ICON.EMPTY_CHECKBOX}</span>}
+                    {isChecked ? <span className={styles.active}>{ICON.FILL_CHECKBOX}</span> : <span className="text-black dark:text-white">{ICON.EMPTY_CHECKBOX}</span>}
                 </label>
 
                 <label htmlFor={id} className={styles.label}>

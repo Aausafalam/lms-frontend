@@ -1,7 +1,7 @@
 "use client";
 
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { LayoutDashboard, HelpCircle, Settings } from "lucide-react";
+import { LayoutDashboard, HelpCircle, Settings, FileText } from "lucide-react";
 import QuestionDetailsContent from "./components/content";
 import { useState } from "react";
 import { useQueryParams } from "@/lib/hooks/useQuery";
@@ -12,12 +12,27 @@ import { useQueryParams } from "@/lib/hooks/useQuery";
  */
 export default function QuestionDetailsPage({}) {
     const [activeTab, setActiveTab] = useState("overview");
-    const { courseId } = useQueryParams();
+    const { courseId, questionId } = useQueryParams();
 
     const breadcrumbItems = [
         {
+            title: "Course",
+            href: "/courses",
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
+        },
+        {
+            title: "Exam",
+            href: `/courses/details/${courseId}`,
+            icon: <FileText className="h-3.5 w-3.5" />,
+        },
+        {
+            title: "Exam Details",
+            href: `/exam/details/${questionId}?course=${courseId}`,
+            icon: <Settings className="h-3.5 w-3.5" />,
+        },
+        {
             title: "Question Bank",
-            href: `/question-panel`,
+            href: `/exam/details/${questionId}?course=${courseId}`,
             icon: <HelpCircle className="h-3.5 w-3.5" />,
         },
         {
@@ -33,7 +48,7 @@ export default function QuestionDetailsPage({}) {
             {/* Main Content Area */}
             <div className="flex gap-4 w-full">
                 {/* Content Area */}
-                <div className="max-w-[1225px] m-auto">
+                <div className="max-w-[1225px] m-auto w-full">
                     <QuestionDetailsContent activeTab={activeTab} />
                 </div>
             </div>

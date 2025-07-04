@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import styles from "./index.module.css";
-import SelectField from "@/components/form/components/FieldTemplates/SelectField";
-import InputField from "@/components/form/components/FieldTemplates/InputField";
 import Button from "@/components/form/components/FieldTemplates/ButtonField";
 import ICON, { TableICON } from "../../utils/icon";
 import { useSearchParams } from "next/navigation";
@@ -29,7 +27,7 @@ const TableSearch = ({ showDataViewButton, dataView, setDataView, data, initialV
             customOnChange: (event) => {
                 const { name, value } = event.target;
                 setFormValues((prev) => ({ ...prev, [name]: value }));
-                setQueryParam(name, value);
+                setQueryParam(name !== "searchText" ? `filterBy[${name}]` : name, value);
             },
             defaultValue: formValues?.[item.name],
         }));

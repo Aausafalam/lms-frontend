@@ -1,38 +1,29 @@
 "use client"
 
-import { useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 
-export const useModalHandler = () => {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState(null)
+const useModalHandler = () => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
-  const handleDeleteClick = (user) => {
-    setSelectedUser(user)
-    setIsDeleteModalOpen(true)
+  const modalType = searchParams.get("modal")
+  const userId = searchParams.get("id")
+
+  const closeModal = () => {
+    const params = new URLSearchParams(window.location.search)
+    params.delete("modal")
+    params.delete("id")
+    router.push(`/rbac/users?${params.toString()}`, undefined, { shallow: true })
   }
 
-  const handleDeleteConfirm = (userId) => {
-    // Handle delete logic here
-    console.log("Deleting user:", userId)
-
-    // Close modal
-    setIsDeleteModalOpen(false)
-    setSelectedUser(null)
-
-    // You can add success notification here
-    // toast.success('User deleted successfully')
+  const setModalState = (modal, id) => {
+    const params = new URLSearchParams(window.location.search)
+    if (id) params.set("id", id)
+    if (modal) params.set("modal", modal)
+    router.push(`/rbac/users?${params.toString()}`, undefined, { shallow: true })
   }
 
-  const handleDeleteCancel = () => {
-    setIsDeleteModalOpen(false)
-    setSelectedUser(null)
-  }
-
-  return {
-    isDeleteModalOpen,
-    selectedUser,
-    handleDeleteClick,
-    handleDeleteConfirm,
-    handleDeleteCancel,
-  }
+  return { modalType, userId, closeModal, setModalState }
 }
+
+export default useModalHandler

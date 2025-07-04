@@ -19,7 +19,7 @@ export function OverviewTab({ roleData }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Role Name</label>
-                            <p className="text-sm text-gray-900 dark:text-white mt-1">{roleData.name}</p>
+                            <p className="capitalize text-sm text-gray-900 dark:text-white mt-1">{roleData.name}</p>
                         </div>
                         <div>
                             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
@@ -64,7 +64,7 @@ export function OverviewTab({ roleData }) {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Privileges</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{roleData.privilegeCount}</p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{roleData.rolePrivileges?.length || 0}</p>
                             </div>
                             <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30">
                                 <Key className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -78,7 +78,7 @@ export function OverviewTab({ roleData }) {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Assigned Users</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{roleData.userCount}</p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{roleData.users?.length || 0}</p>
                             </div>
                             <div className="p-3 rounded-full bg-green-100 dark:bg-green-900/30">
                                 <Users className="h-6 w-6 text-green-600 dark:text-green-400" />

@@ -19,8 +19,8 @@ export function SidebarNavigation({ activeSection, scrollToSection, formData, ha
     const handleSwitchChange = (checked) => {
         handleInputChange({
             target: {
-                name: "isActive",
-                value: checked,
+                name: "status",
+                value: checked ? "ACTIVE" : "INACTIVE",
             },
         });
     };
@@ -41,9 +41,9 @@ export function SidebarNavigation({ activeSection, scrollToSection, formData, ha
                         <div className="flex items-center justify-between">
                             <div>
                                 <Label className="text-xs text-gray-600 dark:text-gray-400">Active Status</Label>
-                                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{formData.isActive ? "Privilege is active" : "Privilege is inactive"}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{formData.status === "ACTIVE"  ? "Privilege is active" : "Privilege is inactive"}</p>
                             </div>
-                            <Switch checked={formData.isActive || false} onCheckedChange={handleSwitchChange} />
+                            <Switch checked={formData.status === "ACTIVE"  || false} onCheckedChange={handleSwitchChange} />
                         </div>
                     </div>
                 </CardContent>

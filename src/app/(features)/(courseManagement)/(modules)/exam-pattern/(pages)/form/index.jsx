@@ -10,7 +10,7 @@ import GlobalUtils from "@/lib/utils";
 import { useExamFormData } from "./hooks";
 import { ExamPreview } from "./components/preview";
 
-const ExamPatternFormBase = ({ initialData = {}, examPatternId = null, onExamBuilderPage }) => {
+const ExamPatternFormBase = ({ initialData = {}, examPatternId = null, onExamPage }) => {
     const { isSaving, handleSave, formData, handlers } = useExamFormData({ initialData });
     const [previewVisible, setPreviewVisible] = useState(true);
     const [activeSection, setActiveSection] = useState("basic");
@@ -49,24 +49,24 @@ const ExamPatternFormBase = ({ initialData = {}, examPatternId = null, onExamBui
     }, [sectionRefs.current]);
 
     useEffect(() => {
-        onExamBuilderPage && onExamBuilderPage?.({ target: { value: formData, name: "examPattern" } });
+        onExamPage && onExamPage?.({ target: { value: formData, name: "examPattern" } });
     }, [formData]);
 
     return (
         <div>
-            {!onExamBuilderPage && <ExamPatternFormHeader togglePreview={togglePreview} previewVisible={previewVisible} formData={formData} handlers={handlers} examPatternId={examPatternId} />}
+            {!onExamPage && <ExamPatternFormHeader togglePreview={togglePreview} previewVisible={previewVisible} formData={formData} handlers={handlers} examPatternId={examPatternId} />}
             <div className="grid grid-cols-7 gap-3">
-                {!onExamBuilderPage && (
+                {!onExamPage && (
                     <div className="col-span-1">
                         <SidebarNavigation activeSection={activeSection} scrollToSection={scrollToSection} formData={formData} handlers={handlers} />
                     </div>
                 )}
 
-                <div className={GlobalUtils.cn("transition-all duration-300 ease-in-out", onExamBuilderPage ? "col-span-7" : previewVisible ? "col-span-4" : "col-span-6")}>
+                <div className={GlobalUtils.cn("transition-all duration-300 ease-in-out", onExamPage ? "col-span-7" : previewVisible ? "col-span-4" : "col-span-6")}>
                     <ScrollArea className="h-[85vh]">
                         <div className="pr-3">
                             <FormSections handlers={handlers} formData={formData} sectionRefs={sectionRefs} activeSection={activeSection} />
-                            {!onExamBuilderPage && (
+                            {!onExamPage && (
                                 <div className="sticky bottom-0 ml-auto w-full text-right z-10">
                                     <Button className="ml-auto" disabled={isSaving} onClick={handleSave}>
                                         {isSaving ? (
@@ -85,7 +85,7 @@ const ExamPatternFormBase = ({ initialData = {}, examPatternId = null, onExamBui
                         </div>
                     </ScrollArea>
                 </div>
-                {previewVisible && !onExamBuilderPage && (
+                {previewVisible && !onExamPage && (
                     <div className="col-span-2">
                         <ExamPreview data={formData} />
                     </div>

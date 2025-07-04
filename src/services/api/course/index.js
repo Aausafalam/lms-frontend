@@ -67,6 +67,11 @@ class CourseApiService {
         const response = await this._apiClient.get(endpoints.GET_COURSE_STATS, { params, signal });
         return response.data;
     }
+
+    async getList(params, signal) {
+        const response = await this._apiClient.get("", { params, signal });
+        return response.data;
+    }
 }
 
 export const courseApiService = new CourseApiService();

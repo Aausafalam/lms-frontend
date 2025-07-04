@@ -31,7 +31,7 @@ class PermissionGroupApiService {
      * @returns {Promise<Object>} Update status
      */
     async update(dynamicRoute, payload, params, signal) {
-        const response = await this._apiClient.post(`${endpoints.UPDATE_PERMISSION_GROUP}/${dynamicRoute}`, payload, { params, signal });
+        const response = await this._apiClient.put(`${endpoints.UPDATE_PERMISSION_GROUP}/${dynamicRoute}`, payload, { params, signal });
         return response.data;
     }
 

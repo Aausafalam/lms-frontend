@@ -61,7 +61,7 @@ const UserDetailsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="">
       <div className="flex">
         <UserDetailsSidebar user={user} />
         <UserDetailsContent user={user} />

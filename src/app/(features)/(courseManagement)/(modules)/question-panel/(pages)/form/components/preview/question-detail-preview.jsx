@@ -13,10 +13,10 @@ const devicePresets = {
 };
 
 /**
- * QuestionDetailPreview Component
+ * QuestionDetailPreviewOld Component
  * Displays a comprehensive preview of the question data with enhanced aesthetics
  */
-export function QuestionDetailPreview({ initialData, viewportWidth, onDetailsPage }) {
+export function QuestionDetailPreviewOld({ initialData, viewportWidth, onDetailsPage }) {
     const data = initialData || {};
 
     // Responsive breakpoint detection

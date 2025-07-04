@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { Smartphone, Tablet, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { QuestionDetailPreview } from "./question-detail-preview";
 import Tabs from "@/components/tab";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { QuestionDetailPreview } from "./components/question-detail-preview";
 
 const devicePresets = {
     mobile: 400,

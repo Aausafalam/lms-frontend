@@ -1,114 +1,56 @@
-"use client"
+"use client";
 
-import { CheckCircle, AlertCircle, Circle } from "lucide-react"
+import { Users, FileText, Settings, Shield, User } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import SidebarMenu from "@/components/sidebarMenu";
 
-const UserFormSidebar = ({ sections, activeSection, onSectionChange, errors }) => {
-  const getSectionStatus = (sectionId) => {
-    const sectionErrors = Object.keys(errors).filter((key) => {
-      switch (sectionId) {
-        case "basic-info":
-          return ["name", "email", "gender"].includes(key)
-        case "contact":
-          return ["mobile", "location"].includes(key)
-        case "roles":
-          return ["roles"].includes(key)
-        case "security":
-          return ["password", "confirmPassword"].includes(key)
-        case "preferences":
-          return ["theme", "language"].includes(key)
-        default:
-          return false
-      }
-    })
+export function SidebarNavigation({ activeSection, scrollToSection, formData, handlers }) {
+    const { handleInputChange } = handlers;
 
-    if (sectionErrors.length > 0) return "error"
+    const navigationItems = [
+        { id: "basic", label: "Basic Info", icon: <FileText className="h-4 w-4" /> },
+        { id: "contact", label: "Contact Details", icon: <User className="h-4 w-4" /> },
+        { id: "roles", label: "Roles & Permissions", icon: <Shield className="h-4 w-4" /> },
+        { id: "security", label: "Security", icon: <Settings className="h-4 w-4" /> },
+        { id: "preferences", label: "Preferences", icon: <Settings className="h-4 w-4" /> },
+    ];
 
-    // Check if section has required data
-    switch (sectionId) {
-      case "basic-info":
-        return "complete" // Assume complete for now
-      case "roles":
-        return "complete" // Assume complete for now
-      default:
-        return "incomplete"
-    }
-  }
+    const handleSwitchChange = (checked) => {
+        handleInputChange({
+            target: {
+                name: "isActive",
+                value: checked,
+            },
+        });
+    };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "complete":
-        return <CheckCircle className="w-4 h-4 text-green-500" />
-      case "error":
-        return <AlertCircle className="w-4 h-4 text-red-500" />
-      default:
-        return <Circle className="w-4 h-4 text-gray-400" />
-    }
-  }
+    return (
+        <div className="sticky top-8 max-w-52">
+            <SidebarMenu navigationItems={navigationItems} onClick={scrollToSection} activeSection={activeSection} />
 
-  return (
-    <div className="w-80 bg-white border-r border-gray-200 min-h-screen">
-      <div className="p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">User Information</h2>
-
-        <nav className="space-y-2">
-          {sections.map((section, index) => {
-            const status = getSectionStatus(section.id)
-            const isActive = activeSection === section.id
-
-            return (
-              <button
-                key={section.id}
-                onClick={() => onSectionChange(section.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                  isActive ? "bg-orange-50 text-orange-700 border border-orange-200" : "text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-sm font-medium text-gray-500 w-6">{String(index + 1).padStart(2, "0")}</span>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{section.label}</span>
-                      {section.required && <span className="text-red-500 text-xs">*</span>}
+            <Card className="overflow-hidden border-0 mt-4 bg-white dark:bg-gray-900">
+                <CardHeader className="p-4 pb-2">
+                    <CardTitle className="text-sm flex items-center">
+                        <Users className="h-4 w-4 mr-2 text-orange-500" />
+                        User Status
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0">
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <Label className="text-xs text-gray-600 dark:text-gray-400">Active Status</Label>
+                                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{formData.isActive ? "User is active" : "User is inactive"}</p>
+                            </div>
+                            <Switch checked={formData.isActive || false} onCheckedChange={handleSwitchChange} />
+                        </div>
                     </div>
-                  </div>
-                  {getStatusIcon(status)}
-                </div>
-              </button>
-            )
-          })}
-        </nav>
-
-        {/* Progress Indicator */}
-        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Progress</span>
-            <span className="text-sm text-gray-500">
-              {sections.filter((s) => getSectionStatus(s.id) === "complete").length} / {sections.length}
-            </span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div
-              className="bg-orange-600 h-2 rounded-full transition-all duration-300"
-              style={{
-                width: `${(sections.filter((s) => getSectionStatus(s.id) === "complete").length / sections.length) * 100}%`,
-              }}
-            />
-          </div>
+                </CardContent>
+            </Card>
         </div>
-
-        {/* Tips */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <h3 className="text-sm font-medium text-blue-900 mb-2">Tips</h3>
-          <ul className="text-xs text-blue-700 space-y-1">
-            <li>• Fill in all required fields marked with *</li>
-            <li>• Use a strong password for security</li>
-            <li>• Assign appropriate roles for access control</li>
-            <li>• Verify email address for notifications</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  )
+    );
 }
 
-export default UserFormSidebar
+export default SidebarNavigation;

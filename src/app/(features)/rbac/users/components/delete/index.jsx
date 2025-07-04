@@ -1,7 +1,37 @@
 "use client"
 import { X, AlertTriangle, User, Mail, Shield } from "lucide-react"
+import { useEffect } from "react"
+import GlobalUtils from "@/lib/utils"
 
-const DeleteUser = ({ isOpen, user, onConfirm, onCancel }) => {
+const DeleteUser = ({ isOpen, user, modalState, userId, setRefreshTable, onCancel, onConfirm }) => {
+  // Mock delete function - replace with actual API call
+  const userDelete = {
+    execute: ({ recordId, onSuccess }) => {
+      // Simulate API call
+      setTimeout(() => {
+        console.log(`Deleting user with ID: ${recordId}`)
+        onSuccess?.()
+      }, 1000)
+    },
+  }
+
+  const closeModal = () => {
+    // Function to close the modal
+  }
+
+  useEffect(() => {
+    if (modalState.delete && userId) {
+      const deletePayload = {
+        recordId: userId,
+        onShowDetails: () => {},
+        deleteAction: userDelete,
+        toggleRefreshData: setRefreshTable,
+      }
+      GlobalUtils.handleDelete(deletePayload)
+      closeModal()
+    }
+  }, [modalState.delete, userId])
+
   if (!isOpen || !user) return null
 
   const handleConfirm = () => {
