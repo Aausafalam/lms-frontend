@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Smartphone, Tablet, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Tabs from "@/components/tab";
@@ -21,14 +21,9 @@ const devicePresets = {
  * @param {Object} props - Component props
  * @param {Object} props.data - Course data to preview
  */
-export function CoursePreview({ data }) {
+export function CoursePreview({ data, isFullscreen }) {
     const [showModal, setShowModal] = useState(false);
-    const [isFullscreen, setIsFullscreen] = useState(false);
     const [activeTab, setActiveTab] = useState({ id: "mobile", label: "Mobile" });
-
-    const toggleFullscreen = () => {
-        setIsFullscreen(!isFullscreen);
-    };
 
     // Tab configuration for different device previews
     const tabs = [
@@ -44,7 +39,7 @@ export function CoursePreview({ data }) {
                     </div>
                     <div className="dark:bg-gray-900 border-2 border-t-0 border-white dark:border-gray-900 rounded-b-xl overflow-hidden shadow-sm w-full">
                         <div className="overflow-hidden">
-                            <CourseDetailPreview initialData={data} viewportWidth={devicePresets.mobile} />
+                            <CourseDetailPreview initialData={data} viewPort={"mobile"} />
                         </div>
                     </div>
                 </div>
@@ -93,12 +88,15 @@ export function CoursePreview({ data }) {
     ];
 
     return (
-        <div>
-            <Tabs defaultTab={activeTab} tabs={tabs} variant="pills" onTabChange={(tab) => setActiveTab(tab)} />
+        <div className="w-full">
+            <Tabs defaultTab={activeTab} tabs={tabs} variant="pills" onTabChange={(tab) => setActiveTab(tab)} className="w-full" />
 
             {/* Modal for larger previews */}
             <Dialog open={showModal} onOpenChange={setShowModal}>
-                <DialogContent className={`p-0 ${isFullscreen ? "max-w-full w-full h-screen m-0 rounded-none" : "max-w-[90vw] w-full"}`} style={{ width: `${devicePresets[activeTab.id]}px` }}>
+                <DialogContent
+                    className={`p-0 ${isFullscreen ? "max-w-full w-full h-screen m-0 rounded-none" : "max-w-[90vw] w-full max-h-[90vh]"}`}
+                    style={{ width: isFullscreen ? "100%" : `min(90vw, ${devicePresets[activeTab.id]}px)` }}
+                >
                     {/* Modal Header */}
                     <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
                         <DialogTitle className="flex items-center">
@@ -120,7 +118,7 @@ export function CoursePreview({ data }) {
                         }}
                     >
                         <div className={`bg-gray-100 p-2 dark:bg-black rounded-xl overflow-hidden shadow-sm ${isFullscreen ? "h-full" : ""}`} style={{ width: `${devicePresets[activeTab.id]}px` }}>
-                            <CourseDetailPreview initialData={data} viewportWidth={devicePresets[activeTab.id]} />
+                            <CourseDetailPreview viewPort={activeTab.id} initialData={data} />
                         </div>
                     </div>
                 </DialogContent>

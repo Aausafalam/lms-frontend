@@ -40,7 +40,7 @@ export function SidebarNavigation({ activeTab, setActiveTab }) {
   }
 
   return (
-    <div className="sticky top-8 max-w-48">
+    <div className="w-full lg:sticky lg:top-8 lg:max-w-48">
       <Card className="overflow-hidden border-0 bg-white dark:bg-gray-900 dark:border-gray-800">
         <CardContent className="p-2">
           <nav className="space-y-1" role="navigation" aria-label="Course sections">
@@ -49,7 +49,7 @@ export function SidebarNavigation({ activeTab, setActiveTab }) {
                 key={item.id}
                 variant="ghost"
                 className={GlobalUtils.cn(
-                  "w-full justify-start text-left mb-1 font-normal transition-all px-2",
+                  "w-full justify-start text-left mb-1 font-normal transition-all px-2 text-xs sm:text-sm",
                   activeTab === item.id
                     ? "bg-orange-50 text-orange-700 dark:bg-orange-950/30 dark:text-orange-400"
                     : "hover:bg-gray-50 dark:hover:bg-gray-800",
@@ -59,7 +59,7 @@ export function SidebarNavigation({ activeTab, setActiveTab }) {
               >
                 <div
                   className={GlobalUtils.cn(
-                    "mr-2 p-1 rounded-md transition-all",
+                    "mr-2 p-1 rounded-md transition-all flex-shrink-0",
                     activeTab === item.id
                       ? "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400"
                       : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400",
@@ -67,7 +67,7 @@ export function SidebarNavigation({ activeTab, setActiveTab }) {
                 >
                   {item.icon}
                 </div>
-                {item.label}
+                <span className="truncate">{item.label}</span>
               </Button>
             ))}
           </nav>
