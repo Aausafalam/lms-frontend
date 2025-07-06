@@ -25,7 +25,7 @@ export function HeroSection({ data, isMobile, instructors, isTablet, isDesktop }
 
   return (
     <div
-      className={`relative w-full bg-cover bg-center overflow-hidden ${isDesktop ? "rounded-2xl" : isMobile ? "rounded-lg" : "rounded-xl"}`}
+      className={`relative w-full bg-cover bg-center overflow-hidden ${isDesktop ? "rounded-2xl" : isMobile ? "" : "rounded-xl"}`}
       style={{
         backgroundImage: data.bannerImagePreview
           ? `url('${data.bannerImagePreview}')`

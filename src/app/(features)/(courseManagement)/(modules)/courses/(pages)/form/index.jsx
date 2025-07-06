@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Sparkles, AlertCircle } from "lucide-react";
+import { Loader2, Sparkles, AlertCircle, Menu, X, Eye, EyeOff } from "lucide-react";
 import CourseFormHeader from "./components/header";
 import { Button } from "@/components/ui/button";
 import { SidebarNavigation } from "./components/sidebar";
@@ -14,31 +14,44 @@ import { hasValidationErrors } from "./utils/validation";
 
 /**
  * Course Form Base Component
- * @description Main container for course creation/editing form
+ * @description Main container for course creation/editing form with improved responsiveness
  */
 const CourseFormBase = ({ initialData = {}, courseId = null }) => {
     const { isSaving, handleSave, formData, handlers, validationErrors } = useCourseFormData({ initialData });
 
     const [previewVisible, setPreviewVisible] = useState(true);
+    const [sidebarVisible, setSidebarVisible] = useState(false);
     const [activeSection, setActiveSection] = useState("basic");
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
+    const [viewportWidth, setViewportWidth] = useState(0);
     const sectionRefs = useRef({});
 
     const hasErrors = hasValidationErrors(validationErrors);
 
-    // Check screen size
+    // Enhanced responsive breakpoints
+    const BREAKPOINTS = {
+        mobile: 768,
+        tablet: 1200,
+        desktop: 1300,
+        wide: 1600,
+    };
+
+    // Check screen size with more granular control
     useEffect(() => {
         const checkScreenSize = () => {
             const width = window.innerWidth;
-            setIsMobile(width < 768);
-            setIsTablet(width >= 768 && width < 1024);
+            setViewportWidth(width);
+            setIsMobile(width < BREAKPOINTS.mobile);
+            setIsTablet(width >= BREAKPOINTS.mobile && width < BREAKPOINTS.tablet);
 
-            // Auto-hide preview on mobile and tablet
-            if (width < 1024) {
+            // Auto-hide preview and sidebar based on screen size
+            if (width < BREAKPOINTS.tablet) {
                 setPreviewVisible(false);
-            } else {
+                setSidebarVisible(false);
+            } else if (width >= BREAKPOINTS.desktop) {
                 setPreviewVisible(true);
+                setSidebarVisible(false); // Desktop shows sidebar inline
             }
         };
 
@@ -56,6 +69,10 @@ const CourseFormBase = ({ initialData = {}, courseId = null }) => {
             block: "start",
         });
         setActiveSection(sectionId);
+        // Close sidebar on mobile/tablet after navigation
+        if (isMobile || isTablet) {
+            setSidebarVisible(false);
+        }
     };
 
     /**
@@ -63,6 +80,13 @@ const CourseFormBase = ({ initialData = {}, courseId = null }) => {
      */
     const togglePreview = () => {
         setPreviewVisible(!previewVisible);
+    };
+
+    /**
+     * Toggle sidebar visibility
+     */
+    const toggleSidebar = () => {
+        setSidebarVisible(!sidebarVisible);
     };
 
     // Set up intersection observer for active section tracking
@@ -89,28 +113,62 @@ const CourseFormBase = ({ initialData = {}, courseId = null }) => {
         };
     }, []);
 
+    // Calculate layout classes based on viewport
+    const getLayoutClasses = () => {
+        if (isMobile || isTablet) {
+            return {
+                container: "flex flex-col gap-4",
+                sidebar: "hidden", // Hidden - shown as overlay
+                main: "w-full",
+                preview: "hidden", // Hidden - shown as overlay
+            };
+        }
+
+        // Desktop and wider - with dynamic preview width based on viewport
+        const isWideScreen = viewportWidth >= BREAKPOINTS.wide;
+
+        return {
+            container: "flex gap-4",
+            sidebar: "w-50 min-w-[180px] flex-shrink-0",
+            main: "flex-1 min-w-0",
+            preview: previewVisible ? `${isWideScreen ? "w-[450px]" : "w-80"} min-w-[320px] flex-shrink-0` : "hidden",
+        };
+    };
+
+    const layoutClasses = getLayoutClasses();
+
     return (
         <ErrorBoundary>
             <div className="course-form-container">
                 <CourseFormHeader togglePreview={togglePreview} previewVisible={previewVisible} formData={formData} handlers={handlers} courseId={courseId} />
 
-                <div
-                    className={`grid transition-all duration-300 ${
-                        isMobile ? "grid-cols-1 gap-4" : isTablet ? (previewVisible ? "grid-cols-4 gap-4" : "grid-cols-1 gap-4") : previewVisible ? "grid-cols-7 gap-4" : "grid-cols-7 gap-4"
-                    }`}
-                >
-                    {/* Sidebar Navigation */}
-                    <div className={`${isMobile ? "order-2" : isTablet ? "col-span-1" : "col-span-1"}`}>
-                        <SidebarNavigation activeSection={activeSection} scrollToSection={scrollToSection} formData={formData} handlers={handlers} />
+                {/* Mobile/Tablet Toggle Buttons */}
+                {(isMobile || isTablet) && (
+                    <div className="flex gap-2 p-4 border-b border-gray-200 dark:border-gray-700">
+                        <Button variant="outline" size="sm" onClick={toggleSidebar} className="flex items-center gap-2">
+                            <Menu className="h-4 w-4" />
+                            Navigation
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={togglePreview} className="flex items-center gap-2">
+                            {previewVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            Preview
+                        </Button>
                     </div>
+                )}
+
+                <div className={`${layoutClasses.container} transition-all duration-300 ease-in-out`}>
+                    {/* Sidebar Navigation - Desktop */}
+                    {!isMobile && !isTablet && (
+                        <div className={`${layoutClasses.sidebar} transition-all duration-300`}>
+                            <div className="sticky top-8">
+                                <SidebarNavigation activeSection={activeSection} scrollToSection={scrollToSection} formData={formData} handlers={handlers} />
+                            </div>
+                        </div>
+                    )}
 
                     {/* Main Content */}
-                    <div
-                        className={`${
-                            isMobile ? "order-1" : isTablet ? (previewVisible ? "col-span-2" : "col-span-3") : previewVisible ? "col-span-4" : "col-span-6"
-                        } transition-all duration-300 ease-in-out`}
-                    >
-                        <ScrollArea className={`${isMobile ? "h-auto" : "h-[85vh]"}`}>
+                    <div className={`${layoutClasses.main} transition-all duration-300 ease-in-out`}>
+                        <ScrollArea className={`${isMobile || isTablet ? "h-auto" : "h-[85vh]"}`}>
                             <div className="pr-2 sm:pr-4">
                                 {/* Validation Error Summary */}
                                 {hasErrors && (
@@ -165,9 +223,9 @@ const CourseFormBase = ({ initialData = {}, courseId = null }) => {
                         </ScrollArea>
                     </div>
 
-                    {/* Preview Panel */}
-                    {previewVisible && !isMobile && (
-                        <div className={`${isTablet ? "col-span-1" : "col-span-2"} transition-all duration-300`}>
+                    {/* Preview Panel - Desktop */}
+                    {!isMobile && !isTablet && previewVisible && (
+                        <div className={`${layoutClasses.preview} transition-all duration-300`}>
                             <div className="sticky top-8">
                                 <CoursePreview data={formData} />
                             </div>
@@ -175,17 +233,50 @@ const CourseFormBase = ({ initialData = {}, courseId = null }) => {
                     )}
                 </div>
 
-                {/* Mobile Preview Modal/Drawer */}
-                {isMobile && previewVisible && (
-                    <div className="fixed inset-0 z-50 bg-black/50 flex items-end sm:items-center justify-center p-4">
-                        <div className="bg-white dark:bg-gray-900 rounded-t-xl sm:rounded-xl w-full max-w-md max-h-[80vh] overflow-hidden">
+                {/* Sidebar Overlay - Mobile/Tablet */}
+                {(isMobile || isTablet) && sidebarVisible && (
+                    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-all duration-300">
+                        <div
+                            className={`
+                            fixed top-0 left-0 h-full bg-white dark:bg-gray-900 shadow-2xl 
+                            transform transition-transform duration-300 ease-out
+                            ${sidebarVisible ? "translate-x-0" : "-translate-x-full"}
+                            ${"w-fit"}
+                        `}
+                        >
+                            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                                <h3 className="text-lg font-semibold">Navigation</h3>
+                                <Button variant="ghost" size="sm" onClick={toggleSidebar}>
+                                    <X className="h-4 w-4" />
+                                </Button>
+                            </div>
+                            <div className="overflow-auto h-[calc(100vh-80px)]">
+                                <div className="p-4">
+                                    <SidebarNavigation activeSection={activeSection} scrollToSection={scrollToSection} formData={formData} handlers={handlers} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Preview Overlay - Mobile/Tablet */}
+                {(isMobile || isTablet) && previewVisible && (
+                    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-all duration-300">
+                        <div
+                            className={`
+                            fixed top-0 right-0 h-full bg-white dark:bg-gray-900 shadow-2xl 
+                            transform transition-transform duration-300 ease-out
+                            ${previewVisible ? "translate-x-0" : "translate-x-full"}
+                            ${"w-fit"}
+                        `}
+                        >
                             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                                 <h3 className="text-lg font-semibold">Course Preview</h3>
                                 <Button variant="ghost" size="sm" onClick={togglePreview}>
-                                    ×
+                                    <X className="h-4 w-4" />
                                 </Button>
                             </div>
-                            <div className="overflow-auto max-h-[60vh]">
+                            <div className="overflow-auto h-[calc(100vh-80px)]">
                                 <CoursePreview data={formData} />
                             </div>
                         </div>

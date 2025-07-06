@@ -89,7 +89,7 @@ export function CourseDetailPreview({ initialData, onDetailsPage, viewPort }) {
     const instructors = instructorList.data?.data?.records?.filter((item) => data.instructorIds?.includes(item.id)) || [];
 
     return (
-        <div className={`w-full ${onDetailsPage ? "max-h-[86vh] overflow-scroll" : "max-h-[75vh] overflow-scroll"} `}>
+        <div className={`w-full ${(isTablet || isMobile) && !viewPort ? "" : onDetailsPage ? "max-h-[86vh] overflow-scroll" : "max-h-[75vh] overflow-scroll"} `}>
             {/* Hero Section */}
             <HeroSection instructors={instructors} data={data} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} />
 
