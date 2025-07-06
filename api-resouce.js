@@ -6,7 +6,7 @@ const coursePayload = {
     name: "",
     summary: "",
     duration: 30,
-    courseCode: "",
+    code: "",
     //  basicInformation end
     //media start
     bannerImage: null,
@@ -20,7 +20,7 @@ const coursePayload = {
     learningOutcomes: [""],
     // learning objective end
     // pre Requisites start
-    preRequisites: [""],
+    prerequisites: [""],
     // pre Requisites end
     // certificate start
     certificateCriteria: {
@@ -79,7 +79,7 @@ const modulePayload = {
     learningOutcomes: [""],
     // learning objective end
     // pre Requisites start
-    preRequisites: [""],
+    prerequisites: [""],
     // pre Requisites end
     // meta data Info start
     tags: ["id", "id"],
@@ -141,7 +141,7 @@ const oldModulePayload = {
     estimatedDuration: 30,
     difficulty: ["intermediate"],
     categories: [],
-    preRequisites: [""],
+    prerequisites: [""],
     learningObjectives: [""],
     resources: [{ title: "", url: "" }],
     quizQuestions: [],

@@ -3,10 +3,12 @@
 import { memo, useState } from "react";
 import { ImageIcon, Video, Upload, Link, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { FormSection } from "@/components/formSection"
+import { FormSection } from "@/components/formSection";
 import FileUploadField from "@/components/ui/file";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import apiConstants from "@/services/utils/constants";
+import ApiUtils from "@/services/utils";
 
 /**
  * Media Section Component
@@ -49,7 +51,6 @@ export const MediaSection = memo(function MediaSection({ formData = {}, sectionR
 
     // Check for uploaded video file
     const hasUploadedVideo = formData.introVideoFile || formData.introVideoPreview;
-
     return (
         <FormSection
             id="media"
@@ -64,7 +65,15 @@ export const MediaSection = memo(function MediaSection({ formData = {}, sectionR
                 <FileUploadField
                     labelIcon={<ImageIcon className="h-3.5 w-3.5" />}
                     label="Banner Image"
-                    value={formData.bannerImagePreview || ""}
+                    defaultFiles={
+                        [
+                             formData.bannerImage &&
+                                formData.id && {
+                                    ...formData.bannerImage,
+                                    url: `${apiConstants.BACKEND_API_BASE_URL}/course/${formData.id}/getImage?type=bannerImage&token=${ApiUtils.getAuthToken()}`,
+                                },
+                        ].filter(Boolean) || ""
+                    }
                     onChange={handleInputChange}
                     name="bannerImage"
                     helperText="Main course image displayed in course listings (recommended: 1200x600px)"
@@ -79,6 +88,17 @@ export const MediaSection = memo(function MediaSection({ formData = {}, sectionR
                     label="Course Thumbnail"
                     value={formData.thumbnailPreview || ""}
                     onChange={handleInputChange}
+                    defaultFiles={
+                        [
+                            formData.thumbnailUrl &&
+                                !formData.thumbnailUrl?.isDeleted &&
+                                !formData.thumbnailUrl?.fileId &&
+                                formData.id && {
+                                    ...formData.thumbnailUrl,
+                                    url: `${apiConstants.BACKEND_API_BASE_URL}/course/${formData.id}/getImage?type=thumbnailUrl&token=${ApiUtils.getAuthToken()}`,
+                                },
+                        ].filter(Boolean) || ""
+                    }
                     name="thumbnailUrl"
                     helperText="Smaller image for course cards and previews (recommended: 400x300px)"
                     uploadPath="/course/thumbnail/upload"

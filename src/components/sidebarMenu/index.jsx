@@ -6,24 +6,19 @@ import { Button } from "../ui/button";
 import GlobalUtils from "@/lib/utils";
 
 const SidebarMenu = ({ navigationItems, className, onClick, activeSection }) => {
-    const searchParams = useSearchParams();
-    const router = useRouter();
-    const tab = searchParams.get("tab") || navigationItems[0]?.id;
+    const tab = activeSection || navigationItems[0]?.id;
 
     const handleTabClick = (id) => {
-        const params = new URLSearchParams(searchParams);
-        params.set("tab", id);
         onClick?.(id);
-        router.push(`?${params.toString()}`);
     };
 
-    useEffect(() => {
-        if (activeSection && activeSection !== tab) {
-            const params = new URLSearchParams(searchParams);
-            params.set("tab", activeSection);
-            router.push(`?${params.toString()}`);
-        }
-    }, [activeSection, tab, searchParams, router]);
+    // useEffect(() => {
+    //     if (activeSection && activeSection !== tab) {
+    //         const params = new URLSearchParams(searchParams);
+    //         params.set("tab", activeSection);
+    //         router.push(`?${params.toString()}`);
+    //     }
+    // }, [activeSection, tab, searchParams, router]);
 
     return (
         <Card className={`overflow-hidden border-0 bg-white dark:bg-gray-900 dark:border-gray-800 ${className}`}>

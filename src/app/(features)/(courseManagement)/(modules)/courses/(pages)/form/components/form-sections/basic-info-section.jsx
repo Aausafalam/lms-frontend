@@ -54,7 +54,7 @@ export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isA
                     />
                     {/* Duration - Required */}
                     <Input
-                        label="Estimated Duration (hours) *"
+                        label="Estimated Duration (hours)"
                         labelIcon={<Clock className="h-3.5 w-3.5" />}
                         id="duration"
                         name="duration"

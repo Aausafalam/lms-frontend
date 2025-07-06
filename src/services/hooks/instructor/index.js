@@ -137,6 +137,46 @@ export const useInstructorGetDetails = () => {
 };
 
 /**
+ * Custom hook to fetch Instructor List
+ */
+export const useInstructorList = () => {
+    const [list, setList] = useState({});
+    const { showErrorNotification } = useNotification();
+    const { isLoading, setLoading } = useLoading();
+    const GET_INSTRUCTOR_DETAILS_KEY = apiConstants.loadingStateKeys.GET_INSTRUCTOR_DETAILS;
+
+    const fetchList = useCallback(
+        async ({ onSuccess, onError, params }) => {
+            setLoading(GET_INSTRUCTOR_DETAILS_KEY, true);
+            const controller = new AbortController();
+
+            try {
+                const data = await instructorApiService.list(params, controller.signal);
+                setList(data);
+                onSuccess?.(data);
+            } catch (error) {
+                showErrorNotification({
+                    key: GET_INSTRUCTOR_DETAILS_KEY,
+                    value: error?.message || "Failed to fetch instructor list",
+                });
+                onError?.(error);
+            } finally {
+                setLoading(GET_INSTRUCTOR_DETAILS_KEY, false);
+            }
+        },
+        [GET_INSTRUCTOR_DETAILS_KEY, showErrorNotification, setLoading]
+    );
+
+    return {
+        instructorList: {
+            data: list,
+            fetch: fetchList,
+            isLoading: isLoading(GET_INSTRUCTOR_DETAILS_KEY),
+        },
+    };
+};
+
+/**
  * Custom hook to delete Instructor
  */
 export const useInstructorDelete = () => {

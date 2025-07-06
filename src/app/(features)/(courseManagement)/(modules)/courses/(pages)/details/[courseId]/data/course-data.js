@@ -10,7 +10,7 @@ export const courseDetailsData = {
     bannerImage: "https://img.freepik.com/free-vector/website-development-banner_33099-1687.jpg",
     introVideo: "https://www.youtube.com/watch?v=4z9bvgTlxKw&list=PLwGdqUZWnOp1Rab71vx2zMF6qpwGDB2Z1",
     estimatedDuration: 120,
-    preRequisites: ["Basic computer skills", "No prior programming experience required"],
+    prerequisites: ["Basic computer skills", "No prior programming experience required"],
     description: `
     <p>This comprehensive bootcamp takes you from absolute beginner to professional web developer. You'll learn HTML, CSS, JavaScript, React, Node.js, and more through hands-on projects and real-world examples.</p>
     <p>Our step-by-step approach ensures you build a solid foundation before moving on to more advanced topics. By the end of this course, you'll have the skills to build complete web applications and the confidence to apply for web development positions.</p>
@@ -33,7 +33,7 @@ export const courseDetailsData = {
             "Earn a professional certificate upon completion of the course. This certificate verifies your proficiency in web development fundamentals and can be shared on your resume and professional profiles.",
         certificateBenefits: ["Recognized by industry professionals", "Shareable on LinkedIn and other platforms", "Verifiable through our certificate portal", "Demonstrates practical coding skills"],
     },
-    preRequisites: ["Basic computer skills and internet navigation", "No prior programming experience required", "Willingness to learn and practice coding daily"],
+    prerequisites: ["Basic computer skills and internet navigation", "No prior programming experience required", "Willingness to learn and practice coding daily"],
     code: "GATE420",
     features: [
         { name: "HTML/CSS", level: "Advanced" },

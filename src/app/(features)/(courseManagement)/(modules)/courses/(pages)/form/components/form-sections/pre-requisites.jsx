@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormSection } from "@/components/formSection";
 
-export const PreRequisitesSection = memo(function PreRequisitesSection({ handlers = {}, formData = { preRequisites: [] }, sectionRef, isActive }) {
+export const PreRequisitesSection = memo(function PreRequisitesSection({ handlers = {}, formData = { prerequisites: [] }, sectionRef, isActive }) {
     const { handlePreRequisiteChange, removePreRequisite, addPreRequisite } = handlers;
 
     const listItemAnimation = {
@@ -16,7 +16,7 @@ export const PreRequisitesSection = memo(function PreRequisitesSection({ handler
         transition: { duration: 0.3 },
     };
 
-    const preRequisites = Array.isArray(formData.preRequisites) ? formData.preRequisites : [];
+    const prerequisites = Array.isArray(formData.prerequisites) ? formData.prerequisites : [];
 
     return (
         <FormSection
@@ -38,7 +38,7 @@ export const PreRequisitesSection = memo(function PreRequisitesSection({ handler
 
                 {/* Pre-requisites list */}
                 <div className="space-y-4">
-                    {preRequisites.map((item, index) => (
+                    {prerequisites.map((item, index) => (
                         <motion.div key={index} {...listItemAnimation} className="flex items-center gap-2" aria-label={`Pre-requisite ${index + 1}`}>
                             {/* Pre-requisite number */}
                             <div className="flex-shrink-0 w-8 h-8 mt-[-0.85rem] rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-medium">
@@ -54,7 +54,7 @@ export const PreRequisitesSection = memo(function PreRequisitesSection({ handler
                             />
 
                             {/* Remove button (shown only if there's more than one pre-requisite) */}
-                            {preRequisites.length > 1 && (
+                            {prerequisites.length > 1 && (
                                 <Button
                                     variant="ghost"
                                     size="icon"
@@ -70,7 +70,7 @@ export const PreRequisitesSection = memo(function PreRequisitesSection({ handler
                     ))}
 
                     {/* Empty state if no pre-requisites exist */}
-                    {preRequisites.length === 0 && (
+                    {prerequisites.length === 0 && (
                         <div className="text-center py-6 text-gray-500 dark:text-gray-400">
                             <Award className="h-12 w-12 mx-auto mb-3 opacity-40" />
                             <p>No pre-requisites added yet.</p>
@@ -90,7 +90,7 @@ export const PreRequisitesSection = memo(function PreRequisitesSection({ handler
                     </Button>
 
                     {/* Examples to guide the user */}
-                    {preRequisites.length > 0 && (
+                    {prerequisites.length > 0 && (
                         <div className="mt-4 text-[0.8rem] text-gray-500 dark:text-gray-400">
                             <p className="font-medium mb-1">Example pre-requisites:</p>
                             <ul className="list-disc pl-5 space-y-1">

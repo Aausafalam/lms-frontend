@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Check, ChevronDown, ChevronUp, X } from "lucide-react";
 import GlobalUtils from "@/lib/utils";
 import { Label } from "./label";
@@ -83,6 +83,8 @@ const SelectField: React.FC<SelectFieldProps> = ({
     const inputRef = useRef<HTMLInputElement>(null);
     const optionsRef = useRef<HTMLDivElement>(null);
 
+    console.log("options", options, name);
+
     // Determine if we're dealing with multi-select or single select
     const selectedValues = Array.isArray(value) ? value : [value].filter(Boolean);
 
@@ -109,7 +111,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
     useEffect(() => {
         setOptions(initialOptions);
-    }, [initialOptions]);
+    }, []);
 
     useEffect(() => {
         // Click outside listener to close dropdown
@@ -266,7 +268,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
     const hasError = touched && error;
 
-    const fetchOptionData = () => {
+    const fetchOptionData = useCallback(() => {
         // setIsLoading(true);
         apiClient
             .get(optionsUrl.url)
@@ -295,13 +297,13 @@ const SelectField: React.FC<SelectFieldProps> = ({
             .finally(() => {
                 // setIsLoading(false);
             });
-    };
+    }, [optionsUrl?.url]);
 
     useEffect(() => {
-        if (optionsUrl) {
+        if (optionsUrl?.url) {
             fetchOptionData();
         }
-    }, [optionsUrl]);
+    }, [optionsUrl?.url]);
 
     return (
         <div className={GlobalUtils.cn("formGroup relative w-full mb-4", className)}>

@@ -65,18 +65,6 @@ const CourseFormBase = ({ initialData = {}, courseId = null }) => {
         setPreviewVisible(!previewVisible);
     };
 
-    /**
-     * Enhanced save handler with toast notifications
-     */
-    const handleSaveWithToast = async () => {
-        try {
-            await handleSave();
-            addToast("Course saved successfully!", "success");
-        } catch (err) {
-            addToast(err.message || "Failed to save course", "error");
-        }
-    };
-
     // Show toast notifications for errors and success
     useEffect(() => {
         if (error) {
@@ -162,7 +150,7 @@ const CourseFormBase = ({ initialData = {}, courseId = null }) => {
                             <div className="sticky bottom-0 pt-6 pb-4 bg-gradient-to-t from-gray-50 dark:from-gray-950 to-transparent">
                                 <div className="flex justify-end space-x-4">
                                     {/* Save as Draft Button */}
-                                    <Button
+                                    {/* <Button
                                         variant="outline"
                                         className="px-6"
                                         disabled={isSaving}
@@ -173,7 +161,7 @@ const CourseFormBase = ({ initialData = {}, courseId = null }) => {
                                         }}
                                     >
                                         Save as Draft
-                                    </Button>
+                                    </Button> */}
 
                                     {/* Main Save Button */}
                                     <Button

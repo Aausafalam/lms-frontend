@@ -2,6 +2,7 @@ import apiConstants from "@/services/utils/constants";
 import axios from "axios";
 import TableICON from "./icon";
 import { Download } from "lucide-react";
+import ApiUtils from "@/services/utils";
 
 class TableUtils {
     static capitalizeEachWord = (name) => {
@@ -145,7 +146,7 @@ class TableUtils {
     }
 
     static getExportButton({ url, token, flat, icon, label, href, target, className, tonal, outlined, ...restProps }) {
-        const defaultToken = JSON.parse(localStorage.getItem("user"));
+        const defaultToken = ApiUtils.getAuthToken();
         const userToken = token || defaultToken;
 
         // Construct the URL safely

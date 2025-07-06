@@ -1,6 +1,7 @@
 "use client";
 
 import apiClient from "@/services/api/config";
+import { useCourse } from "@/services/context/course";
 import { useCourseCreate, useCourseUpdate } from "@/services/hooks/course";
 import { useState, useEffect, useCallback } from "react";
 
@@ -16,31 +17,26 @@ export function useCourseFormData({ initialData }) {
         // Basic Information
         name: "",
         summary: "",
-        duration: 30,
+        duration: 0,
         code: "",
 
         // Media
-        bannerImage: null,
-        bannerImagePreview: "",
-        thumbnailUrl: null,
-        thumbnailPreview: "",
-        introVideo: "", // Can be URL string or File object
-        introVideoFile: null,
-        introVideoPreview: "",
+        bannerImage: undefined,
+        thumbnailUrl: undefined,
+        promoVideoUrl: undefined,
 
         // Content
-        description: "<p>Enter detailed description here...</p>",
+        description: "",
 
         // Learning Outcomes
         learningOutcomes: [""],
 
         // Prerequisites
-        preRequisites: [""],
+        prerequisites: [""],
 
         // Certificate
         certificateCriteria: {
-            certificateImage: "",
-            certificateImagePreview: "",
+            certificateImage: undefined,
             certificateDescription: "",
             certificateBenefits: [""],
         },
@@ -65,14 +61,15 @@ export function useCourseFormData({ initialData }) {
         isFeatured: false,
     });
 
-    const [progress, setProgress] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
-    const { courseCreate, successMessages, errorMessages } = useCourseCreate();
+    const { courseCreate } = useCourseCreate();
     const { courseUpdate } = useCourseUpdate();
+    const { courseDetails } = useCourse();
+
     // Initialize form with initial data if provided
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
@@ -80,7 +77,7 @@ export function useCourseFormData({ initialData }) {
                 ...prev,
                 ...initialData,
                 learningOutcomes: initialData.learningOutcomes?.length ? initialData.learningOutcomes : [""],
-                preRequisites: initialData.preRequisites?.length ? initialData.preRequisites : [""],
+                prerequisites: initialData.prerequisites?.length ? initialData.prerequisites : [""],
                 certificateCriteria: {
                     ...prev.certificateCriteria,
                     ...(initialData.certificateCriteria || {}),
@@ -92,58 +89,6 @@ export function useCourseFormData({ initialData }) {
         }
     }, [initialData]);
 
-    // Calculate form completion progress
-    useEffect(() => {
-        let totalFields = 0;
-        let completedFields = 0;
-
-        // Basic fields
-        const basicFields = ["name", "summary", "duration", "code"];
-        totalFields += basicFields.length;
-        completedFields += basicFields.filter((field) => formData[field]).length;
-
-        // Media fields
-        totalFields += 3; // Banner image, thumbnail, and intro video
-        if (formData.bannerImagePreview) completedFields++;
-        if (formData.thumbnailPreview) completedFields++;
-        if (formData.introVideo) completedFields++;
-
-        // Content fields
-        totalFields += 1; // Description
-        if (formData.description && formData.description !== "<p>Enter detailed description here...</p>") completedFields++;
-
-        // Learning outcomes
-        totalFields += 1;
-        if (formData.learningOutcomes.some((outcome) => outcome.trim() !== "")) completedFields++;
-
-        // Prerequisites
-        totalFields += 1;
-        if (formData.preRequisites.some((prereq) => prereq.trim() !== "")) completedFields++;
-
-        // Certificate
-        totalFields += 2;
-        if (formData.certificateCriteria.certificateDescription) completedFields++;
-        if (formData.certificateCriteria.certificateBenefits.some((benefit) => benefit.trim() !== "")) completedFields++;
-
-        // Features
-        totalFields += 1;
-        if (formData.features.some((feature) => feature.name.trim() !== "")) completedFields++;
-
-        // Meta data
-        totalFields += 4; // tags, difficulty, categories, language
-        if (formData.tags.length > 0) completedFields++;
-        if (formData.difficultyLevel.length > 0) completedFields++;
-        if (formData.categoryIds.length > 0) completedFields++;
-        if (formData.languageCode) completedFields++;
-
-        // Instructors
-        totalFields += 1;
-        if (formData.instructors.length > 0) completedFields++;
-
-        const calculatedProgress = Math.round((completedFields / totalFields) * 100);
-        setProgress(calculatedProgress);
-    }, [formData]);
-
     // Generic input change handler
     const handleInputChange = useCallback(
         (e) => {
@@ -151,9 +96,10 @@ export function useCourseFormData({ initialData }) {
             setFormData((prev) => ({ ...prev, [name]: value }));
 
             // Clear validation error for this field
-            if (validationErrors[name]) {
+            if (validationErrors[name] || validationErrors?.["serverError"]) {
                 setValidationErrors((prev) => {
                     const newErrors = { ...prev };
+                    delete newErrors?.["serverError"];
                     delete newErrors[name];
                     return newErrors;
                 });
@@ -161,53 +107,6 @@ export function useCourseFormData({ initialData }) {
         },
         [validationErrors]
     );
-
-    // Image upload handlers
-    const handleImageUpload = useCallback((e) => {
-        const file = e.target.files?.[0];
-        const fieldName = e.target.name;
-
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData((prev) => ({
-                    ...prev,
-                    [fieldName]: file,
-                    [`${fieldName}Preview`]: reader.result,
-                }));
-            };
-            reader.readAsDataURL(file);
-        }
-    }, []);
-
-    // Video upload handler
-    const handleVideoUpload = useCallback((e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            // Validate file size (100MB limit)
-            if (file.size > 100 * 1024 * 1024) {
-                setError("Video file size must be less than 100MB");
-                return;
-            }
-
-            // Validate file type
-            if (!file.type.startsWith("video/")) {
-                setError("Please upload a valid video file");
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData((prev) => ({
-                    ...prev,
-                    introVideoFile: file,
-                    introVideoPreview: reader.result,
-                    introVideo: file, // Set as file object
-                }));
-            };
-            reader.readAsDataURL(file);
-        }
-    }, []);
 
     // Learning outcomes handlers
     const handleLearningOutcomeChange = useCallback((index, value) => {
@@ -236,24 +135,24 @@ export function useCourseFormData({ initialData }) {
     // Prerequisites handlers
     const handlePreRequisiteChange = useCallback((index, value) => {
         setFormData((prev) => {
-            const updatedPreRequisites = [...prev.preRequisites];
+            const updatedPreRequisites = [...prev.prerequisites];
             updatedPreRequisites[index] = value;
-            return { ...prev, preRequisites: updatedPreRequisites };
+            return { ...prev, prerequisites: updatedPreRequisites };
         });
     }, []);
 
     const addPreRequisite = useCallback(() => {
         setFormData((prev) => ({
             ...prev,
-            preRequisites: [...prev.preRequisites, ""],
+            prerequisites: [...prev.prerequisites, ""],
         }));
     }, []);
 
     const removePreRequisite = useCallback((index) => {
         setFormData((prev) => {
-            const updatedPreRequisites = [...prev.preRequisites];
+            const updatedPreRequisites = [...prev.prerequisites];
             updatedPreRequisites.splice(index, 1);
-            return { ...prev, preRequisites: updatedPreRequisites };
+            return { ...prev, prerequisites: updatedPreRequisites };
         });
     }, []);
 
@@ -332,6 +231,19 @@ export function useCourseFormData({ initialData }) {
                 ...updatedFeatures[index],
                 [field]: value,
             };
+
+            setValidationErrors((prevErrors) => {
+                const newErrors = { ...prevErrors };
+
+                const invalidFeature = updatedFeatures.filter((item) => item.name?.trim() || item.level?.trim()).some((f) => !f.name?.trim() || !f.level?.trim());
+
+                if (!invalidFeature) {
+                    delete newErrors.features;
+                }
+                delete newErrors?.["serverError"];
+                return newErrors;
+            });
+
             return { ...prev, features: updatedFeatures };
         });
     }, []);
@@ -359,6 +271,23 @@ export function useCourseFormData({ initialData }) {
                 ...updatedAttachments[index],
                 [field]: value,
             };
+
+            setValidationErrors((prevErrors) => {
+                const newErrors = { ...prevErrors };
+
+                const invalidAttachment = updatedAttachments.some((a) => {
+                    const hasAny = a.title?.trim() || a.description?.trim() || a.file?.trim();
+                    const hasAll = a.title?.trim() && a.description?.trim() && a.file?.trim();
+                    return hasAny && !hasAll;
+                });
+
+                if (!invalidAttachment) {
+                    delete newErrors.attachments;
+                }
+                delete newErrors?.["serverError"];
+                return newErrors;
+            });
+
             return { ...prev, attachments: updatedAttachments };
         });
     }, []);
@@ -384,50 +313,116 @@ export function useCourseFormData({ initialData }) {
     }, []);
 
     // Form validation
-    const validateForm = useCallback(() => {
-        const errors = {};
+    const validateForm = useCallback(
+        (formData) => {
+            const errors = {};
 
-        // Required basic fields
-        if (!formData.name?.trim()) {
-            errors.name = "Course name is required";
-        }
-        if (!formData.code?.trim()) {
-            errors.courseCode = "Course code is required";
-        }
-        if (!formData.summary?.trim()) {
-            errors.summary = "Course summary is required";
-        }
-        if (!formData.duration || formData.duration < 1) {
-            errors.duration = "Duration is required and must be at least 1 hour";
-        }
+            // Required basic fields
+            if (!formData.name?.trim()) {
+                errors.name = "Course name is required";
+            }
 
-        setValidationErrors(errors);
-        return Object.keys(errors).length === 0;
-    }, [formData]);
+            if (!formData.code?.trim()) {
+                errors.code = "Course code is required";
+            }
+
+            if (!formData.summary?.trim()) {
+                errors.summary = "Course summary is required";
+            }
+
+            if (!formData.duration || formData.duration < 1) {
+                errors.duration = "Duration is required and must be at least 1 hour";
+            }
+
+            if (!formData.id) {
+                if (!formData.bannerImage?.fileId?.trim()) {
+                    errors.bannerImage = "Banner Image is required.";
+                }
+
+                if (!formData.thumbnailUrl?.fileId?.trim()) {
+                    errors.thumbnailUrl = "Thumbnail is required.";
+                }
+            }
+
+            if (!formData.description?.trim()) {
+                errors.description = "Description is required.";
+            }
+
+            if (!Array.isArray(formData.difficultyLevel) || formData.difficultyLevel.length === 0) {
+                errors.difficultyLevel = "At least one difficulty level is required.";
+            }
+
+            if (!Array.isArray(formData.instructorIds) || formData.instructorIds.length === 0) {
+                errors.instructorIds = "At least one instructor is required.";
+            }
+
+            if (!Array.isArray(formData.categoryIds) || formData.categoryIds.length === 0) {
+                errors.categoryIds = "At least one category is required.";
+            }
+
+            // Validate features
+            if (Array.isArray(formData?.features)) {
+                const invalidFeature = formData.features.some((f) => !f.name?.trim() || !f.level?.trim());
+                if (invalidFeature) {
+                    errors.features = "Each skill must have both name and level.";
+                }
+            }
+
+            // Validate attachments
+            if (Array.isArray(formData.attachments)) {
+                const invalidAttachment = formData.attachments.some((a) => !a.title?.trim() || !a.description?.trim() || !a.file?.trim());
+                if (invalidAttachment) {
+                    errors.attachments = "Each attachment must have title, description, and file.";
+                }
+            }
+
+            setValidationErrors(errors);
+            return Object.keys(errors).length === 0;
+        },
+        [formData]
+    );
 
     // Save handler
     const handleSave = useCallback(async () => {
         setError(null);
         setSuccess(false);
-
+        const updatedPayload = {
+            ...formData,
+            learningOutcomes: formData.learningOutcomes.filter((item) => item),
+            prerequisites: { prerequisites: formData.prerequisites.filter((item) => item) },
+            features: formData.features.filter((item) => item.name || item.level),
+            attachments: formData.attachments.filter((item) => item.title || item.description || item.file),
+        };
+        console.log(updatedPayload);
         // Validate form
-        if (!validateForm()) {
+        if (!validateForm(updatedPayload)) {
             setError("Please fix the validation errors before saving");
             return;
         }
+        console.log(updatedPayload);
 
         setIsSaving(true);
-        delete formData?.promoVideoUrl;
+        delete updatedPayload?.promoVideoUrl;
         try {
-            if (formData.id) {
+            if (updatedPayload.id) {
                 courseUpdate.execute({
-                    dynamicRoute: formData.id,
-                    payload: formData,
-                    onSuccess: () => setSuccess(true),
-                    onError: () => setTimeout(() => setSuccess(false), 5000),
+                    dynamicRoute: updatedPayload.id,
+                    payload: updatedPayload,
+                    onSuccess: () => {
+                        setSuccess(true);
+                        courseDetails.fetch?.({ dynamicRoute: formData.id, isLoading: false });
+                    },
+                    onError: () => setSuccess(false),
                 });
             } else {
-                courseCreate.execute({ payload: formData, onSuccess: () => setSuccess(true), onError: () => setTimeout(() => setSuccess(false), 5000) });
+                courseCreate.execute({
+                    payload: updatedPayload,
+                    onSuccess: () => setSuccess(true),
+                    onError: (error) => {
+                        setValidationErrors({ serverError: error.response.data.message });
+                        setError("Please fix the validation errors before saving");
+                    },
+                });
             }
         } catch (err) {
             console.error("Save error:", err);
@@ -440,7 +435,6 @@ export function useCourseFormData({ initialData }) {
 
     return {
         formData,
-        progress,
         isLoading,
         isSaving,
         error,
@@ -448,8 +442,6 @@ export function useCourseFormData({ initialData }) {
         validationErrors,
         handlers: {
             handleInputChange,
-            handleImageUpload,
-            handleVideoUpload,
             handleLearningOutcomeChange,
             addLearningOutcome,
             removeLearningOutcome,

@@ -1,13 +1,12 @@
 import TableUtils from "@/components/table/utils";
 import TableIcon from "@/components/table/utils/icon";
 import coursesTableConstants from "./constants";
-import GlobalUtils from "@/lib/utils";
 
 class CoursesTableUtils {
     /**
      * Generates table header configuration.
      */
-    static getTableHeader({ data, setModalState, styles, navigate, title }) {
+    static getTableHeader({ data, navigate, title }) {
         const autoSuggestions = TableUtils.formatDataForAutoSuggestion(data?.data || [], ["name"]);
 
         return {
@@ -16,21 +15,22 @@ class CoursesTableUtils {
             actionButtons: [
                 {
                     icon: TableIcon.PLUS,
-                    label: "New Courses",
+                    label: "New Course",
                     onClick: () => navigate("/courses/form/add"),
                 },
-                TableUtils.getExportButton({ url: "/courses" }),
+                TableUtils.getExportButton({ url: "/course/export" }),
             ],
             filters: [
                 {
                     name: "searchText",
-                    grid: 2,
+                    grid: 3,
                     placeholder: "Search Courses ",
                     autoSuggestion: {
                         initialData: autoSuggestions,
                         autoSuggestionUrl: "/api/suggestions",
                     },
                 },
+                ...coursesTableConstants.FILTERS.filterFields,
             ],
         };
     }
@@ -38,16 +38,19 @@ class CoursesTableUtils {
     /**
      * Returns available actions for each row.
      */
-    static getTableActions({ data, setModalState, setSelectedCourse }) {
+    static getTableActions({ data, setModalState, setSelectedCourse, navigate }) {
         const handleAction = (row, actionType) => {
             const selectedCourses = data?.records?.find((item) => row["id"] === item.id);
-            setSelectedCourse(selectedCourses);
-            setModalState(actionType, selectedCourses.id);
+            if (actionType === "edit") {
+                navigate(`/courses/form/${row["id"]}`);
+            } else {
+                setSelectedCourse(selectedCourses);
+                setModalState(actionType, selectedCourses.id);
+            }
         };
 
         return [
             { name: "Delete", functions: (row) => handleAction(row, "delete"), label: "Delete Entry" },
-            { name: "View", functions: (row) => handleAction(row, "view"), label: "View Details" },
             { name: "Edit", functions: (row) => handleAction(row, "edit"), label: "Edit Details" },
         ];
     }

@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Upload, FileIcon, AlertCircle, Trash2, RefreshCw, FileText } from "lucide-react";
+import { Upload, FileIcon, AlertCircle, Trash2, RefreshCw, FileText, Eye } from "lucide-react";
 import GlobalUtils from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Label } from "./label";
@@ -29,6 +29,21 @@ interface FileUploadFieldProps {
     onError?: (error: string) => void;
     labelIcon?: React.ReactNode;
     onChange?: (error: object) => void;
+    defaultFiles?: [FileInfo];
+}
+// Extended FileWithProgress interface to include abortController
+interface FileWithProgressExtended extends FileWithProgress {
+    abortController?: AbortController;
+}
+
+interface FileInfo {
+    url: string;
+    fileId?: string;
+    file_size: number;
+    mime_type: string;
+    filename: string;
+    original_name?: string;
+    isDeleted?: string;
 }
 
 interface FileWithProgress {
@@ -61,14 +76,16 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
     onError,
     labelIcon,
     onChange,
+    defaultFiles = [],
 }) => {
     const [files, setFiles] = useState<FileWithProgress[]>([]);
+    const [defaultFilesState, setDefaultFiles] = useState<FileInfo[]>([]);
     const [isDragging, setIsDragging] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const [dragCounter, setDragCounter] = useState(0);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const dropAreaRef = useRef<HTMLDivElement>(null);
-
+    console.log("defaultFiles", defaultFiles);
     const formatBytes = (bytes: number, decimals = 2) => {
         if (bytes === 0) return "0 Bytes";
 
@@ -104,58 +121,194 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
             // Update file status to uploading
             setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, status: "uploading", progress: 0 } : f)));
 
-            // const xhr = new XMLHttpRequest();
+            // Create progress handler
+            const handleProgress = (progress: number) => {
+                setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, progress } : f)));
 
-            // xhr.upload.addEventListener("progress", (event) => {
-            //     if (event.lengthComputable) {
-            //         const progress = Math.round((event.loaded / event.total) * 100);
+                if (onUploadProgress) {
+                    onUploadProgress(progress);
+                }
+            };
 
-            //         // Update progress for this specific file
-            //         setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, progress } : f)));
+            // Upload file with progress tracking
+            const response = await fileUploadApiService.uploadFile(uploadPath, formData, {}, "", handleProgress);
 
-            //         if (onUploadProgress) {
-            //             onUploadProgress(progress);
-            //         }
-            //     }
-            // });
+            // Update file status to success and store the response data
+            setFiles((prevFiles) =>
+                prevFiles.map((f) =>
+                    f.id === fileWithProgress.id
+                        ? {
+                              ...f,
+                              status: "success",
+                              url: response.url || response.fileUrl, // Handle different response formats
+                              progress: 100,
+                              fileId: response.fileId,
+                          }
+                        : f
+                )
+            );
 
-            // xhr.addEventListener("load", () => {
-            //     if (xhr.status >= 200 && xhr.status < 300) {
-            //         try {
-            //             const response = JSON.parse(xhr.responseText);
+            // Collect all successfully uploaded file URLs
+            const updatedFiles = files.map((f) =>
+                f.id === fileWithProgress.id
+                    ? {
+                          ...f,
+                          status: "success",
+                          url: response.url || response.fileUrl,
+                          fileId: response.fileId,
+                      }
+                    : f
+            );
 
-            //             // Update file status to success and store the URL
-            //             setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, status: "success", url: response.url, progress: 100 } : f)));
+            const successfulFiles = updatedFiles.filter((f) => f.status === "success" && f.url).map((f) => f.url as string);
 
-            //             // Collect all successfully uploaded file URLs
-            //             const updatedFiles = [...files];
-            //             const successfulFiles = updatedFiles.filter((f) => f.status === "success" && f.url).map((f) => f.url as string);
+            if (onFilesUploaded) {
+                onFilesUploaded(successfulFiles);
+            }
 
-            //             if (onFilesUploaded) {
-            //                 onFilesUploaded(successfulFiles);
-            //             }
-            //         } catch (error) {
-            //             handleUploadError(fileWithProgress.id, "Failed to parse server response");
-            //         }
-            //     } else {
-            //         handleUploadError(fileWithProgress.id, `Upload failed with status ${xhr.status}`);
-            //     }
-            // });
-
-            // xhr.addEventListener("error", () => {
-            //     handleUploadError(fileWithProgress.id, "Network error occurred during upload");
-            // });
-
-            // xhr.addEventListener("abort", () => {
-            //     handleUploadError(fileWithProgress.id, "Upload was aborted");
-            // });
-
-            // xhr.open("POST", uploadPath, true);
-            // xhr.send(formData);
-            const data = await fileUploadApiService.uploadFile(uploadPath, formData, {}, "", "");
-            onChange?.({ target: { name, value: { fileId: data.fileId } } });
+            // Call onChange with the file data
+            onChange?.({
+                target: {
+                    name,
+                    value: {
+                        fileId: response.fileId,
+                        url: response.url || response.fileUrl,
+                    },
+                },
+            });
         } catch (error) {
-            handleUploadError(fileWithProgress.id, "An unexpected error occurred");
+            console.error("File upload failed:", error);
+
+            // Determine error message based on error type
+            let errorMessage = "An unexpected error occurred";
+
+            if (error.response) {
+                // Server responded with error status
+                if (error.response.status === 413) {
+                    errorMessage = "File size too large";
+                } else if (error.response.status === 415) {
+                    errorMessage = "File type not supported";
+                } else if (error.response.status >= 500) {
+                    errorMessage = "Server error occurred";
+                } else {
+                    errorMessage = `Upload failed: ${error.response.data?.message || error.response.statusText}`;
+                }
+            } else if (error.request) {
+                // Network error
+                errorMessage = "Network error occurred during upload";
+            } else if (error.code === "ECONNABORTED") {
+                // Timeout error
+                errorMessage = "Upload timeout - please try again";
+            }
+
+            handleUploadError(fileWithProgress.id, errorMessage);
+        }
+    };
+
+    const uploadFileWithCancellation = async (fileWithProgress: FileWithProgress) => {
+        const abortController = new AbortController();
+
+        // Store the abort controller for potential cancellation
+        setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? ({ ...f, abortController } as FileWithProgressExtended) : f)));
+
+        try {
+            const formData = new FormData();
+            formData.append(name, fileWithProgress.file);
+
+            // Update file status to uploading
+            setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, status: "uploading", progress: 0 } : f)));
+
+            const handleProgress = (progress: number) => {
+                setFiles((prevFiles) => prevFiles.map((f) => (f.id === fileWithProgress.id ? { ...f, progress } : f)));
+
+                if (onUploadProgress) {
+                    onUploadProgress(progress);
+                }
+            };
+
+            const response = await fileUploadApiService.uploadFile(uploadPath, formData, {}, abortController.signal, handleProgress);
+
+            // Update file status to success and store the response data
+            setFiles((prevFiles) =>
+                prevFiles.map((f) =>
+                    f.id === fileWithProgress.id
+                        ? {
+                              ...f,
+                              status: "success",
+                              url: response.url || response.fileUrl,
+                              progress: 100,
+                              fileId: response.fileId,
+                          }
+                        : f
+                )
+            );
+
+            // Collect all successfully uploaded file URLs
+            const updatedFiles = files.map((f) =>
+                f.id === fileWithProgress.id
+                    ? {
+                          ...f,
+                          status: "success",
+                          url: response.url || response.fileUrl,
+                          fileId: response.fileId,
+                      }
+                    : f
+            );
+
+            const successfulFiles = updatedFiles.filter((f) => f.status === "success" && f.url).map((f) => f.url as string);
+
+            if (onFilesUploaded) {
+                onFilesUploaded(successfulFiles);
+            }
+
+            // Call onChange with the file data
+            onChange?.({
+                target: {
+                    name,
+                    value: {
+                        fileId: response.fileId,
+                        url: response.url || response.fileUrl,
+                    },
+                },
+            });
+        } catch (error: any) {
+            console.error("File upload failed:", error);
+
+            if (error.name === "AbortError" || error.code === "ERR_CANCELED") {
+                handleUploadError(fileWithProgress.id, "Upload was cancelled");
+            } else {
+                // Determine error message based on error type
+                let errorMessage = "An unexpected error occurred";
+
+                if (error.response) {
+                    // Server responded with error status
+                    if (error.response.status === 413) {
+                        errorMessage = "File size too large";
+                    } else if (error.response.status === 415) {
+                        errorMessage = "File type not supported";
+                    } else if (error.response.status >= 500) {
+                        errorMessage = "Server error occurred";
+                    } else {
+                        errorMessage = `Upload failed: ${error.response.data?.message || error.response.statusText}`;
+                    }
+                } else if (error.request) {
+                    // Network error
+                    errorMessage = "Network error occurred during upload";
+                } else if (error.code === "ECONNABORTED") {
+                    // Timeout error
+                    errorMessage = "Upload timeout - please try again";
+                }
+
+                handleUploadError(fileWithProgress.id, errorMessage);
+            }
+        }
+    };
+
+    // Function to cancel upload
+    const cancelUpload = (fileId: string) => {
+        const file = files.find((f) => f.id === fileId) as FileWithProgressExtended;
+        if (file && file.abortController) {
+            file.abortController.abort();
         }
     };
 
@@ -202,7 +355,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
 
         // Start uploading each file
         newFilesArray.forEach((fileWithProgress) => {
-            uploadFile(fileWithProgress);
+            uploadFileWithCancellation(fileWithProgress);
         });
     };
 
@@ -268,13 +421,31 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
             e.stopPropagation();
         }
         setFiles((prevFiles) => prevFiles.filter((f) => f.id !== fileId));
+        cancelUpload?.(fileId);
+    };
+
+    const handleRemoveDefaultFile = (fileId: string, e?: React.MouseEvent) => {
+        if (e) {
+            e.stopPropagation();
+        }
+        // Call onChange with the file data
+        onChange?.({
+            target: {
+                name,
+                value: {
+                    fileId: fileId,
+                    isDeleted: true,
+                },
+            },
+        });
+        setDefaultFiles((prevFiles) => prevFiles.filter((f) => f.filename !== fileId));
     };
 
     const handleRetryUpload = (fileId: string, e: React.MouseEvent) => {
         e.stopPropagation();
         const fileToRetry = files.find((f) => f.id === fileId);
         if (fileToRetry) {
-            uploadFile(fileToRetry);
+            uploadFileWithCancellation(fileToRetry);
         }
     };
 
@@ -308,6 +479,26 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
             setIsDragging(false);
         };
     }, []);
+
+    console.log(defaultFiles, name, "defaultFiles", files, defaultFilesState);
+
+    useEffect(() => {
+       
+            if (defaultFiles.length && !defaultFiles[0]?.isDeleted && !defaultFiles[0]?.fileId) {
+                setFiles([]);
+            }
+            if (defaultFiles.length && !defaultFiles[0].fileId && !defaultFiles[0].isDeleted) {
+                setDefaultFiles(defaultFiles);
+            }
+        
+    }, [defaultFiles, defaultFilesState]);
+
+    useEffect(() => {
+        if (defaultFiles.length === 0 && defaultFilesState.length !== 0) {
+            // only set if different
+            setDefaultFiles([]);
+        }
+    }, [defaultFiles]);
 
     return (
         <div className={GlobalUtils.cn("formGroup relative w-full mb-6", className)}>
@@ -366,7 +557,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
                 />
 
                 <AnimatePresence>
-                    {files.length === 0 ? (
+                    {files.length === 0 && defaultFilesState.length === 0 ? (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -486,6 +677,64 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
                                                         </p>
                                                     </div>
                                                 )}
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </div>
+
+                            <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                                <AnimatePresence initial={false}>
+                                    {defaultFilesState.map((file) => (
+                                        <motion.div
+                                            key={file.fileId}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <div
+                                                className={GlobalUtils.cn(
+                                                    "group relative rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-200",
+                                                    "bg-green-50/50 dark:bg-green-900/10 border-green-200 dark:border-green-800/30"
+                                                )}
+                                            >
+                                                <div className="flex items-center justify-between p-3">
+                                                    <div className="flex items-center space-x-3 overflow-hidden">
+                                                        <div className="flex-shrink-0 w-10 h-10 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                                            {getFileIcon(file.original_name || file.filename)}
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{file.original_name || file.filename}</p>
+                                                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{formatBytes(file.file_size)}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex items-center space-x-2">
+                                                        <a
+                                                            type="button"
+                                                            href={file.url}
+                                                            onClick={(event) => {
+                                                                event.stopPropagation();
+                                                            }}
+                                                            target="_blank"
+                                                            className="p-1.5 rounded-full text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                                            aria-label="View file"
+                                                        >
+                                                            <Eye className="h-4 w-4" />
+                                                        </a>
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => handleRemoveDefaultFile(file.filename, e)}
+                                                            className="p-1.5 rounded-full text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                                            aria-label="Remove file"
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div className="h-1 w-full bg-green-500 dark:bg-green-400" />
                                             </div>
                                         </motion.div>
                                     ))}

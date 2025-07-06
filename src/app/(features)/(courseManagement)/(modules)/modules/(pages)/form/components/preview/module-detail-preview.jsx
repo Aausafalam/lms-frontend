@@ -153,10 +153,10 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
                             </ContentCard>
                         )}
 
-                        {data.preRequisites?.length > 0 && data.preRequisites[0] && (
+                        {data.prerequisites?.length > 0 && data.prerequisites[0] && (
                             <ContentCard title="Prerequisites" subTitle="Required knowledge and skills before starting this module" Icon={Award} headerColor="orange" isMobile={isMobile}>
                                 <div className="space-y-0">
-                                    {data.preRequisites
+                                    {data.prerequisites
                                         .filter((pre) => pre.trim())
                                         .map((prerequisite, index) => (
                                             <div key={index} className="flex items-start group hover:bg-orange-50 dark:hover:bg-orange-950/20 p-3 rounded-lg transition-colors">

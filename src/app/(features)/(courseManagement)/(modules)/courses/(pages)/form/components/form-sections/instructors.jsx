@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { Settings, Tag, BarChart3, FolderOpen, Globe, User2Icon } from "lucide-react";
+import { Tag, User2Icon } from "lucide-react";
 import { FormSection } from "@/components/formSection";
 import { Select } from "@/components/ui/select";
 
@@ -18,15 +18,6 @@ import { Select } from "@/components/ui/select";
 export const InstructorsSection = memo(function InstructorsSection({ formData, handlers, sectionRef, isActive }) {
     const { handleInputChange } = handlers;
 
-    // Sample data - in real app, these would come from API
-    const instructors = [
-        { id: "8e8abe4a-8464-44fe-a572-0037acadabda", name: "Dr. Jane Smith", role: "Lead Instructor", avatar: "/placeholder.svg?height=40&width=40" },
-        { id: "2", name: "Prof. John Doe", role: "Subject Expert", avatar: "/placeholder.svg?height=40&width=40" },
-        { id: "3", name: "Dr. Emily Johnson", role: "Course Designer", avatar: "/placeholder.svg?height=40&width=40" },
-        { id: "4", name: "Prof. Michael Brown", role: "Guest Lecturer", avatar: "/placeholder.svg?height=40&width=40" },
-        { id: "5", name: "Dr. Sarah Williams", role: "Teaching Assistant", avatar: "/placeholder.svg?height=40&width=40" },
-    ];
-
     return (
         <FormSection id="instructors" title="Course Instructors" icon={<User2Icon className="h-5 w-5" />} description="Configure course instructors" sectionRef={sectionRef} isActive={isActive}>
             <div className="space-y-6">
@@ -38,7 +29,10 @@ export const InstructorsSection = memo(function InstructorsSection({ formData, h
                     placeholder="Select course instructors"
                     value={formData.instructorIds || []}
                     onChange={handleInputChange}
-                    options={instructors.map((item) => ({ value: item.id, label: item.name }))}
+                    options={[]}
+                    optionsUrl={{
+                        url: "/instructor?responseType=dropdown",
+                    }}
                     isMulti
                     helperText="Instructor list"
                 />

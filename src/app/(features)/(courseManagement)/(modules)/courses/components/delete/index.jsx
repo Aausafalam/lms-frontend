@@ -10,12 +10,11 @@ const DeleteCourse = ({ modalState, courseId, setRefreshTable, closeModal }) => 
         if (modalState.delete && courseId) {
             const deletePayload = {
                 recordId: courseId,
-                onShowDetails: () => {},
+                onShowDetails: closeModal,
                 deleteAction: courseDelete,
-                toggleRefreshData: setRefreshTable,
+                toggleRefreshData: () => setRefreshTable(),
             };
             GlobalUtils.handleDelete(deletePayload);
-            closeModal();
         }
     }, [modalState.delete, courseId]);
 

@@ -11,9 +11,9 @@ const Courses = () => {
 
     return (
         <div className="courses-container">
-            {/* <CourseStats className={"mb-4"} /> */}
+            {/* Course List */}
             <CoursesTable setModalState={setModalState} refreshTable={refreshTable} setSelectedCourse={setSelectedCourse} />
-            {/* Delete Permission Modal */}
+            {/* Delete Course Modal */}
             <DeleteCourse modalState={{ delete: modalType === "delete" }} closeModal={closeModal} courseId={courseId} setRefreshTable={setRefreshTable} />
         </div>
     );

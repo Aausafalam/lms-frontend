@@ -1,27 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-    Award,
-    FileText,
-    ChevronDown,
-    ChevronUp,
-    CheckCircle,
-    Star,
-    GraduationCap,
-    Lightbulb,
-    BadgeIcon as Certificate,
-    Paperclip,
-    Download,
-    Clock,
-    Users,
-    Globe,
-    Bookmark,
-    Tag,
-    Calendar,
-    Folder,
-} from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Award, FileText, ChevronDown, ChevronUp, CheckCircle, Star, GraduationCap, Lightbulb, BadgeIcon as Certificate, Paperclip, Download, Clock, Users, Tag, Calendar, Folder } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroSection } from "./hero-section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -30,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCourse } from "@/services/context/course";
 import { useParams } from "next/navigation";
 import { ContentCard } from "@/components/contentCard";
+import { useInstructorList } from "@/services/hooks/instructor";
 
 // Device presets for responsive design
 const devicePresets = {
@@ -47,8 +28,8 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
     const [showFullDescription, setShowFullDescription] = useState(false);
     const { courseId } = useParams();
     const { courseDetails } = useCourse();
-    const data = { ...initialData, ...courseDetails.data.data };
-
+    const { instructorList } = useInstructorList();
+    const data = onDetailsPage ? { ...courseDetails.data.data, instructorIds: courseDetails.data?.data?.instructors?.map((item) => item.id) } : initialData;
     // Determine device type based on viewport width
     const isMobile = viewportWidth <= devicePresets.mobile;
     const isTablet = viewportWidth > devicePresets.mobile && viewportWidth <= devicePresets.tablet;
@@ -69,32 +50,16 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
         }
     };
 
-    const instructor = [
-        {
-            id: "1",
-            name: "Sarah Johnson",
-            profileImage: "/placeholder.svg?height=100&width=100",
-            role: "Senior React Developer",
-            bio: "10+ years of experience building scalable React applications",
-        },
-        {
-            id: "2",
-            name: "Michael Chen",
-            profileImage: "/placeholder.svg?height=100&width=100",
-            role: "Performance Optimization Expert",
-            bio: "Author of 'React at Scale' and performance consultant",
-        },
-    ];
-
     useEffect(() => {
         onDetailsPage && courseDetails.fetch?.({ dynamicRoute: courseId });
+        instructorList.fetch?.({ params: { responseType: "dropdown" } });
     }, [courseId]);
-    console.log(courseDetails.data);
 
+    const instructors = instructorList.data?.data?.records?.filter((item) => data.instructorIds?.includes(item.id)) || [];
     return (
         <div className={`w-full ${onDetailsPage ? "max-h-[86vh]  overflow-scroll" : "max-h-[75vh]  overflow-scroll"} `}>
             {/* Hero Section */}
-            <HeroSection data={data} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} />
+            <HeroSection instructors={instructors} data={data} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} />
 
             {/* Main Content */}
             <div className={`mx-auto mt-4 ${isMobile || isTablet ? "px-3" : ""}`}>
@@ -135,7 +100,7 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
                         {/* Instructors */}
                         <ContentCard title="Instructors" Icon={Users} headerColor="purple" subTitle="Meet the educators who designed and will guide the course">
                             <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
-                                {(data?.instructors || instructor).map((instructor) => (
+                                {instructors?.map((instructor) => (
                                     <div
                                         key={instructor.id}
                                         className="flex items-center p-2 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-purple-200 dark:hover:border-purple-800/40 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all group"
@@ -219,10 +184,10 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
                         )}
 
                         {/* Prerequisites */}
-                        {data.preRequisites?.length > 0 && data.preRequisites[0] && (
+                        {data.prerequisites?.length > 0 && data.prerequisites[0] && (
                             <ContentCard title="Prerequisites" Icon={Award} headerColor="green" isMobile={isMobile} subTitle="Topics or knowledge you should know before taking this course">
                                 <div className="space-y-0">
-                                    {data.preRequisites
+                                    {data.prerequisites
                                         .filter((prereq) => prereq.trim())
                                         .map((prerequisite, index) => (
                                             <div key={index} className="flex items-start group hover:bg-green-50 dark:hover:bg-green-950/20 p-3 rounded-lg transition-colors">

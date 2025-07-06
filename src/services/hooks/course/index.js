@@ -106,8 +106,8 @@ export const useCourseGetDetails = () => {
     const GET_COURSE_DETAILS_KEY = apiConstants.loadingStateKeys.GET_COURSE_DETAILS;
 
     const fetchDetails = useCallback(
-        async ({ dynamicRoute, onSuccess, onError, params }) => {
-            setLoading(GET_COURSE_DETAILS_KEY, true);
+        async ({ dynamicRoute, onSuccess, onError, params, isLoading = true }) => {
+            isLoading && setLoading(GET_COURSE_DETAILS_KEY, true);
             const controller = new AbortController();
 
             try {
@@ -117,6 +117,7 @@ export const useCourseGetDetails = () => {
                     ...data,
                     data: {
                         ...data.data,
+                        prerequisites: data.data?.prerequisites?.prerequisites,
                         instructorIds: data?.data?.instructors?.map((item) => item.id?.toString()) || [],
                         categoryIds: data?.data?.categories?.map((item) => item.id?.toString()) || [],
                     },

@@ -13,7 +13,6 @@ const FormSelectField = ({
     formValues,
     dynamicOptions,
     errors,
-    ...restProps
 }) => {
     const {
         id,
@@ -59,6 +58,7 @@ const FormSelectField = ({
         // Additional content
         labelChild,
         contentChild,
+        ...restProps
     } = formField;
 
     console.log(":optionsUrl>>>", optionsUrl);
@@ -170,54 +170,8 @@ const FormSelectField = ({
                 groupBy={formField?.groupBy}
                 noOptionsMessage={formField?.noOptionsMessage}
                 optionsUrl={optionsUrl}
+                {...restProps}
             />
-            {/* <div className={formGroupClasses} style={style}>
-                <div className={styles.inputWrapper}>
-                    {label && (
-                        <label htmlFor={id} className={labelClasses} style={labelStyle}>
-                            {label}
-                            {validationRules.required && <span className={styles.required}>*</span>}
-                            {labelChild}
-                        </label>
-                    )}
-                    <CustomSelect
-                        id={id}
-                        defaultValue={formValues[name]}
-                        name={name}
-                        value={inputValue}
-                        handleSelectChange={(event) => {
-                            onChange(event);
-                            customOnChange && customOnChange(event);
-                            validateInput(event.target.value);
-                        }}
-                        options={dynamicOptions?.[name] || options}
-                        disabled={disabled}
-                        readOnly={readOnly}
-                        multiple={multiple}
-                        placeholder={placeholder}
-                        classNames={[`${styles.formControl}`]}
-                        style={inputStyle}
-                        aria-invalid={!!error}
-                        aria-describedby={error ? `${id}-error` : undefined}
-                        error={error}
-                        type={type}
-                        clearOption={clearOption}
-                        {...restProps}
-                    />
-
-                    {contentChild}
-                </div>
-
-                {error && (
-                    <div id={`${id}-error`} className={styles.errorText} role="alert">
-                        {error}
-                    </div>
-                )}
-
-                {helperText && !error && <div className={styles.helperText}>{helperText}</div>}
-
-                {infoText && <p className={styles.infoText}>{infoText}</p>}
-            </div> */}
         </>
     );
 };

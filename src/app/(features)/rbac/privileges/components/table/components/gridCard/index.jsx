@@ -47,17 +47,6 @@ export default function PrivilegeCard({ data, view }) {
         setShowPopup(true);
     };
 
-    const getMethodColor = (method) => {
-        const colors = {
-            GET: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-            POST: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-            PUT: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-            DELETE: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-            PATCH: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-        };
-        return colors[method] || "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
-    };
-
     const DetailsPopup = () => (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowPopup(false)}>
             <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
@@ -87,31 +76,6 @@ export default function PrivilegeCard({ data, view }) {
                         <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2">Description</h3>
                         <p className="text-gray-600 text-sm dark:text-gray-400 leading-relaxed">{privilegeData.description || "No description provided"}</p>
                     </div>
-
-                    {/* Stats Grid */}
-                    {/* <div className="grid grid-cols-3 gap-4 mb-6">
-                        <div className="bg-orange-50 dark:bg-orange-950/20 p-4 pb-3 rounded-xl border border-orange-100 dark:border-orange-900/30">
-                            <div className="flex items-center space-x-2 mb-1">
-                                <Route className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-                                <span className="text-sm font-medium text-orange-700 dark:text-orange-300">Routes</span>
-                            </div>
-                            <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{privilegeData.routes?.length || 0}</div>
-                        </div>
-                        <div className="bg-blue-50 dark:bg-blue-950/20 p-4 pb-3  rounded-xl border border-blue-100 dark:border-blue-900/30">
-                            <div className="flex items-center space-x-2 mb-1">
-                                <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Roles</span>
-                            </div>
-                            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{privilegeData.roleCount}</div>
-                        </div>
-                        <div className="bg-green-50 dark:bg-green-950/20 p-4 pb-3 rounded-xl border border-green-100 dark:border-green-900/30">
-                            <div className="flex items-center space-x-2 mb-1">
-                                <Shield className="h-4 w-4 text-green-600 dark:text-green-400" />
-                                <span className="text-sm font-medium text-green-700 dark:text-green-300">Status</span>
-                            </div>
-                            <div className="text-sm font-bold text-green-600 dark:text-green-400">{privilegeData.isActive ? "Active" : "Inactive"}</div>
-                        </div>
-                    </div> */}
 
                     {/* Associated Routes */}
                     <div className="mb-6">
@@ -177,15 +141,6 @@ export default function PrivilegeCard({ data, view }) {
                                 >
                                     Edit
                                 </button>
-                                {/* <button
-                                    onClick={() => {
-                                        setShowPopup(false);
-                                        handleCardClick();
-                                    }}
-                                    className="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition-colors"
-                                >
-                                    View Details
-                                </button> */}
                             </div>
                         </div>
                     </div>

@@ -21,31 +21,51 @@ class FileUploadApiService {
      * @throws {Error} When upload fails
      */
 
-    async uploadFile(url, formData, params, signal, onProgress) {
+    // Updated uploadFile method in your API service
+    // Updated uploadFile method in your API service
+    async uploadFile(url, formData, params = {}, signal, onProgress) {
         if (!(formData instanceof FormData)) {
             throw new Error("Payload must be an instance of FormData");
         }
 
         try {
-            const response = await this.apiClient.post(
-                url,
-                formData
-                //     {
-                //     params,
-                //     signal,
-                //     onUploadProgress: onProgress
-                //         ? (progressEvent) => {
-                //               const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                //               onProgress(percentCompleted, progressEvent);
-                //           }
-                //         : undefined,
-                // }
-            );
+            const config = {
+                params,
+                timeout: 300000, // 5 minutes timeout
+                onUploadProgress: onProgress
+                    ? (progressEvent) => {
+                          if (progressEvent.lengthComputable) {
+                              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                              onProgress(percentCompleted);
+                          }
+                      }
+                    : undefined,
+            };
 
-            return response.data?.data;
+            // Add signal for cancellation if provided
+            if (signal) {
+                config.signal = signal;
+            }
+
+            const response = await this.apiClient.post(url, formData, config);
+
+            return response.data?.data || response.data;
         } catch (error) {
             console.error("File upload failed:", error);
-            throw error;
+
+            // Re-throw with additional context
+            if (error.response) {
+                const customError = new Error(`Upload failed: ${error.response.data?.message || error.response.statusText}`);
+                customError.response = error.response;
+                customError.status = error.response.status;
+                throw customError;
+            } else if (error.request) {
+                const customError = new Error("Network error occurred during upload");
+                customError.request = error.request;
+                throw customError;
+            } else {
+                throw error;
+            }
         }
     }
 }

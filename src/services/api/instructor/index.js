@@ -46,6 +46,11 @@ class InstructorApiService {
         return response.data;
     }
 
+    async list(params, signal) {
+        const response = await this._apiClient.get(``, { params, signal });
+        return response.data;
+    }
+
     /**
      * Remove an instructor
      * @param {Object} [params] - Query params

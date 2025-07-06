@@ -18,7 +18,7 @@ const EditCourse = () => {
     if (courseDetails.isLoading) return <div>Loading course data...</div>;
     if (!data) return <div>Course data not found.</div>;
 
-    return <CourseFormBase initialData={data} courseId={courseId} />;
+    if (courseDetails.data.data) return <CourseFormBase initialData={data} courseId={courseId} />;
 };
 
 export default EditCourse;

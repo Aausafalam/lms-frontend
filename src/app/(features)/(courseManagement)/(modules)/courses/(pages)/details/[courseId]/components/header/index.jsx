@@ -3,9 +3,11 @@ import { Briefcase, Copy, LayoutDashboard, SquarePen, Trash2 } from "lucide-reac
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { useNavigation } from "@/components/navigation";
+import { useCourse } from "@/services/context/course";
 
 const CourseDetailsHeader = ({ children, courseId }) => {
     const { navigate } = useNavigation();
+    const { courseDetails } = useCourse();
     const breadcrumbItems = [
         {
             title: "Courses",
@@ -18,6 +20,15 @@ const CourseDetailsHeader = ({ children, courseId }) => {
             icon: <Briefcase className="h-3.5 w-3.5" />,
         },
     ];
+
+    const handleDuplicateCourse = () => {
+        const data = {
+            ...courseDetails?.data?.data,
+        };
+        delete data.id;
+        const encodedData = encodeURIComponent(JSON.stringify(data));
+        navigate(`/courses/form/add?initialData=${encodedData}`);
+    };
 
     return (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
@@ -42,6 +53,7 @@ const CourseDetailsHeader = ({ children, courseId }) => {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
+                                onClick={handleDuplicateCourse}
                                 variant="outline"
                                 size="icon"
                                 className="rounded-full h-9 w-9 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all border border-gray-200 dark:border-gray-800"

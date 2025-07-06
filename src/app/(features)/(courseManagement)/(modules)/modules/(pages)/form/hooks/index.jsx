@@ -19,7 +19,7 @@ export function useModuleFormData({ initialData }) {
         introVideoPreview: "",
         description: "<p>Enter detailed description here...</p>",
         learningOutcomes: [""],
-        preRequisites: [""],
+        prerequisites: [""],
         categoryIds: [],
         tags: [],
         instructorIds: [],
@@ -44,7 +44,7 @@ export function useModuleFormData({ initialData }) {
                 ...prev,
                 ...initialData,
                 learningOutcomes: initialData.learningOutcomes?.length ? initialData.learningOutcomes : [""],
-                preRequisites: initialData.preRequisites?.length ? initialData.preRequisites : [""],
+                prerequisites: initialData.prerequisites?.length ? initialData.prerequisites : [""],
                 categoryIds: initialData.categoryIds?.length ? initialData.categoryIds : [],
                 instructorIds: initialData.instructorIds?.length ? initialData.instructorIds : [],
                 attachments: initialData.attachments?.length ? initialData.attachments : [{ title: "", type: "", url: "" }],
@@ -73,7 +73,7 @@ export function useModuleFormData({ initialData }) {
         if (formData.learningOutcomes.some((outcome) => outcome.trim() !== "")) completedFields++;
 
         totalFields += 1;
-        if (formData.preRequisites.some((prereq) => prereq.trim() !== "")) completedFields++;
+        if (formData.prerequisites.some((prereq) => prereq.trim() !== "")) completedFields++;
 
         totalFields += 1;
         if (formData.categoryIds.length > 0) completedFields++;
@@ -172,24 +172,24 @@ export function useModuleFormData({ initialData }) {
 
     const handlePreRequisiteChange = useCallback((index, value) => {
         setFormData((prev) => {
-            const updatedPreRequisites = [...prev.preRequisites];
+            const updatedPreRequisites = [...prev.prerequisites];
             updatedPreRequisites[index] = value;
-            return { ...prev, preRequisites: updatedPreRequisites };
+            return { ...prev, prerequisites: updatedPreRequisites };
         });
     }, []);
 
     const addPreRequisite = useCallback(() => {
         setFormData((prev) => ({
             ...prev,
-            preRequisites: [...prev.preRequisites, ""],
+            prerequisites: [...prev.prerequisites, ""],
         }));
     }, []);
 
     const removePreRequisite = useCallback((index) => {
         setFormData((prev) => {
-            const updatedPreRequisites = [...prev.preRequisites];
+            const updatedPreRequisites = [...prev.prerequisites];
             updatedPreRequisites.splice(index, 1);
-            return { ...prev, preRequisites: updatedPreRequisites };
+            return { ...prev, prerequisites: updatedPreRequisites };
         });
     }, []);
 

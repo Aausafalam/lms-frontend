@@ -96,7 +96,10 @@ export const MetaDataSection = memo(function MetaDataSection({ formData, handler
                     placeholder="Select course categories"
                     value={formData.categoryIds || []}
                     onChange={handleInputChange}
-                    options={categories}
+                    options={[]}
+                    optionsUrl={{
+                        url: "/category?responseType=dropdown",
+                    }}
                     isMulti
                     helperText="Choose relevant categories for your course"
                 />
