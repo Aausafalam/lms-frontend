@@ -1,9 +1,40 @@
 "use client";
 
-import apiClient from "@/services/api/config";
-import { useCourse } from "@/services/context/course";
+import { useState, useEffect } from "react";
 import { useCourseCreate, useCourseUpdate } from "@/services/hooks/course";
-import { useState, useEffect, useCallback } from "react";
+import { useCourse } from "@/services/context/course";
+import { validateCourseForm, hasValidationErrors } from "../utils/validation";
+import { toast } from "@/components/ui/toast";
+
+/**
+ * Initial form data structure
+ */
+const getInitialFormData = () => ({
+    name: "",
+    summary: "",
+    duration: 0,
+    code: "",
+    bannerImage: undefined,
+    thumbnailUrl: undefined,
+    promoVideoUrl: undefined,
+    description: "",
+    learningOutcomes: [""],
+    prerequisites: [""],
+    certificateCriteria: {
+        certificateImage: undefined,
+        certificateDescription: "",
+        certificateBenefits: [""],
+    },
+    features: [{ name: "", level: "" }],
+    tags: [],
+    difficultyLevel: [],
+    categoryIds: [],
+    languageCode: "English",
+    instructors: [],
+    attachments: [{ title: "", description: "", file: "" }],
+    status: "DRAFT",
+    isFeatured: false,
+});
 
 /**
  * Custom hook for managing course form data and operations
@@ -12,65 +43,15 @@ import { useState, useEffect, useCallback } from "react";
  * @returns {Object} Form state and handlers
  */
 export function useCourseFormData({ initialData }) {
-    // Initialize form data with new structure
-    const [formData, setFormData] = useState({
-        // Basic Information
-        name: "",
-        summary: "",
-        duration: 0,
-        code: "",
-
-        // Media
-        bannerImage: undefined,
-        thumbnailUrl: undefined,
-        promoVideoUrl: undefined,
-
-        // Content
-        description: "",
-
-        // Learning Outcomes
-        learningOutcomes: [""],
-
-        // Prerequisites
-        prerequisites: [""],
-
-        // Certificate
-        certificateCriteria: {
-            certificateImage: undefined,
-            certificateDescription: "",
-            certificateBenefits: [""],
-        },
-
-        // Features (Skills)
-        features: [{ name: "", level: "" }],
-
-        // Meta Data
-        tags: [],
-        difficultyLevel: [],
-        categoryIds: [],
-        languageCode: "English",
-
-        // Instructors
-        instructors: [],
-
-        // Attachments
-        attachments: [{ title: "", description: "", file: "" }],
-
-        // Status
-        status: "DRAFT",
-        isFeatured: false,
-    });
-
-    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState(getInitialFormData());
     const [isSaving, setIsSaving] = useState(false);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
+
     const { courseCreate } = useCourseCreate();
     const { courseUpdate } = useCourseUpdate();
     const { courseDetails } = useCourse();
 
-    // Initialize form with initial data if provided
+    // Initialize form with initial data
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
             setFormData((prev) => ({
@@ -90,74 +71,61 @@ export function useCourseFormData({ initialData }) {
     }, [initialData]);
 
     // Generic input change handler
-    const handleInputChange = useCallback(
-        (e) => {
-            const { name, value } = e.target;
-            setFormData((prev) => ({ ...prev, [name]: value }));
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
 
-            // Clear validation error for this field
-            if (validationErrors[name] || validationErrors?.["serverError"]) {
-                setValidationErrors((prev) => {
-                    const newErrors = { ...prev };
-                    delete newErrors?.["serverError"];
-                    delete newErrors[name];
-                    return newErrors;
-                });
-            }
+        // Clear validation errors for this field
+        if (validationErrors[name] || validationErrors?.serverError) {
+            setValidationErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors.serverError;
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
+    };
+
+    // Array field handlers factory
+    const createArrayHandlers = (fieldName) => ({
+        handleChange: (index, value) => {
+            setFormData((prev) => {
+                const updated = [...prev[fieldName]];
+                updated[index] = value;
+                return { ...prev, [fieldName]: updated };
+            });
         },
-        [validationErrors]
-    );
+
+        add: () => {
+            setFormData((prev) => ({
+                ...prev,
+                [fieldName]: [...prev[fieldName], ""],
+            }));
+        },
+
+        remove: (index) => {
+            setFormData((prev) => {
+                const updated = [...prev[fieldName]];
+                updated.splice(index, 1);
+                return { ...prev, [fieldName]: updated };
+            });
+        },
+    });
 
     // Learning outcomes handlers
-    const handleLearningOutcomeChange = useCallback((index, value) => {
-        setFormData((prev) => {
-            const updatedOutcomes = [...prev.learningOutcomes];
-            updatedOutcomes[index] = value;
-            return { ...prev, learningOutcomes: updatedOutcomes };
-        });
-    }, []);
-
-    const addLearningOutcome = useCallback(() => {
-        setFormData((prev) => ({
-            ...prev,
-            learningOutcomes: [...prev.learningOutcomes, ""],
-        }));
-    }, []);
-
-    const removeLearningOutcome = useCallback((index) => {
-        setFormData((prev) => {
-            const updatedOutcomes = [...prev.learningOutcomes];
-            updatedOutcomes.splice(index, 1);
-            return { ...prev, learningOutcomes: updatedOutcomes };
-        });
-    }, []);
+    const learningOutcomeHandlers = createArrayHandlers("learningOutcomes");
+    const handleLearningOutcomeChange = learningOutcomeHandlers.handleChange;
+    const addLearningOutcome = learningOutcomeHandlers.add;
+    const removeLearningOutcome = learningOutcomeHandlers.remove;
 
     // Prerequisites handlers
-    const handlePreRequisiteChange = useCallback((index, value) => {
-        setFormData((prev) => {
-            const updatedPreRequisites = [...prev.prerequisites];
-            updatedPreRequisites[index] = value;
-            return { ...prev, prerequisites: updatedPreRequisites };
-        });
-    }, []);
-
-    const addPreRequisite = useCallback(() => {
-        setFormData((prev) => ({
-            ...prev,
-            prerequisites: [...prev.prerequisites, ""],
-        }));
-    }, []);
-
-    const removePreRequisite = useCallback((index) => {
-        setFormData((prev) => {
-            const updatedPreRequisites = [...prev.prerequisites];
-            updatedPreRequisites.splice(index, 1);
-            return { ...prev, prerequisites: updatedPreRequisites };
-        });
-    }, []);
+    const prerequisiteHandlers = createArrayHandlers("prerequisites");
+    const handlePreRequisiteChange = prerequisiteHandlers.handleChange;
+    const addPreRequisite = prerequisiteHandlers.add;
+    const removePreRequisite = prerequisiteHandlers.remove;
 
     // Certificate handlers
-    const handleCertificateChange = useCallback((field, value) => {
+    const handleCertificateChange = (field, value) => {
         setFormData((prev) => ({
             ...prev,
             certificateCriteria: {
@@ -165,9 +133,9 @@ export function useCourseFormData({ initialData }) {
                 [field]: value,
             },
         }));
-    }, []);
+    };
 
-    const handleCertificateImageUpload = useCallback((e) => {
+    const handleCertificateImageUpload = (e) => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
@@ -183,9 +151,12 @@ export function useCourseFormData({ initialData }) {
             };
             reader.readAsDataURL(file);
         }
-    }, []);
+    };
 
-    const handleCertificateBenefitChange = useCallback((index, value) => {
+    // Certificate benefits handlers
+    const certificateBenefitHandlers = createArrayHandlers("certificateCriteria.certificateBenefits");
+
+    const handleCertificateBenefitChange = (index, value) => {
         setFormData((prev) => {
             const updatedBenefits = [...prev.certificateCriteria.certificateBenefits];
             updatedBenefits[index] = value;
@@ -197,9 +168,9 @@ export function useCourseFormData({ initialData }) {
                 },
             };
         });
-    }, []);
+    };
 
-    const addCertificateBenefit = useCallback(() => {
+    const addCertificateBenefit = () => {
         setFormData((prev) => ({
             ...prev,
             certificateCriteria: {
@@ -207,9 +178,9 @@ export function useCourseFormData({ initialData }) {
                 certificateBenefits: [...prev.certificateCriteria.certificateBenefits, ""],
             },
         }));
-    }, []);
+    };
 
-    const removeCertificateBenefit = useCallback((index) => {
+    const removeCertificateBenefit = (index) => {
         setFormData((prev) => {
             const updatedBenefits = [...prev.certificateCriteria.certificateBenefits];
             updatedBenefits.splice(index, 1);
@@ -221,10 +192,10 @@ export function useCourseFormData({ initialData }) {
                 },
             };
         });
-    }, []);
+    };
 
-    // Features (Skills) handlers
-    const handleFeatureChange = useCallback((index, field, value) => {
+    // Features handlers
+    const handleFeatureChange = (index, field, value) => {
         setFormData((prev) => {
             const updatedFeatures = [...prev.features];
             updatedFeatures[index] = {
@@ -232,39 +203,39 @@ export function useCourseFormData({ initialData }) {
                 [field]: value,
             };
 
+            // Clear validation errors if features are now valid
             setValidationErrors((prevErrors) => {
                 const newErrors = { ...prevErrors };
-
                 const invalidFeature = updatedFeatures.filter((item) => item.name?.trim() || item.level?.trim()).some((f) => !f.name?.trim() || !f.level?.trim());
 
                 if (!invalidFeature) {
                     delete newErrors.features;
                 }
-                delete newErrors?.["serverError"];
+                delete newErrors.serverError;
                 return newErrors;
             });
 
             return { ...prev, features: updatedFeatures };
         });
-    }, []);
+    };
 
-    const addFeature = useCallback(() => {
+    const addFeature = () => {
         setFormData((prev) => ({
             ...prev,
             features: [...prev.features, { name: "", level: "" }],
         }));
-    }, []);
+    };
 
-    const removeFeature = useCallback((index) => {
+    const removeFeature = (index) => {
         setFormData((prev) => {
             const updatedFeatures = [...prev.features];
             updatedFeatures.splice(index, 1);
             return { ...prev, features: updatedFeatures };
         });
-    }, []);
+    };
 
     // Attachment handlers
-    const handleAttachmentChange = useCallback((index, field, value) => {
+    const handleAttachmentChange = (index, field, value) => {
         setFormData((prev) => {
             const updatedAttachments = [...prev.attachments];
             updatedAttachments[index] = {
@@ -272,9 +243,9 @@ export function useCourseFormData({ initialData }) {
                 [field]: value,
             };
 
+            // Clear validation errors if attachments are now valid
             setValidationErrors((prevErrors) => {
                 const newErrors = { ...prevErrors };
-
                 const invalidAttachment = updatedAttachments.some((a) => {
                     const hasAny = a.title?.trim() || a.description?.trim() || a.file?.trim();
                     const hasAll = a.title?.trim() && a.description?.trim() && a.file?.trim();
@@ -284,161 +255,100 @@ export function useCourseFormData({ initialData }) {
                 if (!invalidAttachment) {
                     delete newErrors.attachments;
                 }
-                delete newErrors?.["serverError"];
+                delete newErrors.serverError;
                 return newErrors;
             });
 
             return { ...prev, attachments: updatedAttachments };
         });
-    }, []);
+    };
 
-    const addAttachment = useCallback(() => {
+    const addAttachment = () => {
         setFormData((prev) => ({
             ...prev,
             attachments: [...prev.attachments, { title: "", description: "", file: "" }],
         }));
-    }, []);
+    };
 
-    const removeAttachment = useCallback((index) => {
+    const removeAttachment = (index) => {
         setFormData((prev) => {
             const updatedAttachments = [...prev.attachments];
             updatedAttachments.splice(index, 1);
             return { ...prev, attachments: updatedAttachments };
         });
-    }, []);
+    };
 
     // Switch change handler
-    const handleSwitchChange = useCallback((name, checked) => {
+    const handleSwitchChange = (name, checked) => {
         setFormData((prev) => ({ ...prev, [name]: checked }));
-    }, []);
-
-    // Form validation
-    const validateForm = useCallback(
-        (formData) => {
-            const errors = {};
-
-            // Required basic fields
-            if (!formData.name?.trim()) {
-                errors.name = "Course name is required";
-            }
-
-            if (!formData.code?.trim()) {
-                errors.code = "Course code is required";
-            }
-
-            if (!formData.summary?.trim()) {
-                errors.summary = "Course summary is required";
-            }
-
-            if (!formData.duration || formData.duration < 1) {
-                errors.duration = "Duration is required and must be at least 1 hour";
-            }
-
-            if (!formData.id) {
-                if (!formData.bannerImage?.fileId?.trim()) {
-                    errors.bannerImage = "Banner Image is required.";
-                }
-
-                if (!formData.thumbnailUrl?.fileId?.trim()) {
-                    errors.thumbnailUrl = "Thumbnail is required.";
-                }
-            }
-
-            if (!formData.description?.trim()) {
-                errors.description = "Description is required.";
-            }
-
-            if (!Array.isArray(formData.difficultyLevel) || formData.difficultyLevel.length === 0) {
-                errors.difficultyLevel = "At least one difficulty level is required.";
-            }
-
-            if (!Array.isArray(formData.instructorIds) || formData.instructorIds.length === 0) {
-                errors.instructorIds = "At least one instructor is required.";
-            }
-
-            if (!Array.isArray(formData.categoryIds) || formData.categoryIds.length === 0) {
-                errors.categoryIds = "At least one category is required.";
-            }
-
-            // Validate features
-            if (Array.isArray(formData?.features)) {
-                const invalidFeature = formData.features.some((f) => !f.name?.trim() || !f.level?.trim());
-                if (invalidFeature) {
-                    errors.features = "Each skill must have both name and level.";
-                }
-            }
-
-            // Validate attachments
-            if (Array.isArray(formData.attachments)) {
-                const invalidAttachment = formData.attachments.some((a) => !a.title?.trim() || !a.description?.trim() || !a.file?.trim());
-                if (invalidAttachment) {
-                    errors.attachments = "Each attachment must have title, description, and file.";
-                }
-            }
-
-            setValidationErrors(errors);
-            return Object.keys(errors).length === 0;
-        },
-        [formData]
-    );
+    };
 
     // Save handler
-    const handleSave = useCallback(async () => {
-        setError(null);
-        setSuccess(false);
+    const handleSave = async () => {
+        // Prepare payload
         const updatedPayload = {
             ...formData,
-            learningOutcomes: formData.learningOutcomes.filter((item) => item),
-            prerequisites: { prerequisites: formData.prerequisites.filter((item) => item) },
-            features: formData.features.filter((item) => item.name || item.level),
-            attachments: formData.attachments.filter((item) => item.title || item.description || item.file),
+            learningOutcomes: formData.learningOutcomes.filter((item) => item.trim()),
+            prerequisites: {
+                prerequisites: formData.prerequisites.filter((item) => item.trim()),
+            },
+            features: formData.features.filter((item) => item.name?.trim() || item.level?.trim()),
+            attachments: formData.attachments.filter((item) => item.title?.trim() || item.description?.trim() || item.file?.trim()),
         };
-        console.log(updatedPayload);
+
         // Validate form
-        if (!validateForm(updatedPayload)) {
-            setError("Please fix the validation errors before saving");
+        const errors = validateCourseForm(updatedPayload);
+        setValidationErrors(errors);
+
+        if (hasValidationErrors(errors)) {
+            toast.error("Please fix the validation errors before saving");
             return;
         }
-        console.log(updatedPayload);
 
+        delete updatedPayload.promoVideoUrl;
         setIsSaving(true);
-        delete updatedPayload?.promoVideoUrl;
         try {
             if (updatedPayload.id) {
-                courseUpdate.execute({
+                // Update existing course
+                await courseUpdate.execute({
                     dynamicRoute: updatedPayload.id,
                     payload: updatedPayload,
                     onSuccess: () => {
-                        setSuccess(true);
+                        toast.success("Course updated successfully!");
                         courseDetails.fetch?.({ dynamicRoute: formData.id, isLoading: false });
                     },
-                    onError: () => setSuccess(false),
+                    onError: (error) => {
+                        const errorMessage = error?.response?.data?.message || "Failed to update course";
+                        setValidationErrors({ serverError: errorMessage });
+                        toast.error(errorMessage);
+                    },
                 });
             } else {
-                courseCreate.execute({
+                // Create new course
+                await courseCreate.execute({
                     payload: updatedPayload,
-                    onSuccess: () => setSuccess(true),
+                    onSuccess: () => {
+                        toast.success("Course created successfully!");
+                    },
                     onError: (error) => {
-                        setValidationErrors({ serverError: error.response.data.message });
-                        setError("Please fix the validation errors before saving");
+                        const errorMessage = error?.response?.data?.message || "Failed to create course";
+                        setValidationErrors({ serverError: errorMessage });
+                        toast.error("Please fix the validation errors before saving");
                     },
                 });
             }
         } catch (err) {
             console.error("Save error:", err);
-            setError(err.message || "An error occurred while saving the course");
-            throw err;
+            const errorMessage = err.message || "An error occurred while saving the course";
+            toast.error(errorMessage);
         } finally {
             setIsSaving(false);
         }
-    }, [formData, validateForm]);
+    };
 
     return {
         formData,
-        isLoading,
         isSaving,
-        error,
-        success,
         validationErrors,
         handlers: {
             handleInputChange,
@@ -463,7 +373,5 @@ export function useCourseFormData({ initialData }) {
         },
         handleSave,
         setFormData,
-        setError,
-        setSuccess,
     };
 }

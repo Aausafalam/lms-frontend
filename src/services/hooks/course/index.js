@@ -101,7 +101,7 @@ export const useCourseUpdate = () => {
  */
 export const useCourseGetDetails = () => {
     const [details, setDetails] = useState({});
-    const { showErrorNotification } = useNotification();
+    const { showErrorNotification, successMessages, errorMessages } = useNotification();
     const { isLoading, setLoading } = useLoading();
     const GET_COURSE_DETAILS_KEY = apiConstants.loadingStateKeys.GET_COURSE_DETAILS;
 
@@ -127,7 +127,7 @@ export const useCourseGetDetails = () => {
             } catch (error) {
                 showErrorNotification({
                     key: GET_COURSE_DETAILS_KEY,
-                    value: error?.message || "Failed to fetch course details",
+                    value: error || "Failed to fetch course details",
                 });
                 onError?.(error);
             } finally {
@@ -142,6 +142,8 @@ export const useCourseGetDetails = () => {
             data: details,
             fetch: fetchDetails,
             isLoading: isLoading(GET_COURSE_DETAILS_KEY),
+            success: successMessages?.[GET_COURSE_DETAILS_KEY],
+            error: errorMessages?.[GET_COURSE_DETAILS_KEY],
         },
     };
 };

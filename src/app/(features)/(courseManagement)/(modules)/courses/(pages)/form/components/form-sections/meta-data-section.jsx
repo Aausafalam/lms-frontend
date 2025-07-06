@@ -35,15 +35,6 @@ export const MetaDataSection = memo(function MetaDataSection({ formData, handler
         { label: "Expert", value: "expert" },
     ];
 
-    const categories = [
-        { label: "Programming", value: "115d9494-9fbd-40ef-ba5d-c9004580a7d9" },
-        { label: "Design", value: "design" },
-        { label: "Business", value: "business" },
-        { label: "Marketing", value: "marketing" },
-        { label: "Data Science", value: "data-science" },
-        { label: "Mobile Development", value: "mobile-dev" },
-    ];
-
     const languages = [
         { label: "English", value: "English" },
         { label: "Hindi", value: "Hindi" },

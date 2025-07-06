@@ -1,8 +1,62 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// Toast Context
+const ToastContext = createContext({});
+
+let toastId = 0;
+
+/**
+ * Toast Provider Component
+ * Wrap your app with this provider to enable toast notifications
+ */
+export function ToastProvider({ children }) {
+    const [toasts, setToasts] = useState([]);
+
+    const addToast = (message, type = "info", duration = 5000) => {
+        const id = ++toastId;
+        const toast = { id, message, type, duration };
+
+        setToasts((prev) => [...prev, toast]);
+
+        // Auto remove after duration
+        setTimeout(() => {
+            removeToast(id);
+        }, duration);
+
+        return id;
+    };
+
+    const removeToast = (id) => {
+        setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    };
+
+    const value = {
+        toasts,
+        addToast,
+        removeToast,
+    };
+
+    return (
+        <ToastContext.Provider value={value}>
+            {children}
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
+        </ToastContext.Provider>
+    );
+}
+
+/**
+ * Hook to use toast notifications
+ */
+export function useToast() {
+    const context = useContext(ToastContext);
+    if (!context) {
+        throw new Error("useToast must be used within a ToastProvider");
+    }
+    return context;
+}
 
 /**
  * Toast Notification Component
@@ -39,7 +93,7 @@ export function Toast({ message, type = "info", onClose, duration = 5000 }) {
     };
 
     return (
-        <div className={`fixed top-4 right-4 z-50 max-w-md w-full transition-all duration-300 transform ${isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`}>
+        <div className={`transition-all duration-300 transform ${isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`}>
             <div className={`p-4 rounded-lg border shadow-lg ${bgColors[type]}`}>
                 <div className="flex items-start">
                     <div className="flex-shrink-0">{icons[type]}</div>
@@ -71,10 +125,66 @@ export function Toast({ message, type = "info", onClose, duration = 5000 }) {
  */
 export function ToastContainer({ toasts, removeToast }) {
     return (
-        <div className="fixed top-4 right-4 z-50 space-y-2">
+        <div className="fixed top-4 right-4 z-50 space-y-2 max-w-md w-full">
             {toasts.map((toast) => (
                 <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} duration={toast.duration} />
             ))}
         </div>
     );
+}
+
+// Global toast instance
+let globalToastContext = null;
+
+/**
+ * Global toast object - use this for toast.error(), toast.success(), etc.
+ */
+export const toast = {
+    success: (message, duration = 5000) => {
+        if (globalToastContext) {
+            return globalToastContext.addToast(message, "success", duration);
+        }
+        console.warn("Toast not initialized. Make sure to wrap your app with ToastProvider");
+    },
+
+    error: (message, duration = 5000) => {
+        if (globalToastContext) {
+            return globalToastContext.addToast(message, "error", duration);
+        }
+        console.warn("Toast not initialized. Make sure to wrap your app with ToastProvider");
+    },
+
+    info: (message, duration = 5000) => {
+        if (globalToastContext) {
+            return globalToastContext.addToast(message, "info", duration);
+        }
+        console.warn("Toast not initialized. Make sure to wrap your app with ToastProvider");
+    },
+
+    // Custom toast with any type
+    custom: (message, type = "info", duration = 5000) => {
+        if (globalToastContext) {
+            return globalToastContext.addToast(message, type, duration);
+        }
+        console.warn("Toast not initialized. Make sure to wrap your app with ToastProvider");
+    },
+};
+
+/**
+ * Initialize global toast context
+ * This should be called from within a component that has access to ToastContext
+ */
+export function initializeGlobalToast() {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const context = useContext(ToastContext);
+    globalToastContext = context;
+    return context;
+}
+
+/**
+ * Component to initialize global toast - place this in your app root
+ */
+export function ToastInitializer() {
+    initializeGlobalToast();
+    return null;
 }

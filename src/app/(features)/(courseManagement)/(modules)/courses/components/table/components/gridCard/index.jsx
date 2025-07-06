@@ -1,42 +1,38 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Star, Clock, Heart, Share2, ChevronRight, BookOpen, User, Award, Play } from "lucide-react";
+import { Star, Clock, Heart, Share2, ChevronRight, BookOpen, User, Play } from "lucide-react";
 import Image from "next/image";
 import { useNavigation } from "@/components/navigation";
 import apiConstants from "@/services/utils/constants";
 import ApiUtils from "@/services/utils";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-export default function CourseCard({ data, view }) {
+/**
+ * Course Card Component
+ * @description Reusable card component for displaying course information
+ */
+export default function CourseCard({ data, view, onEdit, onDelete, onView }) {
     const { navigate } = useNavigation();
-
-    // Course data state with default values
-    const [courseData, setCourseData] = useState({
-        id: "6c8ef4e4-969d-4eed-99cb-534e43b5371a",
-        name: "Aausaal",
-        description: "In cillum est doloribus eum labore iusto doloribus sit duis",
-        code: "ALIQUID SED VOLUPTAS",
-        summary: "Magnam adipisci repu",
-        rating: 5,
-        tags: ["bestseller"],
-        duration: 31,
-        isFeatured: false,
-        categories: [
-            {
-                name: "IT",
-            },
-        ],
-        instructors: [
-            {
-                name: "John Doe",
-                designation: "Senior Software Engineer",
-                image: "https://www.example.com/profile/johndoe.jpg",
-            },
-        ],
-    });
-
     const [isFavorite, setIsFavorite] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+
+    // Default course data structure
+    const [courseData, setCourseData] = useState({
+        id: "",
+        name: "Course Title",
+        description: "Course description",
+        code: "",
+        summary: "Course summary",
+        rating: 0,
+        tags: [],
+        duration: 0,
+        isFeatured: false,
+        categories: [],
+        instructors: [],
+        price: null,
+    });
 
     useEffect(() => {
         if (data) {
@@ -45,15 +41,21 @@ export default function CourseCard({ data, view }) {
     }, [data]);
 
     const handleCardClick = () => {
-        navigate(`/courses/details/${courseData.id}`);
+        if (onView) {
+            onView(courseData.id);
+        } else {
+            navigate(`/courses/details/${courseData.id}`);
+        }
     };
 
     const handleNameClick = (e) => {
         e.stopPropagation();
-        navigate(`/courses/details/${courseData.id}`);
+        handleCardClick();
     };
 
     const formatInstructorNames = () => {
+        if (!courseData.instructors?.length) return "No instructor assigned";
+
         if (courseData.instructors.length === 1) {
             return courseData.instructors[0].name;
         } else if (courseData.instructors.length === 2) {
@@ -66,11 +68,25 @@ export default function CourseCard({ data, view }) {
     const toggleFavorite = (e) => {
         e.stopPropagation();
         setIsFavorite(!isFavorite);
+        // TODO: Implement favorite functionality
     };
 
     const handleShare = (e) => {
         e.stopPropagation();
-        // Add share functionality here
+        // TODO: Implement share functionality
+        if (navigator.share) {
+            navigator.share({
+                title: courseData.name,
+                text: courseData.summary,
+                url: window.location.origin + `/courses/details/${courseData.id}`,
+            });
+        }
+    };
+
+    const getImageUrl = (type = "thumbnailUrl") => {
+        if (!courseData.id) return "/placeholder.svg?height=144&width=400";
+
+        return `${apiConstants.BACKEND_API_BASE_URL}/course/${courseData.id}/getImage?type=${type}&token=${ApiUtils.getAuthToken()}`;
     };
 
     // Table Row Layout
@@ -89,11 +105,14 @@ export default function CourseCard({ data, view }) {
                             <Image
                                 width={64}
                                 height={48}
-                                src={`${apiConstants.BACKEND_API_BASE_URL}/course/${courseData.id}/getImage?type=thumbnailUrl&token=${ApiUtils.getAuthToken()}`}
+                                src={getImageUrl() || "/placeholder.svg"}
                                 alt={courseData.name}
                                 className="h-full w-full object-cover"
+                                onError={(e) => {
+                                    e.target.src = "/placeholder.svg?height=48&width=64";
+                                }}
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                             <div className="absolute top-1 right-1">
                                 <Play className="h-2 w-2 text-white" />
                             </div>
@@ -110,10 +129,10 @@ export default function CourseCard({ data, view }) {
                                     {[1, 2, 3, 4, 5].map((star, index) => (
                                         <Star key={index} className={`h-3 w-3 ${index < Math.floor(courseData.rating) ? "fill-yellow-400 text-yellow-400" : "fill-gray-300 text-gray-300"}`} />
                                     ))}
-                                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{courseData.rating}</span>
+                                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{courseData.rating || 0}</span>
                                 </div>
-                                {courseData.tags.map((tag, index) => (
-                                    <span key={index} className="px-2 py-0.5 text-xs font-medium rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+                                {courseData.tags?.slice(0, 1).map((tag, index) => (
+                                    <span key={index} className="px-2 py-0.5 text-xs font-medium rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 capitalize">
                                         {tag}
                                     </span>
                                 ))}
@@ -143,7 +162,7 @@ export default function CourseCard({ data, view }) {
                     <div className="col-span-3 flex items-center space-x-4">
                         <div className="flex items-center space-x-1">
                             <Clock className="h-3 w-3 text-orange-600 dark:text-orange-400" />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{courseData.duration}</span>
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{courseData.duration || 0}</span>
                             <span className="text-xs text-gray-500 dark:text-gray-400">Hours</span>
                         </div>
                         <div className="flex items-center space-x-1">
@@ -153,7 +172,7 @@ export default function CourseCard({ data, view }) {
                         </div>
                     </div>
 
-                    {/* Price and Actions */}
+                    {/* Actions */}
                     <div className="col-span-1 flex items-center justify-end space-x-2">
                         <div className="text-right">
                             <div className="text-sm font-bold text-gray-900 dark:text-white">{courseData.price?.current || "Free"}</div>
@@ -179,46 +198,49 @@ export default function CourseCard({ data, view }) {
         );
     }
 
-    // Card Layout (default) - Compact Design
+    // Card Layout (default)
     return (
         <div onClick={handleCardClick} className="cursor-pointer" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-            <div className="relative w-full overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-lg dark:bg-gray-800 dark:hover:bg-gray-700">
-                {/* Course Image - Compact */}
+            <div className="relative w-full overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-lg dark:bg-gray-900 dark:hover:bg-gray-800">
+                {/* Course Image */}
                 <div className="relative h-36 w-full overflow-hidden">
                     <Image
                         width={400}
                         height={144}
-                        src={`${apiConstants.BACKEND_API_BASE_URL}/course/${courseData.id}/getImage?type=thumbnailUrl&token=${ApiUtils.getAuthToken()}`}
+                        src={getImageUrl() || "/placeholder.svg"}
                         alt={courseData.name}
                         className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                        onError={(e) => {
+                            e.target.src = "/placeholder.svg?height=144&width=400";
+                        }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                    {/* Top tags - Compact */}
+                    {/* Top badges */}
                     <div className="absolute right-2 top-2">
-                        {courseData.tags.slice(0, 1).map((badge, index) => (
-                            <span key={index} className="rounded-full bg-orange-500 px-2 py-0.5 text-xs font-medium text-white shadow-md">
+                        {courseData.tags?.slice(0, 1).map((badge, index) => (
+                            <span key={index} className="rounded-full bg-orange-500 px-2 py-0.5 text-xs font-medium text-white shadow-md capitalize">
                                 {badge}
                             </span>
                         ))}
                     </div>
 
-                    {/* Bottom rating - Compact */}
+                    {/* Bottom info */}
                     <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
                         <div className="flex items-center space-x-1">
                             {[1, 2, 3, 4, 5].map((star, index) => (
                                 <Star key={index} className={`h-3 w-3 ${index < Math.floor(courseData.rating) ? "fill-yellow-400 text-yellow-400" : "fill-gray-400 text-gray-400"}`} />
                             ))}
-                            <span className="ml-1 text-xs font-medium text-white">{courseData.rating}</span>
+                            <span className="ml-1 text-xs font-medium text-white">{courseData.rating || 0}</span>
                         </div>
                         <div className="flex items-center text-xs text-gray-200">
                             <Clock className="mr-1 h-3 w-3" />
-                            <span>{courseData.duration}h</span>
+                            <span>{courseData.duration || 0}h</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Course Content - Compact */}
+                {/* Course Content */}
                 <div className="relative p-4">
                     {/* Category and Title */}
                     <div className="mb-2">
@@ -248,10 +270,10 @@ export default function CourseCard({ data, view }) {
                         </h3>
                     </div>
 
-                    {/* Description - Compact */}
-                    <p className="mb-3 text-xs text-gray-600 dark:text-gray-400 line-clamp-2">{courseData.summary}</p>
+                    {/* Description */}
+                    <p className="mb-3 text-[0.8rem] text-gray-600 dark:text-gray-400 line-clamp-2">{courseData.summary || "No description available"}</p>
 
-                    {/* Instructor - Compact */}
+                    {/* Instructor */}
                     <div className="mb-3 flex items-center space-x-2">
                         <div className="flex -space-x-1">
                             {courseData.instructors.slice(0, 2).map((instructor, index) => (
@@ -264,7 +286,7 @@ export default function CourseCard({ data, view }) {
                                     className="h-5 w-5 rounded-full ring-1 ring-white dark:ring-gray-800"
                                 />
                             ))}
-                            {courseData.instructors.length > 2 && (
+                            {(courseData.instructors?.length || 0) > 2 && (
                                 <div className="h-5 w-5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300 ring-1 ring-white dark:ring-gray-800">
                                     +{courseData.instructors.length - 2}
                                 </div>
@@ -279,7 +301,7 @@ export default function CourseCard({ data, view }) {
                         </div>
                     </div>
 
-                    {/* Price and CTA - Compact */}
+                    {/* Price and CTA */}
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-1">
                             <span className="text-sm font-bold text-gray-900 dark:text-white">{courseData.price?.current || "Free"}</span>

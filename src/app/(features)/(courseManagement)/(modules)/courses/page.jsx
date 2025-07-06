@@ -1,22 +1,38 @@
-"use client";
-import React from "react";
-import CoursesTable from "./components/table";
-import DeleteCourse from "./components/delete";
-import useModalHandler from "./hooks/useModalHandler";
+"use client"
 
+import { useState } from "react"
+import CoursesTable from "./components/table"
+import DeleteCourse from "./components/delete"
+import useModalHandler from "./hooks/useModalHandler"
+import { ErrorBoundary } from "@/components/ErrorBoundary"
+
+/**
+ * Main Courses Page Component
+ * @description Landing page for course management with table and modals
+ */
 const Courses = () => {
-    const { modalType, courseId, closeModal, setModalState } = useModalHandler();
-    const [refreshTable, setRefreshTable] = React.useState(false);
-    const [selectedCourse, setSelectedCourse] = React.useState(null);
+  const { modalType, courseId, closeModal, setModalState } = useModalHandler()
+  const [refreshTable, setRefreshTable] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState(null)
 
-    return (
-        <div className="courses-container">
-            {/* Course List */}
-            <CoursesTable setModalState={setModalState} refreshTable={refreshTable} setSelectedCourse={setSelectedCourse} />
-            {/* Delete Course Modal */}
-            <DeleteCourse modalState={{ delete: modalType === "delete" }} closeModal={closeModal} courseId={courseId} setRefreshTable={setRefreshTable} />
-        </div>
-    );
-};
+  const handleRefreshTable = () => {
+    setRefreshTable((prev) => !prev)
+  }
 
-export default Courses;
+  return (
+    <ErrorBoundary>
+      <div className="courses-container">
+        <CoursesTable setModalState={setModalState} refreshTable={refreshTable} setSelectedCourse={setSelectedCourse} />
+
+        <DeleteCourse
+          modalState={{ delete: modalType === "delete" }}
+          closeModal={closeModal}
+          courseId={courseId}
+          setRefreshTable={handleRefreshTable}
+        />
+      </div>
+    </ErrorBoundary>
+  )
+}
+
+export default Courses

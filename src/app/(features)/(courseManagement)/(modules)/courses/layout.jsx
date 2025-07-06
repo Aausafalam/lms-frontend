@@ -1,12 +1,22 @@
-import DashboardLayout from "@/app/layouts/index";
-import React from "react";
+"use client"
 
+import DashboardLayout from "@/app/layouts/index"
+import { ErrorBoundary } from "@/components/ErrorBoundary"
+
+/**
+ * Courses Layout Component
+ * @description Layout wrapper for all course-related pages
+ */
 const CoursesLayout = ({ children }) => {
-    return (
-        <DashboardLayout>
-            <div id="courses_module">{children}</div>
-        </DashboardLayout>
-    );
-};
+  return (
+    <DashboardLayout>
+      <ErrorBoundary>
+        <div id="courses_module" className="courses-module">
+          {children}
+        </div>
+      </ErrorBoundary>
+    </DashboardLayout>
+  )
+}
 
-export default CoursesLayout;
+export default CoursesLayout

@@ -11,6 +11,8 @@ import { useCourse } from "@/services/context/course";
 import { useParams } from "next/navigation";
 import { ContentCard } from "@/components/contentCard";
 import { useInstructorList } from "@/services/hooks/instructor";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { ErrorMessage } from "@/components/ui/error-message";
 
 // Device presets for responsive design
 const devicePresets = {
@@ -54,6 +56,27 @@ export function CourseDetailPreview({ initialData, viewportWidth, onDetailsPage 
         onDetailsPage && courseDetails.fetch?.({ dynamicRoute: courseId });
         instructorList.fetch?.({ params: { responseType: "dropdown" } });
     }, [courseId]);
+
+    if (onDetailsPage && courseDetails.isLoading) {
+        return (
+            <div className="flex  items-center justify-center h-64">
+                <LoadingSpinner size="lg" />
+                <span className="ml-2">Loading course data...</span>
+            </div>
+        );
+    }
+
+    if (onDetailsPage && courseDetails.error) {
+        return <ErrorMessage title="Failed to load course" message={courseDetails.error || "Unable to fetch course data"} onRetry={() => courseDetails.fetch({ dynamicRoute: courseId })} />;
+    }
+
+    if (onDetailsPage && !courseDetails.data?.data) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <p className="text-gray-500">Course data not found</p>
+            </div>
+        );
+    }
 
     const instructors = instructorList.data?.data?.records?.filter((item) => data.instructorIds?.includes(item.id)) || [];
     return (
