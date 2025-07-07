@@ -101,7 +101,7 @@ export const useModuleUpdate = () => {
  */
 export const useModuleGetDetails = () => {
     const [details, setDetails] = useState(undefined);
-    const { showErrorNotification } = useNotification();
+    const { showErrorNotification, successMessages, errorMessages } = useNotification();
     const { isLoading, setLoading } = useLoading();
     const GET_COURSE_DETAILS_KEY = apiConstants.loadingStateKeys.GET_COURSE_DETAILS;
 
@@ -132,6 +132,8 @@ export const useModuleGetDetails = () => {
             data: details,
             fetch: fetchDetails,
             isLoading: isLoading(GET_COURSE_DETAILS_KEY),
+            success: successMessages?.[GET_COURSE_DETAILS_KEY],
+            error: errorMessages?.[GET_COURSE_DETAILS_KEY],
         },
     };
 };
