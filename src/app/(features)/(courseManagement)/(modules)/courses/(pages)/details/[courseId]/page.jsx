@@ -62,7 +62,7 @@ export default function CourseDetailsPage() {
 
     return (
         <ErrorBoundary>
-            <div className="transition-colors duration-300 max-w-[1400px]">
+            <div className="transition-colors duration-300">
                 <CourseDetailsHeader courseId={courseId} />
 
                 {/* Mobile Navigation Toggle */}
