@@ -1,38 +1,44 @@
 "use client";
 
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { Copy, Eye, EyeOff, BookOpen, School, Trash2, GraduationCap } from "lucide-react";
+import { Copy, Eye, EyeOff, School, Trash2, BookOpen, Package, LayoutDashboard } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { useQueryParams } from "@/lib/hooks/useQuery";
 
 const LessonFormHeader = ({ children, togglePreview, previewVisible, lessonId }) => {
     const { courseId, moduleId } = useQueryParams();
+
     const breadcrumbItems = [
         {
             title: "Courses",
             href: "/courses",
-            icon: <School className="h-3.5 w-3.5" />,
+            icon: <Package className="h-3.5 w-3.5" />,
         },
         {
-            title: "Modules",
-            href: `/course/${courseId}`,
+            title: "Course Details",
+            href: `/courses/details/${courseId}`,
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
+        },
+        {
+            title: "Module Details",
+            href: `/modules/details/${moduleId}?course=${courseId}`,
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
+        },
+        lessonId && {
+            title: "Lesson details",
+            href: `/lessons/details/${lessonId}?course=${courseId}&moduleId=${moduleId}`,
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
+        },
+        {
+            title: lessonId ? `Edit Lesson ${lessonId}` : "Add Lesson",
+            href: lessonId ? `/lessons/${lessonId}` : "/lessons/add",
             icon: <BookOpen className="h-3.5 w-3.5" />,
         },
-        {
-            title: "Lessons",
-            href: `/lessons?courseId=${courseId}&moduleId=${moduleId}`,
-            icon: <BookOpen className="h-3.5 w-3.5" />,
-        },
-        {
-            title: lessonId ? `Edit ${lessonId}` : "Add Lesson",
-            href: lessonId ? `/lessons/form/${lessonId}?courseId=${courseId}&moduleId=${moduleId}` : "/lessons/form/add",
-            icon: <GraduationCap className="h-3.5 w-3.5" />,
-        },
-    ];
+    ].filter(Boolean);
 
     return (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+        <div className="flex items-center justify-between mb-4">
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center gap-3">
                 <TooltipProvider>

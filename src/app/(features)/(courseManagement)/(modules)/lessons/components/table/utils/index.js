@@ -1,66 +1,117 @@
-import TableUtils from "@/components/table/utils"
-import TableIcon from "@/components/table/utils/icon"
-import lessonsTableConstants from "./constants"
-import { List } from "lucide-react"
+import TableUtils from "@/components/table/utils";
+import TableIcon from "@/components/table/utils/icon";
+import lessonsTableConstants from "./constants";
 
+/**
+ * Lessons Table Utilities
+ * @description Utility functions for table configuration and actions
+ */
 class LessonsTableUtils {
-  static getTableHeader({ data, setModalState, navigate, title, hideBreadcrumb, courseId, moduleDetailsId }) {
-    const autoSuggestions = TableUtils.formatDataForAutoSuggestion(data?.data || [], ["name"])
+    /**
+     * Generate table header configuration
+     * @param {Object} params - Configuration parameters
+     * @returns {Object} Table header configuration
+     */
+    static getTableHeader({ data, navigate, title, courseId, moduleId }) {
+        const autoSuggestions = TableUtils.formatDataForAutoSuggestion(data?.data || [], ["name", "code", "summary"]);
 
-    return {
-      title: hideBreadcrumb ? "Lesson List" : title,
-      limit: lessonsTableConstants.LIMITS,
-      actionButtons: [
-        {
-          icon: TableIcon.PLUS,
-          label: "New Lesson",
-          onClick: () => navigate(`/lessons/form/add?courseId=${courseId}&moduleId=${moduleDetailsId}`),
-        },
-        TableUtils.getExportButton({ url: "/lessons" }),
-        {
-          icon: <List />,
-          iconOnly: true,
-          onClick: () => navigate("/lessons/form/add"),
-        },
-      ],
-      filters: [
-        {
-          name: "searchText",
-          grid: 2,
-          placeholder: "Search Lessons",
-          autoSuggestion: {
-            initialData: autoSuggestions,
-            autoSuggestionUrl: "/api/suggestions",
-          },
-        },
-      ],
-    }
-  }
-
-  static getTableActions({ data, setModalState, setSelectedLesson, navigate, courseId, moduleId }) {
-    const handleAction = (row, actionType) => {
-      const selectedLesson = data?.records?.find((item) => row["id"] === item.id)
-
-      if (actionType === "edit") {
-        navigate(`/lessons/form/${row["id"]}?courseId=${courseId}&moduleId=${moduleId}`)
-      } else {
-        setSelectedLesson(selectedLesson)
-        setModalState(actionType, selectedLesson.id)
-      }
+        return {
+            title,
+            limit: lessonsTableConstants.LIMITS,
+            actionButtons: [
+                {
+                    icon: TableIcon.PLUS,
+                    label: "New Lesson",
+                    onClick: () => navigate(`/lessons/form/add?courseId=${courseId}&moduleId=${moduleId}`),
+                    variant: "primary",
+                },
+                TableUtils.getExportButton({
+                    url: `/course/${courseId}/module/${moduleId}/lesson/export`,
+                    filename: "lessons-export",
+                }),
+            ],
+            filters: [
+                {
+                    name: "searchText",
+                    grid: 3,
+                    placeholder: "Search lessons by name or summary",
+                    autoSuggestion: {
+                        initialData: autoSuggestions,
+                        autoSuggestionUrl: "/api/suggestions",
+                    },
+                },
+                ...lessonsTableConstants.FILTERS.filterFields,
+            ],
+        };
     }
 
-    return [
-      { name: "Delete", functions: (row) => handleAction(row, "delete"), label: "Delete Entry" },
-      { name: "View", functions: (row) => handleAction(row, "view"), label: "View Details" },
-      { name: "Edit", functions: (row) => handleAction(row, "edit"), label: "Edit Details" },
-    ]
-  }
+    /**
+     * Get available actions for each table row
+     * @param {Object} params - Action configuration parameters
+     * @returns {Array} Array of action configurations
+     */
+    static getTableActions({ data, setModalState, setSelectedLesson, navigate, courseId,moduleId }) {
+        const handleAction = (row, actionType) => {
+            try {
+                const selectedLesson = data?.records?.find((item) => row.id === item.id);
 
-  static handleRowClick({ row, data, setModalState, setSelectedLesson }) {
-    const selectedLesson = data?.data?.find((item) => row["id"].value === item.id)
-    setSelectedLesson(selectedLesson)
-    setModalState("view", selectedLesson?.id)
-  }
+                if (!selectedLesson) {
+                    console.error("Lesson not found for action:", actionType);
+                    return;
+                }
+
+                if (actionType === "edit") {
+                    navigate(`/lessons/form/${row.id}?courseId=${courseId}&moduleId=${moduleId}`);
+                } else if (actionType === "view") {
+                    navigate(`/lessons/details/${row.id}?courseId=${courseId}&moduleId=${moduleId}`);
+                } else {
+                    setSelectedLesson(selectedLesson);
+                    setModalState(actionType, selectedLesson.id);
+                }
+            } catch (error) {
+                console.error("Error handling table action:", error);
+            }
+        };
+
+        return [
+            {
+                name: "View",
+                functions: (row) => handleAction(row, "view"),
+                label: "View Details",
+                icon: "eye",
+            },
+            {
+                name: "Edit",
+                functions: (row) => handleAction(row, "edit"),
+                label: "Edit Lesson",
+                icon: "edit",
+            },
+            {
+                name: "Delete",
+                functions: (row) => handleAction(row, "delete"),
+                label: "Delete Lesson",
+                icon: "trash",
+                variant: "destructive",
+            },
+        ];
+    }
+
+    /**
+     * Handle row click actions
+     * @param {Object} params - Row click parameters
+     */
+    static handleRowClick({ row, data, setModalState, setSelectedLesson }) {
+        try {
+            const selectedLesson = data?.data?.find((item) => row.id.value === item.id);
+
+            if (selectedLesson) {
+                setSelectedLesson(selectedLesson);
+                setModalState("view", selectedLesson.id);
+            }
+        } catch (error) {
+            console.error("Error handling row click:", error);
+        }
+    }
 }
 
-export default LessonsTableUtils
+export default LessonsTableUtils;

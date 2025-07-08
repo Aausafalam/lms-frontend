@@ -31,7 +31,7 @@ class LessonApiService {
      * @returns {Promise<Object>} Update status
      */
     async update(dynamicRoute, payload, params, signal) {
-        const response = await this._apiClient.post(`${endpoints.UPDATE_COURSE}/${dynamicRoute}`, payload, { params, signal });
+        const response = await this._apiClient.put(`${dynamicRoute}`, payload, { params, signal });
         return response.data;
     }
 
@@ -53,7 +53,7 @@ class LessonApiService {
      * @returns {Promise<Object>} Deletion status
      */
     async delete(dynamicRoute, params, signal) {
-        const response = await this._apiClient.delete(`${endpoints.DELETE_COURSE}/${dynamicRoute}`, { params, signal });
+        const response = await this._apiClient.delete(`${dynamicRoute}`, { params, signal });
         return response.data;
     }
 

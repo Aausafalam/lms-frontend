@@ -59,12 +59,12 @@ export const useLessonUpdate = () => {
     const UPDATE_COURSE_KEY = apiConstants.loadingStateKeys.UPDATE_COURSE;
 
     const executeLessonUpdate = useCallback(
-        async ({ payload, onSuccess, onError, options, params }) => {
+        async ({dynamicRoute, payload, onSuccess, onError, options, params }) => {
             setLoading(UPDATE_COURSE_KEY, true);
             const controller = new AbortController();
 
             try {
-                const data = await lessonApiService.update(payload, params, controller.signal);
+                const data = await lessonApiService.update(dynamicRoute, payload, params, controller.signal);
                 showSuccessNotification({
                     key: UPDATE_COURSE_KEY,
                     value: data,
@@ -101,7 +101,7 @@ export const useLessonUpdate = () => {
  */
 export const useLessonGetDetails = () => {
     const [details, setDetails] = useState(undefined);
-    const { showErrorNotification } = useNotification();
+    const { showErrorNotification, successMessages, errorMessages } = useNotification();
     const { isLoading, setLoading } = useLoading();
     const GET_COURSE_DETAILS_KEY = apiConstants.loadingStateKeys.GET_COURSE_DETAILS;
 
@@ -111,8 +111,16 @@ export const useLessonGetDetails = () => {
             const controller = new AbortController();
 
             try {
-                const data = await lessonApiService.getDetails(dynamicRoute, params, controller.signal);
-                setDetails(data.data);
+                let data = await lessonApiService.getDetails(dynamicRoute, params, controller.signal);
+                data = {
+                    ...data,
+                    data: {
+                        ...data.data,
+                        prerequisites: data.data?.prerequisites?.prerequisites,
+                        instructorIds: data?.data?.instructors?.map((item) => item.id?.toString()) || [],
+                    },
+                };
+                setDetails(data);
                 onSuccess?.(data);
             } catch (error) {
                 showErrorNotification({
@@ -132,6 +140,8 @@ export const useLessonGetDetails = () => {
             data: details,
             fetch: fetchDetails,
             isLoading: isLoading(GET_COURSE_DETAILS_KEY),
+            success: successMessages?.[GET_COURSE_DETAILS_KEY],
+            error: errorMessages?.[GET_COURSE_DETAILS_KEY],
         },
     };
 };

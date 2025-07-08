@@ -1,23 +1,11 @@
 /**
- * Sample lesson data for form preview and development
- * @description Static data used for testing and preview functionality
+ * Sample lesson data for development and testing
+ * @description Static lesson data used for preview and development purposes
  */
-export const sampleLessonData = {
+export const lessonDetailsData = {
     id: "lesson-123",
     name: "Complete Web Development Bootcamp",
     summary: "Learn modern web development from scratch to advanced concepts in this comprehensive bootcamp.",
-    longDescription: `
-        <p>This comprehensive bootcamp takes you from absolute beginner to professional web developer. 
-        You'll learn HTML, CSS, JavaScript, React, Node.js, and more through hands-on projects and real-world examples.</p>
-        <p>Our step-by-step approach ensures you build a solid foundation before moving on to more advanced topics. 
-        By the end of this lesson, you'll have the skills to build complete web applications and the confidence to apply for web development positions.</p>
-    `,
-    publishedAt: "2025-05-15",
-    instructors: ["1", "2"],
-    bannerImage: "https://img.freepik.com/free-vector/website-development-banner_33099-1687.jpg",
-    introVideo: "https://www.youtube.com/watch?v=4z9bvgTlxKw&list=PLwGdqUZWnOp1Rab71vx2zMF6qpwGDB2Z1",
-    estimatedDuration: 120,
-    prerequisites: ["Basic computer skills", "No prior programming experience required"],
     description: `
         <p>This comprehensive bootcamp takes you from absolute beginner to professional web developer. 
         You'll learn HTML, CSS, JavaScript, React, Node.js, and more through hands-on projects and real-world examples.</p>
@@ -25,6 +13,12 @@ export const sampleLessonData = {
         By the end of this lesson, you'll have the skills to build complete web applications and the confidence to apply for web development positions.</p>
         <p>The lesson includes practical projects, coding exercises, and real-world scenarios that prepare you for the modern web development landscape.</p>
     `,
+    publishedAt: "2025-05-15",
+    instructors: ["1", "2"],
+    bannerImage: "https://img.freepik.com/free-vector/website-development-banner_33099-1687.jpg",
+    introVideo: "https://www.youtube.com/watch?v=4z9bvgTlxKw&list=PLwGdqUZWnOp1Rab71vx2zMF6qpwGDB2Z1",
+    estimatedDuration: 120,
+    prerequisites: ["Basic computer skills", "No prior programming experience required"],
     learningOutcomes: [
         "Build responsive websites with HTML, CSS, and JavaScript",
         "Create dynamic web applications with React",
@@ -77,7 +71,7 @@ export const sampleLessonData = {
     rating: 4.8,
     reviewCount: 256,
     completionRate: 82,
-    tags: ["bestseller", "2", "trending"],
+    tags: ["bestseller", "trending"],
     status: "published",
     duration: 20,
     languageCode: "English",

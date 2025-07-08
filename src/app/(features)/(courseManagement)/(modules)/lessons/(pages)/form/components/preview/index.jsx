@@ -1,22 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Smartphone, Tablet, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Tabs from "@/components/tab";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { LessonDetailPreview } from "./lesson-detail-preview";
 
+// Device presets with their respective widths
 const devicePresets = {
     mobile: 400,
     tablet: 768,
     desktop: 1224,
 };
 
-export function LessonPreview({ data }) {
+/**
+ * Lesson Preview Component
+ * Provides responsive preview of the lesson across different devices
+ *
+ * @param {Object} props - Component props
+ * @param {Object} props.data - Lesson data to preview
+ */
+export function LessonPreview({ data, isFullscreen }) {
     const [showModal, setShowModal] = useState(false);
     const [activeTab, setActiveTab] = useState({ id: "mobile", label: "Mobile" });
 
+    // Tab configuration for different device previews
     const tabs = [
         {
             id: "mobile",
@@ -29,8 +38,8 @@ export function LessonPreview({ data }) {
                         <div className="text-xs text-gray-500 dark:text-gray-400">{devicePresets.mobile}px</div>
                     </div>
                     <div className="dark:bg-gray-900 border-2 border-t-0 border-white dark:border-gray-900 rounded-b-xl overflow-hidden shadow-sm w-full">
-                        <div className="overflow-auto p-2 max-h-[70vh]">
-                            <LessonDetailPreview initialData={data} viewportWidth={devicePresets.mobile} />
+                        <div className="overflow-hidden">
+                            <LessonDetailPreview initialData={data} viewPort={"mobile"} />
                         </div>
                     </div>
                 </div>
@@ -79,11 +88,16 @@ export function LessonPreview({ data }) {
     ];
 
     return (
-        <div>
-            <Tabs defaultTab={activeTab} tabs={tabs} variant="pills" onTabChange={(tab) => setActiveTab(tab)} />
+        <div className="w-full">
+            <Tabs defaultTab={activeTab} tabs={tabs} variant="pills" onTabChange={(tab) => setActiveTab(tab)} className="w-full" />
 
+            {/* Modal for larger previews */}
             <Dialog open={showModal} onOpenChange={setShowModal}>
-                <DialogContent className="p-0 max-w-[90vw] w-full" style={{ width: `${devicePresets[activeTab.id]}px` }}>
+                <DialogContent
+                    className={`p-0 ${isFullscreen ? "max-w-full w-full h-screen m-0 rounded-none" : "max-w-[90vw] w-full max-h-[90vh]"}`}
+                    style={{ width: isFullscreen ? "100%" : `min(90vw, ${devicePresets[activeTab.id]}px)` }}
+                >
+                    {/* Modal Header */}
                     <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
                         <DialogTitle className="flex items-center">
                             {activeTab.id === "tablet" ? (
@@ -93,11 +107,18 @@ export function LessonPreview({ data }) {
                             )}
                             {activeTab.id.charAt(0).toUpperCase() + activeTab.id.slice(1)} Preview ({devicePresets[activeTab.id]}px)
                         </DialogTitle>
+                        <div></div>
                     </div>
 
-                    <div className="overflow-auto p-4 flex justify-center" style={{ maxHeight: "80vh" }}>
-                        <div className="bg-gray-100 dark:bg-gray-900 p-4 rounded-2xl overflow-hidden" style={{ width: `${devicePresets[activeTab.id]}px` }}>
-                            <LessonDetailPreview initialData={data} viewportWidth={devicePresets[activeTab.id]} />
+                    {/* Modal Content */}
+                    <div
+                        className="overflow-auto p-4 flex justify-center"
+                        style={{
+                            maxHeight: isFullscreen ? "calc(100vh - 60px)" : "80vh",
+                        }}
+                    >
+                        <div className={`bg-gray-100 p-2 dark:bg-black rounded-xl overflow-hidden shadow-sm ${isFullscreen ? "h-full" : ""}`} style={{ width: `${devicePresets[activeTab.id]}px` }}>
+                            <LessonDetailPreview viewPort={activeTab.id} initialData={data} />
                         </div>
                     </div>
                 </DialogContent>
