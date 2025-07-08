@@ -1,33 +1,34 @@
 "use client";
 
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { Copy, Eye, EyeOff, BookOpen, School, Trash2, Layers } from "lucide-react";
+import { Copy, Eye, EyeOff, School, Trash2, BookOpen, Package, LayoutDashboard } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { useQueryParams } from "@/lib/hooks/useQuery";
 
 const ModuleFormHeader = ({ children, togglePreview, previewVisible, moduleId }) => {
     const { courseId } = useQueryParams();
+
     const breadcrumbItems = [
         {
             title: "Courses",
             href: "/courses",
-            icon: <School className="h-3.5 w-3.5" />,
+            icon: <Package className="h-3.5 w-3.5" />,
         },
         {
             title: "Modules",
-            href: `/courses/${courseId}`,
-            icon: <BookOpen className="h-3.5 w-3.5" />,
+            href: `/courses/details/${courseId}`,
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
         },
         {
-            title: moduleId ? `Edit ${moduleId}` : "Add Module",
-            href: moduleId ? `/modules/form/${moduleId}?courseId=${courseId}` : "/modules/form/add",
-            icon: <Layers className="h-3.5 w-3.5" />,
+            title: moduleId ? `Edit Module ${moduleId}` : "Add Module",
+            href: moduleId ? `/modules/${moduleId}` : "/modules/add",
+            icon: <BookOpen className="h-3.5 w-3.5" />,
         },
     ];
 
     return (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+        <div className="flex items-center justify-between mb-4">
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center gap-3">
                 <TooltipProvider>

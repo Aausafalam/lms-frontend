@@ -1,23 +1,32 @@
 "use client";
-import { Breadcrumb } from "@/components/Breadcrumb";
-import { Briefcase, LayoutDashboard, Package } from "lucide-react";
-import React from "react";
-import ModulesTable from "./components/table";
-import useModalHandler from "./hooks/useModalHandler";
-import DeleteModule from "./components/delete";
 
-const CourseModules = () => {
+import { useState } from "react";
+import ModulesTable from "./components/table";
+import DeleteModule from "./components/delete";
+import useModalHandler from "./hooks/useModalHandler";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { useParams } from "next/navigation";
+
+/**
+ * Main Modules Page Component
+ * @description Landing page for module management with table and modals
+ */
+const Modules = () => {
     const { modalType, moduleId, closeModal, setModalState } = useModalHandler();
-    const [refreshTable, setRefreshTable] = React.useState(false);
-    const [selectedModule, setSelectedModule] = React.useState(null);
+    const [refreshTable, setRefreshTable] = useState(false);
+    const [selectedModule, setSelectedModule] = useState(null);
+    
+
+    const handleRefreshTable = () => {
+        setRefreshTable((prev) => !prev);
+    };
 
     return (
-        <div>
+        <ErrorBoundary>
             <ModulesTable setModalState={setModalState} refreshTable={refreshTable} setSelectedModule={setSelectedModule} />
-            {/* Delete Module Modal */}
-            <DeleteModule modalState={{ delete: modalType === "delete" }} closeModal={closeModal} moduleId={moduleId} setRefreshTable={setRefreshTable} />
-        </div>
+            <DeleteModule  modalState={{ delete: modalType === "delete" }} closeModal={closeModal} moduleId={moduleId} setRefreshTable={handleRefreshTable} />
+        </ErrorBoundary>
     );
 };
 
-export default CourseModules;
+export default Modules;

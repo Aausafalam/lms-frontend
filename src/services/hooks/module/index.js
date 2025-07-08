@@ -111,13 +111,22 @@ export const useModuleGetDetails = () => {
             const controller = new AbortController();
 
             try {
-                const data = await moduleApiService.getDetails(dynamicRoute, params, controller.signal);
-                setDetails(data.data);
+                let data = await moduleApiService.getDetails(dynamicRoute, params, controller.signal);
+                data = {
+                    ...data,
+                    data: {
+                        ...data.data,
+                        prerequisites: data.data?.prerequisites?.prerequisites,
+                        instructorIds: data?.data?.instructors?.map((item) => item.id?.toString()) || [],
+                        categoryIds: data?.data?.categories?.map((item) => item.id?.toString()) || [],
+                    },
+                };
+                setDetails(data);
                 onSuccess?.(data);
             } catch (error) {
                 showErrorNotification({
                     key: GET_COURSE_DETAILS_KEY,
-                    value: error?.message || "Failed to fetch module details",
+                    value: error || "Failed to fetch module details",
                 });
                 onError?.(error);
             } finally {

@@ -10,6 +10,7 @@ import { RolesProvider } from "./roles";
 import { UsersProvider } from "./users";
 import { ThemeProvider } from "./theme";
 import { AuthProvider } from "./auth";
+import { ModuleProvider } from "./module";
 
 const ContextProviders = ({ children }) => {
     return (
@@ -24,7 +25,9 @@ const ContextProviders = ({ children }) => {
                                         <PermissionProvider>
                                             <RolesProvider>
                                                 <UsersProvider>
-                                                    <CourseProvider>{children}</CourseProvider>
+                                                    <CourseProvider>
+                                                        <ModuleProvider>{children}</ModuleProvider>
+                                                    </CourseProvider>
                                                 </UsersProvider>
                                             </RolesProvider>
                                         </PermissionProvider>

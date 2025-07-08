@@ -5,7 +5,7 @@ import { CourseDetailPreview } from "../../../../form/components/preview/course-
 import ExamPattern from "@/app/(features)/(courseManagement)/(modules)/exam-pattern/page";
 import Exam from "@/app/(features)/(courseManagement)/(modules)/exam/page";
 import { sampleCourseData } from "../../../../form/utils/seeds";
-import CourseModules from "@/app/(features)/(courseManagement)/(modules)/modules/page";
+import Modules from "@/app/(features)/(courseManagement)/(modules)/modules/page";
 
 /**
  * Course Details Content Component
@@ -19,7 +19,7 @@ const CourseDetailsContent = ({ activeTab }) => {
             case "overview":
                 return <CourseDetailPreview initialData={sampleCourseData} onDetailsPage={true} />;
             case "modules":
-                return <CourseModules onCourseDetailsPage={courseId} />;
+                return <Modules onCourseDetailsPage={courseId} />;
             case "exam-pattern":
                 return <ExamPattern onCourseDetailsPage={courseId} />;
             case "exam":

@@ -1,22 +1,37 @@
 "use client";
-import React, { useMemo } from "react";
-import styles from "./styles/index.module.css";
+
+import { useMemo, useState, useEffect } from "react";
+import { LayoutDashboard, Package, Plus, School } from "lucide-react";
 import Table from "@/components/table";
 import ModulesTableUtils from "./utils";
-import sampleModulesTableData from "./utils/seeds";
 import GlobalUtils from "@/lib/utils";
 import modulesTableConstants from "./utils/constants";
 import ModuleCard from "./components/gridCard";
 import { useNavigation } from "@/components/navigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { ImageIcon, Package, Plus } from "lucide-react";
 import { EmptyState } from "@/components/emptyState";
-import { useQueryParams } from "@/lib/hooks/useQuery";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useParams } from "next/navigation";
+import coursesTableConstants from "../../../courses/components/table/utils/constants";
 
+/**
+ * Modules Table Component
+ * @description Main table component for displaying and managing modules
+ */
 const ModulesTable = ({ setSelectedModule, setModalState, refreshTable }) => {
     const { navigate } = useNavigation();
+    const [isMobile, setIsMobile] = useState(false);
     const { courseId } = useParams();
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
     const breadcrumbItems = [
         {
             title: "Courses",
@@ -26,34 +41,55 @@ const ModulesTable = ({ setSelectedModule, setModalState, refreshTable }) => {
         {
             title: "Modules",
             href: `/courses/details/${courseId}`,
-            icon: <Package className="h-3.5 w-3.5" />,
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
         },
     ];
-    /* Function to format data for the table */
+
+    /**
+     * Format data for table configuration
+     */
     const formatTableData = (data) => ({
-        rows: data?.records,
-        actionData: ModulesTableUtils.getTableActions({ data, setModalState, setSelectedModule, navigate }),
-        url: `/course/${courseId}/module`,
-        pagination: GlobalUtils.tablePagination(data),
+        rows: data?.records || [],
+        actionData: ModulesTableUtils.getTableActions({
+            data,
+            setModalState,
+            setSelectedModule,
+            navigate,
+            courseId,
+        }),
+        url: `${coursesTableConstants.API_URL}/${courseId}/${modulesTableConstants.API_URL}`,
+        pagination: GlobalUtils.tablePagination(data?.pagination),
         sorting: modulesTableConstants.SORTING,
-        rowClickHandler: (row) => ModulesTableUtils.handleRowClick({ row, data, setModalState, setSelectedModule }),
         externalFilters: modulesTableConstants.FILTERS,
-        tableHeader: ModulesTableUtils.getTableHeader({ data, setModalState, styles, navigate, title: courseId ? "Module List" : <Breadcrumb items={breadcrumbItems} />, courseId }),
+        tableHeader: ModulesTableUtils.getTableHeader({
+            data,
+            setModalState,
+            navigate,
+            courseId,
+            title: courseId ? "Module List" : <Breadcrumb items={breadcrumbItems} />,
+        }),
         checkbox: true,
         refreshTable: refreshTable || false,
         formatTableData,
-        initialView: "grid",
-        multiView: false,
-        /* Grid view configuration */
+        initialView: isMobile ? "grid" : "grid",
+        multiView: true,
         grid: {
-            column: courseId ? 4 : 5,
-            card: (row) => <ModuleCard data={row} />,
+            column: isMobile ? 1 : 4,
+            card: (row, view) => (
+                <ModuleCard
+                    data={row}
+                    view={view}
+                    onEdit={(id) => navigate(`/modules/form/${id}?courseId=${courseId}`)}
+                    onDelete={(id) => setModalState("delete", id)}
+                    onView={(id) => navigate(`/modules/details/${id}?courseId=${courseId}`)}
+                />
+            ),
         },
         emptyStateComponent: () => (
             <EmptyState
-                icon={ImageIcon}
+                icon={School}
                 title="No Modules Found"
-                description="You haven't created any  modules yet. Start by creating your first module."
+                description="You haven't created any module yet. Start by creating your first module."
                 actionLabel="Create Module"
                 actionIcon={Plus}
                 onAction={() => navigate(`/modules/form/add?courseId=${courseId}`)}
@@ -62,13 +98,14 @@ const ModulesTable = ({ setSelectedModule, setModalState, refreshTable }) => {
         ),
     });
 
-    /* Memoize table data for performance optimization */
-    const tableData = useMemo(() => formatTableData(sampleModulesTableData), [refreshTable, courseId]);
+    const tableData = useMemo(() => formatTableData({}), [refreshTable, isMobile]);
 
     return (
-        <div className={styles.container}>
-            <Table tableData={tableData} />
-        </div>
+        <ErrorBoundary>
+            <div className="modules-table-container">
+                <Table tableData={tableData} />
+            </div>
+        </ErrorBoundary>
     );
 };
 

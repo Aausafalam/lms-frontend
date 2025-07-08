@@ -1,13 +1,20 @@
 import globalConstants from "@/lib/utils/constants";
 import FILTER_OPTIONS from "./filters";
-import ModulesICONS from "./icons";
 import apiConstants from "@/services/utils/constants";
 
+/**
+ * Modules table configuration constants
+ * @description Centralized configuration for table behavior and API endpoints
+ */
 const modulesTableConstants = {
-    API_URL: apiConstants.module.BASE_ROUTE,
+    API_URL: "module",
     LIMITS: globalConstants.TABLE_LIMITS,
-    SORTING: { initialSort: "Modules ID", initialSortOrder: "asc" },
+    SORTING: {
+        initialSort: "name",
+        initialSortOrder: "asc",
+    },
     FILTERS: {
+        title: "Modules List",
         icon: false,
         filterFields: Object.entries(FILTER_OPTIONS).map(([key, filter]) => ({
             type: filter.type || "select",
@@ -15,6 +22,7 @@ const modulesTableConstants = {
             grid: filter.grid || 3,
             options: filter.options,
             placeholder: filter.placeholder || `Select ${key.replace(/([A-Z])/g, " $1").trim()}`,
+            ...filter,
         })),
     },
 };

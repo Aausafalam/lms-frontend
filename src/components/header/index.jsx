@@ -67,7 +67,7 @@ export const Header = ({ data = {}, isMobile, onBack, onEdit, onDuplicate, onDel
             </div>
 
             {/* Right Section - Action Buttons */}
-            {!isMobile && (
+            {/* {!isMobile && (
                 <div className="flex items-center gap-2 flex-shrink-0 self-start sm:self-center">
                     <TooltipProvider>
                         <Tooltip>
@@ -117,7 +117,7 @@ export const Header = ({ data = {}, isMobile, onBack, onEdit, onDuplicate, onDel
                         </Tooltip>
                     </TooltipProvider>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

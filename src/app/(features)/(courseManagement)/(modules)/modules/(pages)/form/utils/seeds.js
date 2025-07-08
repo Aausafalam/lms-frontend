@@ -1,61 +1,86 @@
+/**
+ * Sample module data for form preview and development
+ * @description Static data used for testing and preview functionality
+ */
 export const sampleModuleData = {
-    id: "module-phy-12-001",
-    courseId: "course-phy-12-01",
-    name: "Physics Fundamentals: Mechanics and Motion",
-    summary: "Comprehensive introduction to classical mechanics, forces, and motion principles.",
-    duration: 180,
-    moduleOrder: 1,
-    thumbImage: "https://cdn.eduportal.com/thumbs/physics-mechanics.jpg",
-    bannerImage: "https://cdn.eduportal.com/banners/physics-mechanics-banner.jpg",
+    id: "module-123",
+    name: "Complete Web Development Bootcamp",
+    summary: "Learn modern web development from scratch to advanced concepts in this comprehensive bootcamp.",
+    longDescription: `
+        <p>This comprehensive bootcamp takes you from absolute beginner to professional web developer. 
+        You'll learn HTML, CSS, JavaScript, React, Node.js, and more through hands-on projects and real-world examples.</p>
+        <p>Our step-by-step approach ensures you build a solid foundation before moving on to more advanced topics. 
+        By the end of this module, you'll have the skills to build complete web applications and the confidence to apply for web development positions.</p>
+    `,
+    publishedAt: "2025-05-15",
+    instructors: ["1", "2"],
+    bannerImage: "https://img.freepik.com/free-vector/website-development-banner_33099-1687.jpg",
     introVideo: "https://www.youtube.com/watch?v=4z9bvgTlxKw&list=PLwGdqUZWnOp1Rab71vx2zMF6qpwGDB2Z1",
+    estimatedDuration: 120,
+    prerequisites: ["Basic computer skills", "No prior programming experience required"],
     description: `
-        <p>This comprehensive module covers the fundamental principles of classical mechanics and motion. Students will explore Newton's laws, kinematics, dynamics, and energy concepts through theoretical understanding and practical applications.</p>
-        <p>Through interactive demonstrations, problem-solving sessions, and laboratory experiments, students will develop a deep understanding of how objects move and interact in the physical world.</p>
-        <p>By the end of this module, students will be equipped with the foundational knowledge needed for advanced physics topics and real-world applications.</p>
+        <p>This comprehensive bootcamp takes you from absolute beginner to professional web developer. 
+        You'll learn HTML, CSS, JavaScript, React, Node.js, and more through hands-on projects and real-world examples.</p>
+        <p>Our step-by-step approach ensures you build a solid foundation before moving on to more advanced topics. 
+        By the end of this module, you'll have the skills to build complete web applications and the confidence to apply for web development positions.</p>
+        <p>The module includes practical projects, coding exercises, and real-world scenarios that prepare you for the modern web development landscape.</p>
     `,
     learningOutcomes: [
-        "Understand and apply Newton's three laws of motion",
-        "Solve problems involving kinematics and dynamics",
-        "Analyze energy conservation and transformation",
-        "Apply physics principles to real-world scenarios",
+        "Build responsive websites with HTML, CSS, and JavaScript",
+        "Create dynamic web applications with React",
+        "Develop backend APIs with Node.js and Express",
+        "Deploy full-stack applications to production",
+        "Implement authentication and database integration",
+        "Master modern development tools and workflows",
     ],
-    prerequisites: ["Basic algebra and trigonometry", "Understanding of vectors and coordinate systems", "Completed introductory mathematics course"],
-    categoryIds: ["science", "physics", "mechanics"],
-    tags: ["physics", "class12", "mechanics", "cbse", "newton-laws"],
+    certificateCriteria: {
+        certificateImage: "https://marketplace.canva.com/EAF7ijX8ZNQ/2/0/1600w/canva-q6rkKUKUUH4.jpg",
+        certificateImagePreview: "https://marketplace.canva.com/EAF7ijX8ZNQ/2/0/1600w/canva-q6rkKUKUUH4.jpg",
+        certificateDescription:
+            "Earn a professional certificate upon completion of the module. This certificate verifies your proficiency in web development fundamentals and can be shared on your resume and professional profiles.",
+        certificateBenefits: ["Recognized by industry professionals", "Shareable on LinkedIn and other platforms", "Verifiable through our certificate portal", "Demonstrates practical coding skills"],
+    },
+    code: "GATE420",
+    features: [
+        { name: "HTML/CSS", level: "Advanced" },
+        { name: "JavaScript", level: "Advanced" },
+        { name: "React.js", level: "Intermediate" },
+        { name: "Node.js", level: "Intermediate" },
+        { name: "MongoDB", level: "Beginner" },
+        { name: "Git/GitHub", level: "Intermediate" },
+    ],
+    price: {
+        regularPrice: "199.99",
+        salePrice: "149.99",
+        discountPercentage: "25",
+        saleEndDate: "2025-06-30",
+        saleEndsText: "Summer special offer! Enroll now and save 25%",
+    },
     attachments: [
         {
-            type: "pdf",
-            title: "Physics Mechanics Formula Sheet",
-            url: "https://cdn.eduportal.com/resources/mechanics-formulas.pdf",
+            title: "Module Workbook",
+            description: "Comprehensive PDF guide with exercises and examples",
+            file: "workbook.pdf",
         },
         {
-            type: "pdf",
-            title: "Practice Problems Workbook",
-            url: "https://cdn.eduportal.com/resources/mechanics-problems.pdf",
+            title: "Code Examples",
+            description: "Starter code and completed projects",
+            file: "code-examples.zip",
+        },
+        {
+            title: "Resource Links",
+            description: "Curated list of helpful development resources",
+            file: "resources.txt",
         },
     ],
-    resources: [
-        {
-            title: "Khan Academy: Classical Mechanics",
-            url: "https://www.khanacademy.org/science/physics/forces-newtons-laws",
-        },
-        {
-            title: "MIT OpenCourseWare: Physics I",
-            url: "https://ocw.mit.edu/courses/physics/",
-        },
-    ],
+    isFeatured: true,
+    rating: 4.8,
+    reviewCount: 256,
+    completionRate: 82,
+    tags: ["bestseller", "2", "trending"],
     status: "published",
-    instructors: ["Dr. Sarah Johnson", "Prof. Michael Chen"],
-    instructorsDetails: [
-        {
-            name: "Dr. Sarah Johnson",
-            image: "https://randomuser.me/api/portraits/women/65.jpg",
-        },
-        {
-            name: "Prof. Michael Chen",
-            image: "https://randomuser.me/api/portraits/men/45.jpg",
-        },
-    ],
-    createdAt: "2025-04-15T09:00:00Z",
-    updatedAt: "2025-05-20T16:45:00Z",
+    duration: 20,
+    languageCode: "English",
+    difficultyLevel: ["beginner"],
+    categoryIds: ["programming", "web-development"],
 };

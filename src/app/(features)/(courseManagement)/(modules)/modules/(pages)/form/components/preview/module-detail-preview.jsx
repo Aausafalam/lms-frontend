@@ -1,35 +1,54 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Award, FileText, ChevronDown, ChevronUp, CheckCircle, Layers, Paperclip, Download, Users, Tag, Link2, ExternalLink, Folder } from "lucide-react";
+import { Award, FileText, ChevronDown, ChevronUp, CheckCircle, GraduationCap, BadgeIcon, Paperclip, Download, Clock, Users, Tag, Calendar, Folder, Link2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { useModuleGetDetails } from "@/services/hooks/module";
-import { useQueryParams } from "@/lib/hooks/useQuery";
+import { useModule } from "@/services/context/module";
 import { useParams } from "next/navigation";
-import { Header } from "@/components/header";
 import { ContentCard } from "@/components/contentCard";
+import { useInstructorList } from "@/services/hooks/instructor";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { ErrorMessage } from "@/components/ui/error-message";
+import { Header } from "@/components/header";
 import { useNavigation } from "@/components/navigation";
+import { useQueryParams } from "@/lib/hooks/useQuery";
 
-const devicePresets = {
-    mobile: 400,
-    tablet: 768,
-    desktop: 1024,
-};
+/**
+ * Enhanced Module Detail Preview Component
+ * Renders a premium, responsive module preview with modular components
+ */
 
-export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage }) {
+export function ModuleDetailPreview({ initialData, onDetailsPage, viewPort }) {
     const [showFullDescription, setShowFullDescription] = useState(false);
-    const { moduleDetails } = useModuleGetDetails();
-    const { navigate } = useNavigation();
-    const data = moduleDetails?.data || initialData;
+    const [viewportWidth, setViewportWidth] = useState(1024);
+    const { moduleId } = useParams();
     const { courseId } = useQueryParams();
-    const params = useParams();
+    const { moduleDetails } = useModule();
+    const { instructorList } = useInstructorList();
+    const data = onDetailsPage ? { ...moduleDetails.data?.data, instructorIds: moduleDetails.data?.data?.instructors?.map((item) => item.id) } : initialData;
+    const { navigate } = useNavigation();
+    // Responsive breakpoints
+    useEffect(() => {
+        const updateViewport = () => {
+            setViewportWidth(window.innerWidth);
+        };
 
-    const isMobile = viewportWidth <= devicePresets.mobile;
-    const isTablet = viewportWidth > devicePresets.mobile && viewportWidth <= devicePresets.tablet;
-    const isDesktop = viewportWidth > devicePresets.tablet;
+        updateViewport();
+        window.addEventListener("resize", updateViewport);
+        return () => window.removeEventListener("resize", updateViewport);
+    }, []);
 
+    // Determine device type based on viewport width
+    const isMobile = viewPort ? viewPort === "mobile" : viewportWidth <= 768;
+
+    const isTablet = viewPort ? viewPort === "tablet" : viewportWidth > 768 && viewportWidth <= 1024;
+
+    const isDesktop = viewPort ? viewPort === "desktop" : viewportWidth > 1024;
+
+    // Get YouTube video ID for embedding
     const getYoutubeVideoId = (url) => {
         try {
             const parsedUrl = new URL(url);
@@ -45,18 +64,30 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
     };
 
     useEffect(() => {
-        if (params?.moduleDetails && courseId && onDetailsPage) {
-            moduleDetails.fetch?.({
-                dynamicRoute: `/${courseId}/module/${params.moduleDetails}`,
-            });
-        }
-    }, [params?.moduleDetails, courseId]);
+        onDetailsPage && moduleDetails.fetch?.({ dynamicRoute: `/${courseId}/module/${moduleId}` });
+        instructorList.fetch?.({ params: { responseType: "dropdown" } });
+    }, [moduleId]);
 
-    const handleBack = () => console.log("Back clicked");
-    const handleEdit = () => navigate(`/modules/form/${params.moduleDetails}?courseId=${courseId}`);
-    const handleDuplicate = () => console.log("Duplicate clicked");
-    const handleDelete = () => console.log("Delete clicked");
+    if (onDetailsPage && moduleDetails.isLoading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <LoadingSpinner size="lg" />
+                <span className="ml-2">Loading module data...</span>
+            </div>
+        );
+    }
 
+    if (onDetailsPage && moduleDetails.error) {
+        return <ErrorMessage title="Failed to load module" message={moduleDetails.error || "Unable to fetch module data"} onRetry={() => moduleDetails.fetch({ dynamicRoute: moduleId })} />;
+    }
+
+    if (onDetailsPage && !moduleDetails.data?.data) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <p className="text-gray-500">Module data not found</p>
+            </div>
+        );
+    }
     const customBadges = [
         {
             key: "category",
@@ -65,16 +96,26 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
             className: "bg-blue-50 text-blue-700 border-blue-200",
         },
     ];
+    const handleBack = () => navigate(`/courses/details/${courseId}`);
+    const handleEdit = () => navigate(`/modules/form/${params.moduleDetails}?courseId=${courseId}`);
+    const handleDuplicate = () => console.log("Duplicate clicked");
+    const handleDelete = () => console.log("Delete clicked");
+    const instructors = instructorList.data?.data?.records?.filter((item) => data.instructorIds?.includes(item.id)) || [];
 
     return (
-        <div className={`w-full ${onDetailsPage ? "max-w-[1225px]" : ""}`}>
+        <div className={`w-full ${(isTablet || isMobile) && !viewPort ? "" : onDetailsPage ? "max-h-[86vh] overflow-scroll" : "max-h-[75vh] overflow-scroll"} max-w-[1200px]`}>
             <Header isMobile={isMobile} data={{ ...data, number: "Module 1" }} badges={customBadges} onBack={handleBack} onEdit={handleEdit} onDuplicate={handleDuplicate} onDelete={handleDelete} />
+            {/* Hero Section */}
+            {/* <HeroSection instructors={instructors} data={data} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} /> */}
 
-            <div className="mx-auto mt-4">
-                <div className={isMobile || isTablet ? "space-y-8" : "grid grid-cols-3 gap-8"}>
-                    <div className={isMobile || isTablet ? "space-y-6" : "col-span-2 space-y-6 h-[77vh] pr-2 overflow-auto"}>
+            {/* Main Content */}
+            <div className={`mx-auto mt-4 ${isTablet || isMobile ? "px-2" : ""}`}>
+                <div className={`${isMobile || isTablet ? "space-y-6 sm:space-y-8" : "grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8"}`}>
+                    {/* Main Content Column */}
+                    <div className={`${isMobile || isTablet ? "space-y-4 sm:space-y-6" : "xl:col-span-2 space-y-6"}`}>
+                        {/* Module Description */}
                         <ContentCard
-                            subTitle="Comprehensive overview of what this module covers and its learning objectives"
+                            subTitle="A detailed overview of what this module covers"
                             title="About This Module"
                             icon={<FileText className="w-[1.1rem] h-[1.1rem] text-orange-600" />}
                             headerColor="white"
@@ -83,12 +124,12 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
                             <div
                                 className={`prose prose-lg dark:prose-invert max-w-none ${showFullDescription ? "" : "line-clamp-4"} ${isMobile ? "text-sm" : "text-sm"}`}
                                 dangerouslySetInnerHTML={{
-                                    __html: data?.description || "<p>Module description will appear here...</p>",
+                                    __html: data.description || "<p>Module description will appear here...</p>",
                                 }}
                             />
                             <Button
                                 variant="ghost"
-                                className="mt-4 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-950/30 p-0 h-auto font-semibold text-sm"
+                                className="mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/30 p-0 h-auto font-semibold text-sm"
                                 onClick={() => setShowFullDescription(!showFullDescription)}
                             >
                                 {showFullDescription ? (
@@ -103,48 +144,54 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
                             </Button>
                         </ContentCard>
 
-                        {data.instructors?.length > 0 && (
-                            <ContentCard title="Meet Your Instructors" Icon={Users} headerColor="blue" subTitle="Expert educators who will guide you through this module">
-                                <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
-                                    {data.instructors.map((instructor, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-center p-2 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-blue-200 dark:hover:border-blue-800/40 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all group"
-                                        >
-                                            <Avatar className="h-8 w-8 border-2 border-blue-100 dark:border-blue-900/30 group-hover:border-blue-300 dark:group-hover:border-blue-700/50 transition-colors">
-                                                <AvatarImage src={instructor.image || "/placeholder.svg"} alt={instructor.name} />
-                                                <AvatarFallback className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs">
-                                                    {instructor.name
-                                                        ?.split(" ")
-                                                        ?.map((n) => n[0])
-                                                        ?.join("")}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div className="ml-2">
-                                                <h3
-                                                    className={`font-medium text-gray-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors ${
-                                                        isMobile ? "text-xs" : "text-sm"
-                                                    }`}
-                                                >
-                                                    {instructor.name}
-                                                </h3>
-                                                <p className="text-blue-600 dark:text-blue-400 text-[13px]">Instructor</p>
-                                            </div>
+                        {/* Instructors */}
+                        <ContentCard title="Instructors" Icon={Users} headerColor="purple" subTitle="Meet the educators who designed and will guide the module">
+                            <div className={`grid ${isMobile ? "grid-cols-1" : isTablet ? "grid-cols-2" : "grid-cols-2"} gap-3 sm:gap-4`}>
+                                {instructors?.map((instructor) => (
+                                    <div
+                                        key={instructor.id}
+                                        className="flex items-center p-2 sm:p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-purple-200 dark:hover:border-purple-800/40 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all group"
+                                    >
+                                        <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border-2 border-purple-100 dark:border-purple-900/30 group-hover:border-purple-300 dark:group-hover:border-purple-700/50 transition-colors flex-shrink-0">
+                                            <AvatarImage src={instructor.image || "/placeholder.svg"} alt={instructor.name} />
+                                            <AvatarFallback className="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs">
+                                                {instructor.name
+                                                    ?.split(" ")
+                                                    ?.map((n) => n[0])
+                                                    ?.join("")}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div className="ml-2 sm:ml-3 min-w-0 flex-1">
+                                            <h3
+                                                className={`font-medium text-gray-900 dark:text-white group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors truncate ${
+                                                    isMobile ? "text-xs" : "text-sm"
+                                                }`}
+                                            >
+                                                {instructor.name}
+                                            </h3>
+                                            <p className="text-purple-600 dark:text-purple-400 text-[10px] sm:text-xs truncate">{instructor.designation || instructor.role}</p>
                                         </div>
-                                    ))}
-                                </div>
-                            </ContentCard>
-                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </ContentCard>
 
+                        {/* Learning Outcomes */}
                         {data.learningOutcomes?.length > 0 && data.learningOutcomes[0] && (
-                            <ContentCard title="Learning Outcomes" subTitle="Skills and knowledge you'll acquire by completing this module" Icon={Layers} headerColor="emerald" isMobile={isMobile}>
+                            <ContentCard
+                                title="What You'll Learn"
+                                Icon={GraduationCap}
+                                headerColor="purple"
+                                subTitle="Key knowledge and skills you'll gain by completing the module"
+                                isMobile={isMobile}
+                            >
                                 <div className="grid gap-0">
                                     {data.learningOutcomes
                                         .filter((outcome) => outcome.trim())
                                         .map((outcome, index) => (
-                                            <div key={index} className="flex items-start group hover:bg-emerald-50 dark:hover:bg-emerald-950/20 p-3 rounded-lg transition-colors">
-                                                <div className="flex-shrink-0 h-6 w-6 rounded-full bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                            <div key={index} className="flex items-start group hover:bg-purple-50 dark:hover:bg-purple-950/20 p-2 sm:p-3 rounded-lg transition-colors">
+                                                <div className="flex-shrink-0 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mr-2 sm:mr-3 group-hover:scale-110 transition-transform mt-0.5">
+                                                    <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                                                 </div>
                                                 <p className={`text-gray-800 dark:text-gray-200 font-medium leading-relaxed ${isMobile ? "text-sm" : "text-sm"}`}>{outcome}</p>
                                             </div>
@@ -153,17 +200,51 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
                             </ContentCard>
                         )}
 
+                        {/* Prerequisites */}
                         {data.prerequisites?.length > 0 && data.prerequisites[0] && (
-                            <ContentCard title="Prerequisites" subTitle="Required knowledge and skills before starting this module" Icon={Award} headerColor="orange" isMobile={isMobile}>
+                            <ContentCard title="Prerequisites" Icon={Award} headerColor="green" isMobile={isMobile} subTitle="Topics or knowledge you should know before taking this module">
                                 <div className="space-y-0">
                                     {data.prerequisites
-                                        .filter((pre) => pre.trim())
+                                        .filter((prereq) => prereq.trim())
                                         .map((prerequisite, index) => (
-                                            <div key={index} className="flex items-start group hover:bg-orange-50 dark:hover:bg-orange-950/20 p-3 rounded-lg transition-colors">
-                                                <div className="flex-shrink-0 h-6 w-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                            <div key={index} className="flex items-start group hover:bg-green-50 dark:hover:bg-green-950/20 p-2 sm:p-3 rounded-lg transition-colors">
+                                                <div className="flex-shrink-0 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mr-2 sm:mr-3 group-hover:scale-110 transition-transform mt-0.5">
+                                                    <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                                                 </div>
                                                 <p className={`text-gray-800 dark:text-gray-200 font-medium leading-relaxed ${isMobile ? "text-sm" : "text-sm"}`}>{prerequisite}</p>
+                                            </div>
+                                        ))}
+                                </div>
+                            </ContentCard>
+                        )}
+
+                        {/* Attachments */}
+                        {data.attachments?.length > 0 && data.attachments[0]?.title && (
+                            <ContentCard title="Module Resources" Icon={Paperclip} headerColor="green" isMobile={isMobile} subTitle="Downloadable files and additional module materials">
+                                <div className="grid gap-3 sm:gap-4">
+                                    {data.attachments
+                                        .filter((attachment) => attachment.title.trim())
+                                        .map((attachment, index) => (
+                                            <div
+                                                key={index}
+                                                className="group flex items-center justify-between p-3 sm:p-4 rounded-xl border border-green-100 dark:border-green-900/30 hover:border-green-200 dark:hover:border-green-800/40 transition-all duration-300 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 hover:shadow-lg transform hover:-translate-y-1"
+                                            >
+                                                <div className="flex items-center min-w-0 flex-1">
+                                                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform flex-shrink-0">
+                                                        <Paperclip className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className={`text-gray-800 dark:text-gray-200 font-bold truncate ${isMobile ? "text-sm" : "text-base"}`}>{attachment.title}</p>
+                                                        {attachment.description && <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mt-1 line-clamp-2">{attachment.description}</p>}
+                                                    </div>
+                                                </div>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30 group-hover:scale-110 transition-transform flex-shrink-0 ml-2"
+                                                >
+                                                    <Download className="h-4 w-4 sm:h-5 sm:w-5" />
+                                                </Button>
                                             </div>
                                         ))}
                                 </div>
@@ -206,42 +287,12 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                 </div>
                             </ContentCard>
                         )}
-
-                        {data.attachments?.length > 0 && data.attachments[0]?.title && (
-                            <ContentCard title="Downloadable Resources" subTitle="Files, documents, and materials for hands-on practice" Icon={Paperclip} headerColor="teal" isMobile={isMobile}>
-                                <div className="grid gap-4">
-                                    {data.attachments
-                                        .filter((attachment) => attachment.title.trim())
-                                        .map((attachment, index) => (
-                                            <div
-                                                key={index}
-                                                className="group flex items-center justify-between p-4 rounded-xl border border-teal-100 dark:border-teal-900/30 hover:border-teal-200 dark:hover:border-teal-800/40 transition-all duration-300 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20 hover:shadow-lg transform hover:-translate-y-1"
-                                            >
-                                                <div className="flex">
-                                                    <div className="h-8 min-w-8 w-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                                                        <Paperclip className="h-4 w-4 text-white" />
-                                                    </div>
-                                                    <div>
-                                                        <p className={`text-gray-800 dark:text-gray-200 font-bold ${isMobile ? "text-sm" : "text-base"}`}>{attachment.title}</p>
-                                                        {attachment.url && <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{attachment.type?.toUpperCase()} Resource</p>}
-                                                    </div>
-                                                </div>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/30 group-hover:scale-110 transition-transform"
-                                                >
-                                                    <Download className="h-5 w-5" />
-                                                </Button>
-                                            </div>
-                                        ))}
-                                </div>
-                            </ContentCard>
-                        )}
                     </div>
 
-                    {isDesktop && (
-                        <div className="space-y-6">
+                    {/* Sidebar - Desktop and Tablet Only */}
+                    {(isDesktop || (isTablet && !isMobile)) && (
+                        <div className="space-y-4 sm:space-y-6">
+                            {/* Video Preview */}
                             {((data.introVideo && typeof data.introVideo === "string" && getYoutubeVideoId(data.introVideo)) || data.introVideoPreview) && (
                                 <ContentCard
                                     isHideHeader={true}
@@ -267,6 +318,48 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                 </ContentCard>
                             )}
 
+                            {/* Module Details */}
+                            <ContentCard
+                                headerColor="gray"
+                                title="Module Details"
+                                subTitle="Duration, Difficulty and Published Date"
+                                Icon={Clock}
+                                className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800"
+                            >
+                                <div className="space-y-3">
+                                    {/* Duration */}
+                                    <div className="flex items-start">
+                                        <div className="h-6 w-6 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-2 flex-shrink-0">
+                                            <Clock className="h-3 w-3 text-orange-600 dark:text-orange-400" />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Duration</h3>
+                                            <p className="text-gray-900 dark:text-white font-medium text-sm">{data.duration} hours</p>
+                                        </div>
+                                    </div>
+
+                                    <Separator className="bg-gray-100 dark:bg-gray-800" />
+
+                                    {/* Published */}
+                                    <div className="flex items-start">
+                                        <div className="h-6 w-6 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-2 flex-shrink-0">
+                                            <Calendar className="h-3 w-3 text-orange-600 dark:text-orange-400" />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Published</h3>
+                                            <p className="text-gray-900 dark:text-white font-medium text-sm">
+                                                {new Date(data.publishedAt).toLocaleDateString("en-US", {
+                                                    year: "numeric",
+                                                    month: "long",
+                                                    day: "numeric",
+                                                })}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ContentCard>
+
+                            {/* Categories */}
                             <ContentCard
                                 headerColor="blue"
                                 title="Categories"
@@ -274,23 +367,20 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                 Icon={Folder}
                                 className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800"
                             >
-                                <div className="space-y-3">
-                                    <div>
-                                        <div className="flex flex-wrap gap-1">
-                                            {(data?.categoryIds || data?.categories)?.map((category) => (
-                                                <Badge
-                                                    key={category?.name || category}
-                                                    variant="outline"
-                                                    className="border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-3 py-1.5 text-[0.8rem] rounded-full capitalize"
-                                                >
-                                                    {category?.name || category || "Category"}
-                                                </Badge>
-                                            ))}
-                                        </div>
-                                    </div>
+                                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                                    {(data.categories || data.categoryIds)?.map((category) => (
+                                        <Badge
+                                            key={typeof category === "string" ? category : category?.name}
+                                            variant="outline"
+                                            className="border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-2 sm:px-3 py-1 sm:py-1.5 text-xs rounded-full capitalize"
+                                        >
+                                            {typeof category === "string" ? category : category?.name}
+                                        </Badge>
+                                    ))}
                                 </div>
                             </ContentCard>
 
+                            {/* Tags */}
                             <ContentCard
                                 headerColor="orange"
                                 title="Topic Tags"
@@ -298,25 +388,116 @@ export function ModuleDetailPreview({ initialData, viewportWidth, onDetailsPage 
                                 Icon={Tag}
                                 className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800"
                             >
-                                <div className="space-y-3">
-                                    <div>
-                                        <div className="flex flex-wrap gap-1">
-                                            {data.tags?.map((tag) => (
-                                                <Badge
-                                                    key={tag}
-                                                    variant="outline"
-                                                    className="border-orange-200 dark:border-orange-800/50 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 px-3 py-1.5 text-[0.8rem] rounded-full capitalize"
-                                                >
-                                                    {tag || "Tag"}
-                                                </Badge>
-                                            ))}
-                                        </div>
-                                    </div>
+                                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                                    {data.tags?.map((tag) => (
+                                        <Badge
+                                            key={tag}
+                                            variant="outline"
+                                            className="border-orange-200 dark:border-orange-800/50 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 px-2 sm:px-3 py-1 sm:py-1.5 text-xs rounded-full capitalize"
+                                        >
+                                            {tag || "Tag"}
+                                        </Badge>
+                                    ))}
                                 </div>
                             </ContentCard>
                         </div>
                     )}
                 </div>
+
+                {/* Mobile: Show sidebar content at bottom */}
+                {isMobile && (
+                    <div className="mt-6 space-y-4">
+                        {/* Video Preview for Mobile */}
+                        {((data.introVideo && typeof data.introVideo === "string" && getYoutubeVideoId(data.introVideo)) || data.introVideoPreview) && (
+                            <ContentCard isHideHeader={true} className="rounded-xl shadow-lg overflow-hidden border-0 bg-white dark:bg-gray-900" contentClassName="px-0 py-0">
+                                <div className="aspect-video bg-gray-100 dark:bg-gray-800 relative">
+                                    {data.introVideoPreview ? (
+                                        <video controls className="w-full h-full object-cover" src={data.introVideoPreview}>
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    ) : (
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${getYoutubeVideoId(data.introVideo)}`}
+                                            title="Module Preview"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            className="w-full h-full"
+                                        ></iframe>
+                                    )}
+                                </div>
+                            </ContentCard>
+                        )}
+
+                        {/* Module Details for Mobile */}
+                        <ContentCard
+                            headerColor="gray"
+                            title="Module Details"
+                            subTitle="Duration, Difficulty and Published Date"
+                            Icon={Clock}
+                            className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800"
+                        >
+                            <div className="grid grid-cols-1 gap-3">
+                                <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                                    <div className="flex items-center">
+                                        <Clock className="h-4 w-4 text-orange-600 dark:text-orange-400 mr-2" />
+                                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Duration</span>
+                                    </div>
+                                    <span className="text-sm font-bold text-gray-900 dark:text-white">{data.duration} hours</span>
+                                </div>
+
+                                <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                                    <div className="flex items-center">
+                                        <Calendar className="h-4 w-4 text-orange-600 dark:text-orange-400 mr-2" />
+                                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Published</span>
+                                    </div>
+                                    <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                        {new Date(data.publishedAt).toLocaleDateString("en-US", {
+                                            month: "short",
+                                            day: "numeric",
+                                            year: "numeric",
+                                        })}
+                                    </span>
+                                </div>
+                            </div>
+                        </ContentCard>
+
+                        {/* Categories and Tags for Mobile */}
+                        <div className="grid grid-cols-1 gap-4">
+                            <ContentCard
+                                headerColor="blue"
+                                title="Categories"
+                                Icon={Folder}
+                                className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800"
+                            >
+                                <div className="flex flex-wrap gap-2">
+                                    {(data.categories || data.categoryIds)?.map((category) => (
+                                        <Badge
+                                            key={typeof category === "string" ? category : category?.name}
+                                            variant="outline"
+                                            className="border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-3 py-1.5 text-xs rounded-full capitalize"
+                                        >
+                                            {typeof category === "string" ? category : category?.name}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </ContentCard>
+
+                            <ContentCard headerColor="orange" title="Tags" Icon={Tag} className="rounded-lg shadow-sm overflow-hidden border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-800">
+                                <div className="flex flex-wrap gap-2">
+                                    {data.tags?.map((tag) => (
+                                        <Badge
+                                            key={tag}
+                                            variant="outline"
+                                            className="border-orange-200 dark:border-orange-800/50 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 px-3 py-1.5 text-xs rounded-full capitalize"
+                                        >
+                                            {tag || "Tag"}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </ContentCard>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

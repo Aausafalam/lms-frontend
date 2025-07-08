@@ -53,7 +53,7 @@ class ModuleApiService {
      * @returns {Promise<Object>} Deletion status
      */
     async delete(dynamicRoute, params, signal) {
-        const response = await this._apiClient.delete(`${endpoints.DELETE_COURSE}/${dynamicRoute}`, { params, signal });
+        const response = await this._apiClient.delete(`${dynamicRoute}`, { params, signal });
         return response.data;
     }
 

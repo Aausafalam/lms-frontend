@@ -1,37 +1,49 @@
 "use client";
 
-import { useQueryParams } from "@/lib/hooks/useQuery";
+import { useState, useEffect } from "react";
 import { useModuleCreate, useModuleUpdate } from "@/services/hooks/module";
-import { useState, useEffect, useCallback } from "react";
+import { useModule } from "@/services/context/module";
+import { validateModuleForm, hasValidationErrors } from "../utils/validation";
+import { toast } from "@/components/ui/toast";
+import { useQueryParams } from "@/lib/hooks/useQuery";
 
+/**
+ * Initial form data structure
+ */
+const getInitialFormData = () => ({
+    name: "",
+    summary: "",
+    duration: 0,
+    thumbnailUrl: undefined,
+    promoVideoUrl: undefined,
+    description: "",
+    learningOutcomes: [""],
+    prerequisites: [""],
+    tags: [],
+    categoryIds: [],
+    instructors: [],
+    attachments: [{ title: "", description: "", file: "" }],
+    resources: [{ title: "", link: "" }],
+    status: "DRAFT",
+    isFeatured: false,
+});
+
+/**
+ * Custom hook for managing module form data and operations
+ * @param {Object} params - Hook parameters
+ * @param {Object} params.initialData - Initial module data
+ * @returns {Object} Form state and handlers
+ */
 export function useModuleFormData({ initialData }) {
-    const [formData, setFormData] = useState({
-        name: "",
-        summary: "",
-        duration: 45,
-        thumbnailUrl: undefined,
-        promoVideoUrl: undefined,
-        description: "",
-        learningOutcomes: [""],
-        prerequisites: [""],
-        categoryIds: [],
-        tags: [],
-        instructorIds: [],
-        attachments: [{ title: "", type: "", url: "" }],
-        resources: [{ title: "", link: "" }],
-        status: "DRAFT",
-    });
-
+    const [formData, setFormData] = useState(getInitialFormData());
+    const [isSaving, setIsSaving] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
     const { courseId } = useQueryParams();
     const { moduleCreate } = useModuleCreate();
     const { moduleUpdate } = useModuleUpdate();
-    const [progress, setProgress] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(false);
-    const [validationErrors, setValidationErrors] = useState({});
+    const { moduleDetails } = useModule();
 
+    // Initialize form with initial data
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
             setFormData((prev) => ({
@@ -39,285 +51,233 @@ export function useModuleFormData({ initialData }) {
                 ...initialData,
                 learningOutcomes: initialData.learningOutcomes?.length ? initialData.learningOutcomes : [""],
                 prerequisites: initialData.prerequisites?.length ? initialData.prerequisites : [""],
-                categoryIds: initialData.categoryIds?.length ? initialData.categoryIds : [],
-                instructorIds: initialData.instructorIds?.length ? initialData.instructorIds : [],
-                attachments: initialData.attachments?.length ? initialData.attachments : [{ title: "", type: "", url: "" }],
-                resources: initialData.resources?.length ? initialData.resources : [{ title: "", url: "" }],
+                certificateCriteria: {
+                    ...prev.certificateCriteria,
+                    ...(initialData.certificateCriteria || {}),
+                    certificateBenefits: initialData.certificateCriteria?.certificateBenefits?.length ? initialData.certificateCriteria.certificateBenefits : [""],
+                },
+                resources: initialData.resources?.length ? initialData.resources : [{ title: "", link: "" }],
+                attachments: initialData.attachments?.length ? initialData.attachments : [{ title: "", description: "", file: "" }],
             }));
         }
     }, [initialData]);
 
-    useEffect(() => {
-        let totalFields = 0;
-        let completedFields = 0;
+    // Generic input change handler
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
 
-        const basicFields = ["name", "summary", "duration", "moduleOrder"];
-        totalFields += basicFields.length;
-        completedFields += basicFields.filter((field) => formData[field]).length;
+        // Clear validation errors for this field
+        if (validationErrors[name] || validationErrors?.serverError) {
+            setValidationErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors.serverError;
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
+    };
 
-        totalFields += 3;
-        if (formData.bannerImagePreview) completedFields++;
-        if (formData.thumbImagePreview) completedFields++;
-        if (formData.introVideo) completedFields++;
-
-        totalFields += 1;
-        if (formData.description && formData.description !== "<p>Enter detailed description here...</p>") completedFields++;
-
-        totalFields += 1;
-        if (formData.learningOutcomes.some((outcome) => outcome.trim() !== "")) completedFields++;
-
-        totalFields += 1;
-        if (formData.prerequisites.some((prereq) => prereq.trim() !== "")) completedFields++;
-
-        totalFields += 1;
-        if (formData.categoryIds.length > 0) completedFields++;
-
-        totalFields += 1;
-        if (formData.tags.length > 0) completedFields++;
-
-        totalFields += 1;
-        if (formData.instructorIds.some((instructor) => instructor.trim() !== "")) completedFields++;
-
-        const calculatedProgress = Math.round((completedFields / totalFields) * 100);
-        setProgress(calculatedProgress);
-    }, [formData]);
-
-    const handleInputChange = useCallback(
-        (e) => {
-            const { name, value } = e.target;
-            setFormData((prev) => ({ ...prev, [name]: value }));
-
-            if (validationErrors[name]) {
-                setValidationErrors((prev) => {
-                    const newErrors = { ...prev };
-                    delete newErrors[name];
-                    return newErrors;
-                });
-            }
+    // Array field handlers factory
+    const createArrayHandlers = (fieldName) => ({
+        handleChange: (index, value) => {
+            setFormData((prev) => {
+                const updated = [...prev[fieldName]];
+                updated[index] = value;
+                return { ...prev, [fieldName]: updated };
+            });
         },
-        [validationErrors]
-    );
 
-    const handleImageUpload = useCallback((e) => {
-        const file = e.target.files?.[0];
-        const fieldName = e.target.name;
+        add: () => {
+            setFormData((prev) => ({
+                ...prev,
+                [fieldName]: [...prev[fieldName], ""],
+            }));
+        },
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData((prev) => ({
-                    ...prev,
-                    [fieldName]: file,
-                    [`${fieldName}Preview`]: reader.result,
-                }));
-            };
-            reader.readAsDataURL(file);
-        }
-    }, []);
+        remove: (index) => {
+            setFormData((prev) => {
+                const updated = [...prev[fieldName]];
+                updated.splice(index, 1);
+                return { ...prev, [fieldName]: updated };
+            });
+        },
+    });
 
-    const handleVideoUpload = useCallback((e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            if (file.size > 100 * 1024 * 1024) {
-                setError("Video file size must be less than 100MB");
-                return;
-            }
+    // Learning outcomes handlers
+    const learningOutcomeHandlers = createArrayHandlers("learningOutcomes");
+    const handleLearningOutcomeChange = learningOutcomeHandlers.handleChange;
+    const addLearningOutcome = learningOutcomeHandlers.add;
+    const removeLearningOutcome = learningOutcomeHandlers.remove;
 
-            if (!file.type.startsWith("video/")) {
-                setError("Please upload a valid video file");
-                return;
-            }
+    // Prerequisites handlers
+    const prerequisiteHandlers = createArrayHandlers("prerequisites");
+    const handlePreRequisiteChange = prerequisiteHandlers.handleChange;
+    const addPreRequisite = prerequisiteHandlers.add;
+    const removePreRequisite = prerequisiteHandlers.remove;
 
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData((prev) => ({
-                    ...prev,
-                    introVideoFile: file,
-                    introVideoPreview: reader.result,
-                    introVideo: file,
-                }));
-            };
-            reader.readAsDataURL(file);
-        }
-    }, []);
-
-    const handleLearningOutcomeChange = useCallback((index, value) => {
-        setFormData((prev) => {
-            const updatedOutcomes = [...prev.learningOutcomes];
-            updatedOutcomes[index] = value;
-            return { ...prev, learningOutcomes: updatedOutcomes };
-        });
-    }, []);
-
-    const addLearningOutcome = useCallback(() => {
-        setFormData((prev) => ({
-            ...prev,
-            learningOutcomes: [...prev.learningOutcomes, ""],
-        }));
-    }, []);
-
-    const removeLearningOutcome = useCallback((index) => {
-        setFormData((prev) => {
-            const updatedOutcomes = [...prev.learningOutcomes];
-            updatedOutcomes.splice(index, 1);
-            return { ...prev, learningOutcomes: updatedOutcomes };
-        });
-    }, []);
-
-    const handlePreRequisiteChange = useCallback((index, value) => {
-        setFormData((prev) => {
-            const updatedPreRequisites = [...prev.prerequisites];
-            updatedPreRequisites[index] = value;
-            return { ...prev, prerequisites: updatedPreRequisites };
-        });
-    }, []);
-
-    const addPreRequisite = useCallback(() => {
-        setFormData((prev) => ({
-            ...prev,
-            prerequisites: [...prev.prerequisites, ""],
-        }));
-    }, []);
-
-    const removePreRequisite = useCallback((index) => {
-        setFormData((prev) => {
-            const updatedPreRequisites = [...prev.prerequisites];
-            updatedPreRequisites.splice(index, 1);
-            return { ...prev, prerequisites: updatedPreRequisites };
-        });
-    }, []);
-
-    const handleAttachmentChange = useCallback((index, field, value) => {
+    // Attachment handlers
+    const handleAttachmentChange = (index, field, value) => {
         setFormData((prev) => {
             const updatedAttachments = [...prev.attachments];
             updatedAttachments[index] = {
                 ...updatedAttachments[index],
                 [field]: value,
             };
+
+            // Clear validation errors if attachments are now valid
+            setValidationErrors((prevErrors) => {
+                const newErrors = { ...prevErrors };
+                const invalidAttachment = updatedAttachments.some((a) => {
+                    const hasAny = a.title?.trim() || a.description?.trim() || a.file?.trim();
+                    const hasAll = a.title?.trim() && a.description?.trim() && a.file?.trim();
+                    return hasAny && !hasAll;
+                });
+
+                if (!invalidAttachment) {
+                    delete newErrors.attachments;
+                }
+                delete newErrors.serverError;
+                return newErrors;
+            });
+
             return { ...prev, attachments: updatedAttachments };
         });
-    }, []);
+    };
 
-    const addAttachment = useCallback(() => {
+    const addAttachment = () => {
         setFormData((prev) => ({
             ...prev,
-            attachments: [...prev.attachments, { title: "", type: "", url: "" }],
+            attachments: [...prev.attachments, { title: "", description: "", file: "" }],
         }));
-    }, []);
+    };
 
-    const removeAttachment = useCallback((index) => {
+    const removeAttachment = (index) => {
         setFormData((prev) => {
             const updatedAttachments = [...prev.attachments];
             updatedAttachments.splice(index, 1);
             return { ...prev, attachments: updatedAttachments };
         });
-    }, []);
+    };
 
-    const handleResourceChange = useCallback((index, field, value) => {
+    const handleResourceChange = (index, field, value) => {
         setFormData((prev) => {
             const updatedResources = [...prev.resources];
             updatedResources[index] = {
                 ...updatedResources[index],
                 [field]: value,
             };
+
+            // Clear validation errors if attachments are now valid
+            setValidationErrors((prevErrors) => {
+                const newErrors = { ...prevErrors };
+                const invalidResource = updatedResources.some((a) => {
+                    const hasAny = a.title?.trim() || a.link?.trim();
+                    const hasAll = a.title?.trim() && a.link?.trim();
+                    return hasAny && !hasAll;
+                });
+
+                if (!invalidResource) {
+                    delete newErrors.resources;
+                }
+                delete newErrors.serverError;
+                return newErrors;
+            });
+
             return { ...prev, resources: updatedResources };
         });
-    }, []);
+    };
 
-    const addResource = useCallback(() => {
+    const addResource = () => {
         setFormData((prev) => ({
             ...prev,
             resources: [...prev.resources, { title: "", link: "" }],
         }));
-    }, []);
+    };
 
-    const removeResource = useCallback((index) => {
+    const removeResource = (index) => {
         setFormData((prev) => {
             const updatedResources = [...prev.resources];
             updatedResources.splice(index, 1);
             return { ...prev, resources: updatedResources };
         });
-    }, []);
+    };
 
-    const validateForm = useCallback(() => {
-        const errors = {};
+    // Switch change handler
+    const handleSwitchChange = (name, checked) => {
+        setFormData((prev) => ({ ...prev, [name]: checked }));
+    };
 
-        if (!formData.name?.trim()) {
-            errors.name = "Module name is required";
-        }
-        if (!formData.summary?.trim()) {
-            errors.summary = "Module summary is required";
-        }
-        if (!formData.duration || formData.duration < 1) {
-            errors.duration = "Duration is required and must be at least 1 minute";
-        }
-        if (!formData.moduleOrder || formData.moduleOrder < 1) {
-            errors.moduleOrder = "Module order is required and must be at least 1";
-        }
+    // Save handler
+    const handleSave = async () => {
+        // Prepare payload
+        const updatedPayload = {
+            ...formData,
+            learningOutcomes: formData.learningOutcomes.filter((item) => item.trim()),
+            prerequisites: {
+                prerequisites: formData.prerequisites.filter((item) => item.trim()),
+            },
+            attachments: formData.attachments.filter((item) => item.title?.trim() || item.description?.trim() || item.file?.trim()),
+            resources: formData.resources.filter((item) => item.title?.trim() || item.link?.trim()),
+        };
 
+        // Validate form
+        const errors = validateModuleForm(updatedPayload);
         setValidationErrors(errors);
-        return Object.keys(errors).length === 0;
-    }, [formData]);
 
-    const handleSave = useCallback(async () => {
-        setError(null);
-        setSuccess(false);
-
-        if (!validateForm()) {
-            setError("Please fix the validation errors before saving");
+        if (hasValidationErrors(errors)) {
+            toast.error("Please fix the validation errors before saving");
             return;
         }
 
+        delete updatedPayload.promoVideoUrl;
         setIsSaving(true);
-        delete formData.promoVideoUrl;
         try {
-            if (formData.id) {
-                moduleUpdate.execute({
-                    dynamicRoute: `/${courseId}/module/${formData.id}`,
-                    payload: formData,
+            if (updatedPayload.id) {
+                // Update existing module
+                await moduleUpdate.execute({
+                    dynamicRoute: `/${courseId}/module/${updatedPayload.id}`,
+                    payload: updatedPayload,
                     onSuccess: () => {
-                        setSuccess(true);
-                        setTimeout(() => setSuccess(false), 5000);
+                        toast.success("Module updated successfully!");
+                        moduleDetails.fetch?.({ dynamicRoute: `/${courseId}/module/${formData.id}`, isLoading: false });
                     },
                     onError: (error) => {
-                        setError(error.message || "Failed to save module");
-                        setTimeout(() => setError(null), 5000);
+                        const errorMessage = error?.response?.data?.message || "Failed to update module";
+                        setValidationErrors({ serverError: errorMessage });
+                        toast.error(errorMessage);
                     },
                 });
             } else {
-                moduleCreate.execute({
+                // Create new module
+                await moduleCreate.execute({
                     dynamicRoute: `/${courseId}/module`,
-                    payload: formData,
+                    payload: updatedPayload,
                     onSuccess: () => {
-                        setSuccess(true);
-                        setTimeout(() => setSuccess(false), 5000);
+                        toast.success("Module created successfully!");
                     },
                     onError: (error) => {
-                        setError(error.message || "Failed to save module");
-                        setTimeout(() => setError(null), 5000);
+                        const errorMessage = error?.response?.data?.message || "Failed to create module";
+                        setValidationErrors({ serverError: errorMessage });
+                        toast.error("Please fix the validation errors before saving");
                     },
                 });
             }
         } catch (err) {
             console.error("Save error:", err);
-            setError(err.message || "An error occurred while saving the module");
+            const errorMessage = err.message || "An error occurred while saving the module";
+            toast.error(errorMessage);
         } finally {
             setIsSaving(false);
         }
-    }, [formData, validateForm, courseId, moduleCreate]);
+    };
 
     return {
         formData,
-        progress,
-        isLoading,
         isSaving,
-        error,
-        success,
         validationErrors,
         handlers: {
             handleInputChange,
-            handleImageUpload,
-            handleVideoUpload,
             handleLearningOutcomeChange,
             addLearningOutcome,
             removeLearningOutcome,
@@ -327,13 +287,12 @@ export function useModuleFormData({ initialData }) {
             handleAttachmentChange,
             addAttachment,
             removeAttachment,
+            handleSwitchChange,
             handleResourceChange,
-            addResource,
             removeResource,
+            addResource,
         },
         handleSave,
         setFormData,
-        setError,
-        setSuccess,
     };
 }
