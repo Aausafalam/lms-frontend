@@ -1,60 +1,77 @@
 "use client";
 
-import { memo } from "react";
-import { File, ImageIcon, Video, X } from "lucide-react";
+import { memo, useState } from "react";
+import { ImageIcon, Video, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { FormSection } from "@/components/formSection";
 import FileUploadField from "@/components/ui/file";
-import { useQueryParams } from "@/lib/hooks/useQuery";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import apiConstants from "@/services/utils/constants";
+import ApiUtils from "@/services/utils";
+import { useQueryParams } from "@/lib/hooks/useQuery";
+/**
+ * YouTube video ID extractor utility
+ * @param {string} url - YouTube URL
+ * @returns {string|null} Video ID or null
+ */
+const getYoutubeVideoId = (url) => {
+    try {
+        const parsedUrl = new URL(url);
+        let videoId = "";
 
-export const MediaSection = memo(function MediaSection({ formData = {}, sectionRef, isActive, handlers = {} }) {
+        if (url.includes("youtube.com")) {
+            videoId = parsedUrl.searchParams.get("v");
+        } else if (url.includes("youtu.be")) {
+            videoId = parsedUrl.pathname.substring(1);
+        }
+
+        return videoId || null;
+    } catch (e) {
+        return null;
+    }
+};
+
+/**
+ * Media Section Component
+ * @description Handles banner image, thumbnail, and intro video uploads/URLs
+ */
+export const MediaSection = memo(function MediaSection({ formData = {}, sectionRef, isActive, handlers = {}, errors = {} }) {
     const { handleInputChange } = handlers;
     const { courseId, moduleId, lessonId } = useQueryParams();
-    /**
-     * Extracts YouTube video ID from different YouTube URL formats
-     * @param {string} url - YouTube URL to parse
-     * @returns {string|null} YouTube video ID or null if invalid
-     */
-    const getYoutubeVideoId = (url) => {
-        try {
-            const parsedUrl = new URL(url);
-            let videoId = "";
+    const hasValidYoutubeUrl = formData.introVideo && typeof formData.introVideo === "string" && formData.introVideo.includes("youtube") && getYoutubeVideoId(formData.introVideo);
 
-            if (url.includes("youtube.com")) {
-                videoId = parsedUrl.searchParams.get("v");
-            } else if (url.includes("youtu.be")) {
-                videoId = parsedUrl.pathname.substring(1);
-            }
-
-            return videoId || null;
-        } catch (e) {
-            return null;
-        }
-    };
-
-    // Check for valid YouTube URL
-    const hasValidYoutubeUrl = formData.video && typeof formData.video === "string" && formData.video.includes("youtube") && getYoutubeVideoId(formData.video);
-
-    // Check for uploaded video file
-    const hasUploadedVideo = formData.videoFile || formData.videoPreview;
+    const hasUploadedVideo = formData.introVideoFile || formData.introVideoPreview;
 
     return (
-        <FormSection id="media" title="Media Assets" icon={<ImageIcon className="h-5 w-5" />} description="Upload thumbnail image for your video" sectionRef={sectionRef} isActive={isActive}>
+        <FormSection id="media" title="Media Assets" icon={<ImageIcon className="h-5 w-5" />} description="Upload images and videos to showcase your video" sectionRef={sectionRef} isActive={isActive}>
             <div className="space-y-6">
+                {/* Thumbnail Upload */}
                 <FileUploadField
                     labelIcon={<ImageIcon className="h-3.5 w-3.5" />}
-                    label="Thumbnail Image"
+                    label="Video Thumbnail"
                     value={formData.thumbnailPreview || ""}
                     onChange={handleInputChange}
+                    defaultFiles={
+                        formData.thumbnailUrl && !formData.thumbnailUrl?.isDeleted && !formData.thumbnailUrl?.fileId && formData.id
+                            ? [
+                                  {
+                                      ...formData.thumbnailUrl,
+                                      url: `${apiConstants.BACKEND_API_BASE_URL}/course/${courseId}/module/${moduleId}/lesson/${lessonId}/video/${
+                                          formData.id
+                                      }/getImage?type=thumbnailUrl&token=${ApiUtils.getAuthToken()}`,
+                                  },
+                              ]
+                            : []
+                    }
                     name="thumbnailUrl"
-                    helperText="Image displayed in video listings (recommended: 400x300px)"
-                    required
+                    helperText="Smaller image for video cards and previews (recommended: 400x300px)"
                     uploadPath={`/course/${courseId}/module/${moduleId}/lesson/${lessonId}/video/thumbnail/upload`}
                     acceptedFormats={["png", "jpg", "jpeg"]}
+                    error={errors.thumbnailUrl}
                 />
 
-                {/* Introduction Video - URL or File Upload */}
+                {/*  Video */}
+
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
                         <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">

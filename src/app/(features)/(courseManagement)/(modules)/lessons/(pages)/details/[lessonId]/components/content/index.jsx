@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { LessonDetailPreview } from "../../../../form/components/preview/lesson-detail-preview";
 import { sampleLessonData } from "../../../../form/utils/seeds";
+import CourseVideos from "@/app/(features)/(courseManagement)/(modules)/videos/page";
 
 /**
  * Lesson Details Content Component
@@ -15,8 +16,8 @@ const LessonDetailsContent = ({ activeTab }) => {
         switch (activeTab) {
             case "overview":
                 return <LessonDetailPreview initialData={sampleLessonData} onDetailsPage={true} />;
-            case "content":
-                return "<LessonsLessons onLessonDetailsPage={lessonId} />";
+            case "video":
+                return <CourseVideos />;
             default:
                 return <LessonDetailPreview initialData={sampleLessonData} onDetailsPage={true} />;
         }

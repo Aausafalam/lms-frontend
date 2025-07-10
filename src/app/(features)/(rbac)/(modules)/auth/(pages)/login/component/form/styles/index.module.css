@@ -1,7 +1,0 @@
-.button {
-    @apply w-full flex justify-center py-3 px-4 border border-transparent rounded-xl !important;
-}
-.remember_me {
-    margin-top: -0.9rem;
-    margin-bottom: -1rem;
-}

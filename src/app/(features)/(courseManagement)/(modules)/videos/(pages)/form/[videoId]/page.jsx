@@ -1,39 +1,50 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import VideoFormBase from ".."
-import { sampleVideoData } from "../utils/seeds"
+import { useEffect } from "react";
+import { useParams } from "next/navigation";
+import VideoFormBase from "..";
+import { useVideo } from "@/services/context/video";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { ErrorMessage } from "@/components/ui/error-message";
+import { useQueryParams } from "@/lib/hooks/useQuery";
 
+/**
+ * Edit Video Page Component
+ * @description Page for editing existing videos
+ */
 const EditVideo = () => {
-  const { videoId } = useParams()
-  const [initialData, setInitialData] = useState(null)
-  const [loading, setLoading] = useState(true)
+    const { videoId } = useParams();
+    const { videoDetails } = useVideo();
+    const { courseId, moduleId, lessonId } = useQueryParams();
 
-  useEffect(() => {
-    async function fetchVideoData() {
-      setLoading(true)
-      try {
-        // const res = await fetch(`/api/video/${videoId}`);
-        // if (!res.ok) throw new Error("Failed to fetch video data");
-        // const data = await res.json();
-        const data = sampleVideoData
-        setInitialData(data)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setLoading(false)
-      }
+    useEffect(() => {
+        if (videoId && videoDetails.fetch) {
+            videoDetails.fetch({ dynamicRoute: `/${courseId}/module/${moduleId}/lesson/${lessonId}/video/${videoId}` });
+        }
+    }, [videoId]);
+
+    if (videoDetails.isLoading) {
+        return (
+            <div className="flex  items-center justify-center h-64">
+                <LoadingSpinner size="lg" />
+                <span className="ml-2">Loading video data...</span>
+            </div>
+        );
     }
-    if (videoId) {
-      fetchVideoData()
+
+    if (videoDetails.error) {
+        return <ErrorMessage title="Failed to load video" message={videoDetails.error || "Unable to fetch video data"} onRetry={() => videoDetails.fetch({ dynamicRoute: videoId })} />;
     }
-  }, [videoId])
 
-  if (loading) return <div>Loading video data...</div>
-  if (!initialData) return <div>Video data not found.</div>
+    if (!videoDetails.data?.data) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <p className="text-gray-500">Video data not found</p>
+            </div>
+        );
+    }
 
-  return <VideoFormBase initialData={initialData} videoId={videoId} />
-}
+    return <VideoFormBase initialData={videoDetails.data.data} videoId={videoId} />;
+};
 
-export default EditVideo
+export default EditVideo;

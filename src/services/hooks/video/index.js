@@ -59,12 +59,12 @@ export const useVideoUpdate = () => {
     const UPDATE_COURSE_KEY = apiConstants.loadingStateKeys.UPDATE_COURSE;
 
     const executeVideoUpdate = useCallback(
-        async ({ payload, onSuccess, onError, options, params }) => {
+        async ({ dynamicRoute, payload, onSuccess, onError, options, params }) => {
             setLoading(UPDATE_COURSE_KEY, true);
             const controller = new AbortController();
 
             try {
-                const data = await videoApiService.update(payload, params, controller.signal);
+                const data = await videoApiService.update(dynamicRoute, payload, params, controller.signal);
                 showSuccessNotification({
                     key: UPDATE_COURSE_KEY,
                     value: data,
@@ -101,7 +101,7 @@ export const useVideoUpdate = () => {
  */
 export const useVideoGetDetails = () => {
     const [details, setDetails] = useState(undefined);
-    const { showErrorNotification } = useNotification();
+    const { showErrorNotification, errorMessages, successMessages } = useNotification();
     const { isLoading, setLoading } = useLoading();
     const GET_COURSE_DETAILS_KEY = apiConstants.loadingStateKeys.GET_COURSE_DETAILS;
 
@@ -132,6 +132,8 @@ export const useVideoGetDetails = () => {
             data: details,
             fetch: fetchDetails,
             isLoading: isLoading(GET_COURSE_DETAILS_KEY),
+            success: successMessages?.[GET_COURSE_DETAILS_KEY],
+            error: errorMessages?.[GET_COURSE_DETAILS_KEY],
         },
     };
 };

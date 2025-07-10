@@ -10,7 +10,7 @@ import GlobalUtils from "@/lib/utils";
  */
 const NAVIGATION_ITEMS = [
     { id: "overview", label: "Overview", icon: <FileText className="h-4 w-4" /> },
-    { id: "content", label: "Content", icon: <ImageIcon className="h-4 w-4" /> },
+    { id: "video", label: "Video", icon: <ImageIcon className="h-4 w-4" /> },
 ];
 
 /**

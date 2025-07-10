@@ -1,13 +1,20 @@
 import globalConstants from "@/lib/utils/constants";
 import FILTER_OPTIONS from "./filters";
-import VideosICONS from "./icons";
 import apiConstants from "@/services/utils/constants";
 
-const contentsTableConstants = {
-    API_URL: apiConstants.video.BASE_ROUTE,
+/**
+ * Videos table configuration constants
+ * @description Centralized configuration for table behavior and API endpoints
+ */
+const videosTableConstants = {
+    API_URL: "video",
     LIMITS: globalConstants.TABLE_LIMITS,
-    SORTING: { initialSort: "Content ID", initialSortOrder: "asc" },
+    SORTING: {
+        initialSort: "name",
+        initialSortOrder: "asc",
+    },
     FILTERS: {
+        title: "Videos List",
         icon: false,
         filterFields: Object.entries(FILTER_OPTIONS).map(([key, filter]) => ({
             type: filter.type || "select",
@@ -15,8 +22,9 @@ const contentsTableConstants = {
             grid: filter.grid || 3,
             options: filter.options,
             placeholder: filter.placeholder || `Select ${key.replace(/([A-Z])/g, " $1").trim()}`,
+            ...filter,
         })),
     },
 };
 
-export default contentsTableConstants;
+export default videosTableConstants;

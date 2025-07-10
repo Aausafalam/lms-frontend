@@ -1,27 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Smartphone, Tablet, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Tabs from "@/components/tab";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { VideoDetailPreview } from "./video-detail-preview";
 
+// Device presets with their respective widths
 const devicePresets = {
     mobile: 400,
     tablet: 768,
     desktop: 1224,
 };
 
-export function VideoPreview({ data }) {
+/**
+ * Video Preview Component
+ * Provides responsive preview of the video across different devices
+ *
+ * @param {Object} props - Component props
+ * @param {Object} props.data - Video data to preview
+ */
+export function VideoPreview({ data, isFullscreen }) {
     const [showModal, setShowModal] = useState(false);
-    const [isFullscreen, setIsFullscreen] = useState(false);
     const [activeTab, setActiveTab] = useState({ id: "mobile", label: "Mobile" });
 
-    const toggleFullscreen = () => {
-        setIsFullscreen(!isFullscreen);
-    };
-
+    // Tab configuration for different device previews
     const tabs = [
         {
             id: "mobile",
@@ -35,7 +39,7 @@ export function VideoPreview({ data }) {
                     </div>
                     <div className="dark:bg-gray-900 border-2 border-t-0 border-white dark:border-gray-900 rounded-b-xl overflow-hidden shadow-sm w-full">
                         <div className="overflow-hidden">
-                            <VideoDetailPreview data={data} viewportWidth={devicePresets.mobile} />
+                            <VideoDetailPreview initialData={data} viewPort={"mobile"} />
                         </div>
                     </div>
                 </div>
@@ -84,11 +88,16 @@ export function VideoPreview({ data }) {
     ];
 
     return (
-        <div>
-            <Tabs defaultTab={activeTab} tabs={tabs} variant="pills" onTabChange={(tab) => setActiveTab(tab)} />
+        <div className="w-full">
+            <Tabs defaultTab={activeTab} tabs={tabs} variant="pills" onTabChange={(tab) => setActiveTab(tab)} className="w-full" />
 
+            {/* Modal for larger previews */}
             <Dialog open={showModal} onOpenChange={setShowModal}>
-                <DialogContent className={`p-0 ${isFullscreen ? "max-w-full w-full h-screen m-0 rounded-none" : "max-w-[90vw] w-full"}`}>
+                <DialogContent
+                    className={`p-0 ${isFullscreen ? "max-w-full w-full h-screen m-0 rounded-none" : "max-w-[90vw] w-full max-h-[90vh]"}`}
+                    style={{ width: isFullscreen ? "100%" : `min(90vw, ${devicePresets[activeTab.id]}px)` }}
+                >
+                    {/* Modal Header */}
                     <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
                         <DialogTitle className="flex items-center">
                             {activeTab.id === "tablet" ? (
@@ -101,17 +110,15 @@ export function VideoPreview({ data }) {
                         <div></div>
                     </div>
 
+                    {/* Modal Content */}
                     <div
                         className="overflow-auto p-4 flex justify-center"
                         style={{
                             maxHeight: isFullscreen ? "calc(100vh - 60px)" : "80vh",
                         }}
                     >
-                        <div
-                            className={`bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm ${isFullscreen ? "h-full" : ""}`}
-                            style={{ width: `${devicePresets[activeTab.id]}px` }}
-                        >
-                            <VideoDetailPreview data={data} viewportWidth={devicePresets[activeTab.id]} />
+                        <div className={`bg-gray-100 p-2 dark:bg-black rounded-xl overflow-hidden shadow-sm ${isFullscreen ? "h-full" : ""}`} style={{ width: `${devicePresets[activeTab.id]}px` }}>
+                            <VideoDetailPreview viewPort={activeTab.id} initialData={data} />
                         </div>
                     </div>
                 </DialogContent>

@@ -12,6 +12,7 @@ import { ThemeProvider } from "./theme";
 import { AuthProvider } from "./auth";
 import { ModuleProvider } from "./module";
 import { LessonProvider } from "./lesson";
+import { VideoProvider } from "./video";
 
 const ContextProviders = ({ children }) => {
     return (
@@ -28,7 +29,9 @@ const ContextProviders = ({ children }) => {
                                                 <UsersProvider>
                                                     <CourseProvider>
                                                         <ModuleProvider>
-                                                            <LessonProvider>{children}</LessonProvider>
+                                                            <LessonProvider>
+                                                                <VideoProvider>{children}</VideoProvider>
+                                                            </LessonProvider>
                                                         </ModuleProvider>
                                                     </CourseProvider>
                                                 </UsersProvider>

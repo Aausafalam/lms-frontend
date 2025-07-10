@@ -1,91 +1,105 @@
 "use client";
-import React, { useMemo } from "react";
-import styles from "./styles/index.module.css";
+
+import { useMemo, useState, useEffect } from "react";
+import { LayoutDashboard, Package, Plus, School } from "lucide-react";
 import Table from "@/components/table";
 import VideosTableUtils from "./utils";
-import sampleVideosTableData from "./utils/seeds";
 import GlobalUtils from "@/lib/utils";
 import videosTableConstants from "./utils/constants";
-import ContentCard from "./components/gridCard";
+import VideoCard from "./components/gridCard";
 import { useNavigation } from "@/components/navigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { ImageIcon, Package, Plus } from "lucide-react";
 import { EmptyState } from "@/components/emptyState";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useParams } from "next/navigation";
+import coursesTableConstants from "../../../courses/components/table/utils/constants";
 import { useQueryParams } from "@/lib/hooks/useQuery";
 
-const VideosTable = ({ setSelectedContent, setModalState, refreshTable }) => {
+/**
+ * Videos Table Component
+ * @description Main table component for displaying and managing videos
+ */
+const VideosTable = ({ setSelectedVideo, setModalState, refreshTable }) => {
     const { navigate } = useNavigation();
-    const { lessonDetails } = useParams();
+    const [isMobile, setIsMobile] = useState(false);
+    const { lessonId } = useParams();
     const { courseId, moduleId } = useQueryParams();
-    const breadcrumbItems = [
-        {
-            title: "Courses",
-            href: "/courses",
-            icon: <Package className="h-3.5 w-3.5" />,
-        },
-        {
-            title: "Modules",
-            href: "/modules",
-            icon: <Package className="h-3.5 w-3.5" />,
-        },
-        {
-            title: "Lessons",
-            href: "/lesson",
-            icon: <Package className="h-3.5 w-3.5" />,
-        },
-        {
-            title: "Videos",
-            href: "/videos",
-            icon: <Package className="h-3.5 w-3.5" />,
-        },
-    ];
-    /* Function to format data for the table */
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
+    /**
+     * Format data for table configuration
+     */
     const formatTableData = (data) => ({
-        rows: data?.records,
-        actionData: VideosTableUtils.getTableActions({ data, setModalState, setSelectedContent, navigate, moduleId, lessonId: lessonDetails, courseId }),
-        url: `course/${courseId}/module/${moduleId}/lesson/${lessonDetails}/video`,
-        pagination: GlobalUtils.tablePagination(data),
+        rows: data?.records || [],
+        actionData: VideosTableUtils.getTableActions({
+            data,
+            setModalState,
+            setSelectedVideo,
+            navigate,
+            courseId,
+            moduleId,
+            lessonId,
+        }),
+        url: `${coursesTableConstants.API_URL}/${courseId}/module/${moduleId}/lesson/${lessonId}/${videosTableConstants.API_URL}`,
+        pagination: GlobalUtils.tablePagination(data?.pagination),
         sorting: videosTableConstants.SORTING,
-        rowClickHandler: (row) => VideosTableUtils.handleRowClick({ row, data, setModalState, setSelectedContent }),
         externalFilters: videosTableConstants.FILTERS,
         tableHeader: VideosTableUtils.getTableHeader({
             data,
+            setModalState,
+            navigate,
             courseId,
             moduleId,
-            lessonId: lessonDetails,
-            setModalState,
-            styles,
-            navigate,
-            title: lessonDetails ? "Video List" : <Breadcrumb items={breadcrumbItems} />,
+            lessonId,
+            title: "Video List",
         }),
         checkbox: true,
         refreshTable: refreshTable || false,
         formatTableData,
-        initialView: "grid",
-        multiView: false,
-        /* Grid view configuration */
+        initialView: isMobile ? "grid" : "grid",
+        multiView: true,
         grid: {
-            column: lessonDetails ? 4 : 5,
-            card: (row) => <ContentCard data={row} />,
+            column: isMobile ? 1 : 4,
+            card: (row, view) => (
+                <VideoCard
+                    data={row}
+                    view={view}
+                    onEdit={(id) => navigate(`/videos/form/${id}?courseId=${courseId}&moduleId=${moduleId}&lessonId=${lessonId}`)}
+                    onDelete={(id) => setModalState("delete", id)}
+                    onView={(id) => navigate(`/videos/details/${id}?courseId=${courseId}&moduleId=${moduleId}&lessonId=${lessonId}`)}
+                />
+            ),
         },
         emptyStateComponent: () => (
             <EmptyState
-                icon={ImageIcon}
+                icon={School}
                 title="No Videos Found"
-                description="You haven't created any  videoss yet. Start by creating your first videos."
-                actionLabel="Create Content"
+                description="You haven't created any video yet. Start by creating your first video."
+                actionLabel="Create Video"
                 actionIcon={Plus}
-                onAction={() => navigate("/videos/form/add")}
+                onAction={() => navigate(`/videos/form/add?courseId=${courseId}&moduleId=${moduleId}&lessonId=${lessonId}`)}
                 className="bg-orange-50/50 dark:bg-orange-950/10 border-orange-200 dark:border-orange-800/30 my-3"
             />
         ),
     });
 
-    /* Memoize table data for performance optimization */
-    const tableData = useMemo(() => formatTableData(sampleVideosTableData), [refreshTable, moduleId, lessonDetails, courseId]);
+    const tableData = useMemo(() => formatTableData({}), [refreshTable, isMobile, courseId, moduleId]);
 
-    return <div className={styles.container}>{moduleId && lessonDetails && courseId && <Table tableData={tableData} />}</div>;
+    return (
+        <ErrorBoundary>
+            <div className="videos-table-container">
+                <Table tableData={tableData} />
+            </div>
+        </ErrorBoundary>
+    );
 };
 
 export default VideosTable;

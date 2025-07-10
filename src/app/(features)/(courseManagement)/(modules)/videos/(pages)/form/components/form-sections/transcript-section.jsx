@@ -1,45 +1,64 @@
 "use client";
 import { memo } from "react";
-import { FileText } from "lucide-react";
+import { BookOpen, FileText } from "lucide-react";
 import { FormSection } from "@/components/formSection";
 import { Textarea } from "@/components/ui/textarea";
 
+/**
+ * Content Section Component
+ * Handles detailed video description
+ *
+ * @param {Object} props - Component props
+ * @param {Object} props.handlers - Form event handlers
+ * @param {Object} props.formData - Current form data
+ * @param {React.RefObject} props.sectionRef - Reference for section scrolling
+ * @param {boolean} props.isActive - Whether this section is currently active
+ */
 export const TranscriptSection = memo(function TranscriptSection({ handlers = {}, formData = {}, sectionRef, isActive }) {
     const { handleInputChange } = handlers;
 
-    const currentWordCount = formData.transcript
-        ? formData.transcript
+    // Calculate current word count
+    const currentWordCount = formData.description
+        ? formData.description
               .replace(/<[^>]*>/g, "")
               .trim()
               .split(/\s+/)
               .filter(Boolean).length
         : 0;
 
+    // Check if approaching word limit
+    const isApproachingWordLimit = currentWordCount >= 1800; // 90% of 2000
+
     return (
         <FormSection
-            id="transcript"
-            title="Content Transcript"
-            icon={<FileText className="h-5 w-5" />}
-            description="Provide a transcript for your audio or video content"
+            id="content"
+            title="Video Content"
+            icon={<BookOpen className="h-5 w-5" />}
+            description="Provide detailed information about your video content"
             sectionRef={sectionRef}
             isActive={isActive}
         >
             <div className="space-y-6">
+                {/* Detailed Description */}
                 <Textarea
-                    label="Transcript"
+                    label="Detailed Description"
                     labelIcon={<FileText className="h-3.5 w-3.5" />}
-                    id="transcript"
-                    name="transcript"
-                    placeholder="Enter the full transcript of your audio or video content"
-                    value={formData.transcript || ""}
+                    id="description"
+                    name="description"
+                    placeholder="Write a comprehensive description of your video content, structure, and what students will learn"
+                    value={formData.description || ""}
                     onChange={handleInputChange}
                     spellCheck={true}
                     minRows={12}
+                    maxWords={2000}
                     showWordCount={true}
-                    helperText="Full transcript helps with accessibility and searchability"
+                    maxLength={20000}
+                    className={isApproachingWordLimit ? "border-yellow-300 focus:ring-yellow-500" : ""}
+                    helperText="Detailed video information that helps students understand what they'll learn"
                 />
 
-                <p className="text-sm text-gray-500 dark:text-gray-400">Current word count: {currentWordCount} words</p>
+                {/* Word count warning */}
+                {isApproachingWordLimit && <p className="text-sm text-yellow-600 dark:text-yellow-400">You are approaching the 2000 word limit. Current count: {currentWordCount} words.</p>}
             </div>
         </FormSection>
     );

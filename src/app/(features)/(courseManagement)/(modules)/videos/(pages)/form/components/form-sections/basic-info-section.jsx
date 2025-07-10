@@ -1,23 +1,19 @@
 "use client";
+
 import { memo } from "react";
-import { FileText, Bookmark, Clock, Hash, Package, Tag } from "lucide-react";
+import { FileText, Bookmark, Clock, Hash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormSection } from "@/components/formSection";
 import { Select } from "@/components/ui/select";
+import VideoFormUtils from "../../utils/constants";
 
-export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isActive, formData = {}, handlers = {} }) {
+/**
+ * Basic Information Section Component
+ * @description Handles video name, summary, duration, and code
+ */
+export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isActive, formData = {}, handlers = {}, errors = {} }) {
     const { handleInputChange } = handlers;
-
-    const languages = [
-        { label: "English", value: "en" },
-        { label: "Spanish", value: "es" },
-        { label: "French", value: "fr" },
-        { label: "German", value: "de" },
-        { label: "Chinese", value: "zh" },
-        { label: "Japanese", value: "ja" },
-        { label: "Hindi", value: "hi" },
-    ];
 
     return (
         <FormSection
@@ -29,7 +25,7 @@ export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isA
             isActive={isActive}
         >
             <div className="space-y-6">
-                <div className="flex gap-4 mb-0">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                     <Input
                         label="Video Name"
                         labelIcon={<Bookmark className="h-3.5 w-3.5" />}
@@ -40,7 +36,7 @@ export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isA
                         onChange={handleInputChange}
                         required
                         helperText="Choose a clear, descriptive name for your video"
-                        error={!formData.name ? "Video name is required" : ""}
+                        error={errors.name}
                         className="mb-0"
                     />
                     <Select
@@ -50,7 +46,7 @@ export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isA
                         placeholder="Select language"
                         value={formData.language || ""}
                         onChange={handleInputChange}
-                        options={languages}
+                        options={ VideoFormUtils.languages}
                         helperText="Language of the video"
                         className="mb-0"
                         required
@@ -68,7 +64,7 @@ export const BasicInfoSection = memo(function BasicInfoSection({ sectionRef, isA
                     required
                     rows={3}
                     helperText="A concise description that appears in video listings"
-                    error={!formData.summary ? "Video summary is required" : ""}
+                    error={errors.summary}
                 />
             </div>
         </FormSection>

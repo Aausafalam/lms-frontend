@@ -1,40 +1,41 @@
 "use client";
 
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { Copy, Eye, EyeOff, FileAudio, School, Trash2 } from "lucide-react";
+import { Copy, Eye, EyeOff, School, Trash2, BookOpen, Package, LayoutDashboard } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { useQueryParams } from "@/lib/hooks/useQuery";
 
-const ContentFormHeader = ({ children, togglePreview, previewVisible, videoId }) => {
-    const { courseId, lessonId, moduleId } = useQueryParams();
+const VideoFormHeader = ({ children, togglePreview, previewVisible, videoId }) => {
+    const { courseId, moduleId, lessonId } = useQueryParams();
+
     const breadcrumbItems = [
         {
             title: "Courses",
             href: "/courses",
-            icon: <School className="h-3.5 w-3.5" />,
+            icon: <Package className="h-3.5 w-3.5" />,
         },
         {
-            title: "Modules",
+            title: "Course Details",
             href: `/courses/details/${courseId}`,
-            icon: <School className="h-3.5 w-3.5" />,
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
         },
         {
-            title: "Lessons",
-            href: `/lessons?courseId=${courseId}&moduleId=${moduleId}`,
-            icon: <School className="h-3.5 w-3.5" />,
+            title: "Module Details",
+            href: `/modules/details/${moduleId}?course=${courseId}`,
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
+        },
+        videoId && {
+            title: "Video details",
+            href: `/videos/details/${videoId}?course=${courseId}&moduleId=${moduleId}`,
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
         },
         {
-            title: "Video",
-            href: `/lessons/details/${lessonId}?courseId=${courseId}&moduleId=${moduleId}`,
-            icon: <FileAudio className="h-3.5 w-3.5" />,
+            title: videoId ? `Edit Video ${videoId}` : "Add Video",
+            href: videoId ? `/videos/${videoId}` : "/videos/add",
+            icon: <BookOpen className="h-3.5 w-3.5" />,
         },
-        {
-            title: videoId ? videoId : "Add Video",
-            href: `/videos/form/add?courseId=${courseId}`,
-            icon: <FileAudio className="h-3.5 w-3.5" />,
-        },
-    ];
+    ].filter(Boolean);
 
     return (
         <div className="flex items-center justify-between mb-4">
@@ -67,7 +68,7 @@ const ContentFormHeader = ({ children, togglePreview, previewVisible, videoId })
                                 <Copy className="h-4 w-4" />
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Duplicate Content</TooltipContent>
+                        <TooltipContent>Duplicate Video</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
 
@@ -82,7 +83,7 @@ const ContentFormHeader = ({ children, togglePreview, previewVisible, videoId })
                                 <Trash2 className="h-4 w-4" />
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Delete Content</TooltipContent>
+                        <TooltipContent>Delete Video</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
 
@@ -92,4 +93,4 @@ const ContentFormHeader = ({ children, togglePreview, previewVisible, videoId })
     );
 };
 
-export default ContentFormHeader;
+export default VideoFormHeader;
