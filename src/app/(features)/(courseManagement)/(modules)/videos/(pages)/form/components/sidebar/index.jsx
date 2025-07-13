@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, ImageIcon, BookOpen, GraduationCap, Award, BadgeIcon as Certificate, Star, Settings, Paperclip, Users, User2Icon, Link2 } from "lucide-react";
+import { FileText, ImageIcon, BookOpen, Settings, Paperclip, Users, User2Icon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch as SwitchComponent } from "@/components/ui/switch";
@@ -25,13 +25,10 @@ export function SidebarNavigation({ activeSection, scrollToSection, formData, ha
         { id: "basic", label: "Basic Info", icon: <FileText className="h-4 w-4" /> },
         { id: "media", label: "Media", icon: <ImageIcon className="h-4 w-4" /> },
         { id: "content", label: "Content", icon: <BookOpen className="h-4 w-4" /> },
-        { id: "learning-outcomes", label: "Learning Outcomes", icon: <GraduationCap className="h-4 w-4" /> },
-        { id: "prerequisites", label: "Prerequisites", icon: <Award className="h-4 w-4" /> },
-        { id: "certificate", label: "Certificate", icon: <Certificate className="h-4 w-4" /> },
+        { id: "transcript", label: "Transcript", icon: <FileText className="h-4 w-4" /> },
         { id: "instructors", label: "Instructors", icon: <User2Icon className="h-4 w-4" /> },
         { id: "metadata", label: "Metadata", icon: <Settings className="h-4 w-4" /> },
         { id: "attachments", label: "Attachments", icon: <Paperclip className="h-4 w-4" /> },
-        { id: "resources", label: "Resources", icon: <Link2 className="h-4 w-4" /> },
     ];
 
     // Status options

@@ -13,16 +13,14 @@ import { useQueryParams } from "@/lib/hooks/useQuery";
 const getInitialFormData = () => ({
     name: "",
     summary: "",
-    duration: 0,
+    language: "en",
     thumbnailUrl: undefined,
     promoVideoUrl: undefined,
     description: "",
-    learningOutcomes: [""],
-    prerequisites: [""],
+    transcript: "",
     tags: [],
     instructors: [],
     attachments: [{ title: "", description: "", file: "" }],
-    resources: [{ title: "", url: "" }],
     status: "DRAFT",
     isFeatured: false,
 });
@@ -48,14 +46,6 @@ export function useVideoFormData({ initialData }) {
             setFormData((prev) => ({
                 ...prev,
                 ...initialData,
-                learningOutcomes: initialData.learningOutcomes?.length ? initialData.learningOutcomes : [""],
-                prerequisites: initialData.prerequisites?.length ? initialData.prerequisites : [""],
-                certificateCriteria: {
-                    ...prev.certificateCriteria,
-                    ...(initialData.certificateCriteria || {}),
-                    certificateBenefits: initialData.certificateCriteria?.certificateBenefits?.length ? initialData.certificateCriteria.certificateBenefits : [""],
-                },
-                resources: initialData.resources?.length ? initialData.resources : [{ title: "", url: "" }],
                 attachments: initialData.attachments?.length ? initialData.attachments : [{ title: "", description: "", file: "" }],
             }));
         }
@@ -103,18 +93,6 @@ export function useVideoFormData({ initialData }) {
         },
     });
 
-    // Learning outcomes handlers
-    const learningOutcomeHandlers = createArrayHandlers("learningOutcomes");
-    const handleLearningOutcomeChange = learningOutcomeHandlers.handleChange;
-    const addLearningOutcome = learningOutcomeHandlers.add;
-    const removeLearningOutcome = learningOutcomeHandlers.remove;
-
-    // Prerequisites handlers
-    const prerequisiteHandlers = createArrayHandlers("prerequisites");
-    const handlePreRequisiteChange = prerequisiteHandlers.handleChange;
-    const addPreRequisite = prerequisiteHandlers.add;
-    const removePreRequisite = prerequisiteHandlers.remove;
-
     // Attachment handlers
     const handleAttachmentChange = (index, field, value) => {
         setFormData((prev) => {
@@ -159,49 +137,6 @@ export function useVideoFormData({ initialData }) {
         });
     };
 
-    const handleResourceChange = (index, field, value) => {
-        setFormData((prev) => {
-            const updatedResources = [...prev.resources];
-            updatedResources[index] = {
-                ...updatedResources[index],
-                [field]: value,
-            };
-
-            // Clear validation errors if attachments are now valid
-            setValidationErrors((prevErrors) => {
-                const newErrors = { ...prevErrors };
-                const invalidResource = updatedResources.some((a) => {
-                    const hasAny = a.title?.trim() || a.url?.trim();
-                    const hasAll = a.title?.trim() && a.url?.trim();
-                    return hasAny && !hasAll;
-                });
-
-                if (!invalidResource) {
-                    delete newErrors.resources;
-                }
-                delete newErrors.serverError;
-                return newErrors;
-            });
-
-            return { ...prev, resources: updatedResources };
-        });
-    };
-
-    const addResource = () => {
-        setFormData((prev) => ({
-            ...prev,
-            resources: [...prev.resources, { title: "", url: "" }],
-        }));
-    };
-
-    const removeResource = (index) => {
-        setFormData((prev) => {
-            const updatedResources = [...prev.resources];
-            updatedResources.splice(index, 1);
-            return { ...prev, resources: updatedResources };
-        });
-    };
-
     // Switch change handler
     const handleSwitchChange = (name, checked) => {
         setFormData((prev) => ({ ...prev, [name]: checked }));
@@ -212,12 +147,7 @@ export function useVideoFormData({ initialData }) {
         // Prepare payload
         const updatedPayload = {
             ...formData,
-            learningOutcomes: formData.learningOutcomes.filter((item) => item.trim()),
-            prerequisites: {
-                prerequisites: formData.prerequisites.filter((item) => item.trim()),
-            },
             attachments: formData.attachments.filter((item) => item.title?.trim() || item.description?.trim() || item.file?.trim()),
-            resources: formData.resources.filter((item) => item.title?.trim() || item.url?.trim()),
         };
 
         // Validate form
@@ -229,7 +159,6 @@ export function useVideoFormData({ initialData }) {
             return;
         }
 
-        delete updatedPayload.promoVideoUrl;
         setIsSaving(true);
         try {
             if (updatedPayload.id) {
@@ -277,19 +206,10 @@ export function useVideoFormData({ initialData }) {
         validationErrors,
         handlers: {
             handleInputChange,
-            handleLearningOutcomeChange,
-            addLearningOutcome,
-            removeLearningOutcome,
-            handlePreRequisiteChange,
-            addPreRequisite,
-            removePreRequisite,
             handleAttachmentChange,
             addAttachment,
             removeAttachment,
             handleSwitchChange,
-            handleResourceChange,
-            removeResource,
-            addResource,
         },
         handleSave,
         setFormData,

@@ -80,7 +80,26 @@
         "src/app/(features)/(courseManagement)/(modules)/question-panel/(pages)/form/components/preview/components/question-header.jsx",
         "src/app/(features)/(courseManagement)/(modules)/question-panel/(pages)/form/components/preview/components/question-metadata.jsx",
         "src/app/(features)/(courseManagement)/(modules)/question-panel/(pages)/form/components/preview/components/question-options.jsx",
-        "src/app/(features)/(courseManagement)/(modules)/question-panel/(pages)/form/components/preview/components/question-sidebar.jsx"
+        "src/app/(features)/(courseManagement)/(modules)/question-panel/(pages)/form/components/preview/components/question-sidebar.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/results/page.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/AnalyticsChart.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/CalculatorWidget.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/CompactTimer.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/ExamHeader.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/ExamStats.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/FloatingTimer.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/OptionButton.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/ProctoringSidebar.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/ProgressBar.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/QuestionCard.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/QuestionNavigation.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/QuestionPaperWidget.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/RichTextEditor.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/ScratchpadWidget.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/SectionProgress.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/Timer.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/WebcamMonitor.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/results/loading.jsx"
     ],
     "exclude": ["node_modules"]
 }

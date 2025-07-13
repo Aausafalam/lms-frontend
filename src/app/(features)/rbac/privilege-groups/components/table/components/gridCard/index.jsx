@@ -33,9 +33,8 @@ export default function PrivilegeGroupCard({ data, view }) {
     }, [data]);
 
     const handleCardClick = () => {
-        // navigate(`/rbac/privilege-groups/details/${privilegeGroupData.id}`);
+        navigate(`/rbac/privileges?filterBy[privilegeGroupId]=${privilegeGroupData.id}&onPrivilegeGroupClick=${privilegeGroupData.id}`);
     };
-
     const handleNameClick = (e) => {
         e.stopPropagation();
         setShowPopup(true);
@@ -117,17 +116,6 @@ export default function PrivilegeGroupCard({ data, view }) {
                         </div>
                     </div>
                 </div>
-
-                {/* Footer */}
-                {/* <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
-                    <button
-                        onClick={handleCardClick}
-                        className="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
-                    >
-                        <Eye className="h-4 w-4" />
-                        <span>View Full Details</span>
-                    </button>
-                </div> */}
             </div>
         </div>
     );

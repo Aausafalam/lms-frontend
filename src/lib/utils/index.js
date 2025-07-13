@@ -166,7 +166,7 @@ class GlobalUtils {
         // Create normalized copies to avoid modifying original data
         const normalizeValue = (value) => {
             if (typeof value === "string" && trimStrings) {
-                value = value.trim();
+                value = value?.trim();
                 return ignoreEmptyValues && value === "" ? null : value;
             }
             if (typeof value === "number" && isFinite(value)) {

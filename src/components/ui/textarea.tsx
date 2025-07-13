@@ -70,7 +70,7 @@ const TextareaField: React.FC<TextareaFieldProps> = ({
     // Calculate word count
     useEffect(() => {
         if (value) {
-            const words = value.trim().split(/\s+/).filter(Boolean);
+            const words = value?.trim().split(/\s+/).filter(Boolean);
             setWordCount(words.length);
         } else {
             setWordCount(0);

@@ -25,6 +25,11 @@ const VideoFormHeader = ({ children, togglePreview, previewVisible, videoId }) =
             href: `/modules/details/${moduleId}?course=${courseId}`,
             icon: <LayoutDashboard className="h-3.5 w-3.5" />,
         },
+        {
+            title: "Lesson Details",
+            href: `/lessons/details/${lessonId}?course=${courseId}&moduleId=${moduleId}`,
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
+        },
         videoId && {
             title: "Video details",
             href: `/videos/details/${videoId}?course=${courseId}&moduleId=${moduleId}`,

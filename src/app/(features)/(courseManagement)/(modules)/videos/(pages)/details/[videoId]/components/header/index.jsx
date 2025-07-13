@@ -37,6 +37,11 @@ const VideoDetailsHeader = ({ videoId }) => {
             icon: <LayoutDashboard className="h-3.5 w-3.5" />,
         },
         {
+            title: "Lesson Details",
+            href: `/lessons/details/${lessonId}?course=${courseId}&module=${moduleId}`,
+            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
+        },
+        {
             title: "Video details",
             href: `/videos/details/${videoId}?course=${courseId}&moduleId=${moduleId}`,
             icon: <LayoutDashboard className="h-3.5 w-3.5" />,

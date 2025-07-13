@@ -20,7 +20,7 @@ export const isValidEmail = (email) => {
  * @returns {string|null} Error message or null
  */
 export const validateRequired = (value, fieldName) => {
-  if (!value || (typeof value === "string" && !value.trim())) {
+  if (!value || (typeof value === "string" && !value?.trim())) {
     return `${fieldName} is required`
   }
   return null

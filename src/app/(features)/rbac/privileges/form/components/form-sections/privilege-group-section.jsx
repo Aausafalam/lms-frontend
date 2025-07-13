@@ -4,10 +4,11 @@ import { memo } from "react";
 import { Settings, Folder } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { FormSection } from "@/components/formSection";
+import { useQueryParams } from "@/lib/hooks/useQuery";
 
 export const PrivilegeGroupSection = memo(function PrivilegeGroupSection({ handlers = {}, formData = {}, sectionRef, isActive }) {
     const { handleInputChange } = handlers;
-
+    const { onPrivilegeGroupClick } = useQueryParams();
     const privilegeGroupOptions = [
         { label: "User Management", value: "1" },
         { label: "Course Management", value: "2" },
@@ -34,7 +35,7 @@ export const PrivilegeGroupSection = memo(function PrivilegeGroupSection({ handl
                     labelIcon={<Folder className="h-3.5 w-3.5" />}
                     name="privilegeGroupId"
                     placeholder="Select privilege group"
-                    value={formData.privilegeGroupId || ""}
+                    value={formData.privilegeGroupId || onPrivilegeGroupClick || ""}
                     onChange={handleInputChange}
                     options={privilegeGroupOptions}
                     optionsUrl={{

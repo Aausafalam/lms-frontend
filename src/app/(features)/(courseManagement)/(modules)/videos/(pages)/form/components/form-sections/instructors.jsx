@@ -21,7 +21,7 @@ export const InstructorsSection = memo(function InstructorsSection({ formData, h
     return (
         <FormSection id="instructors" title="Video Instructors" icon={<User2Icon className="h-5 w-5" />} description="Configure video instructors" sectionRef={sectionRef} isActive={isActive}>
             <div className="space-y-6">
-                {/* Tags */}
+                {/* instructors */}
                 <Select
                     label="Instructors"
                     labelIcon={<Tag className="h-3.5 w-3.5" />}

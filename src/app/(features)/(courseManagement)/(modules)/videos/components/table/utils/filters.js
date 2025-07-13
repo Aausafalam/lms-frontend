@@ -12,27 +12,6 @@ const FILTER_OPTIONS = {
         isMulti: true,
         placeholder: "Filter by instructor",
     },
-    // status: {
-    //   type: "select",
-    //   grid: 3,
-    //   options: [
-    //     { label: "Published", value: "published" },
-    //     { label: "Draft", value: "draft" },
-    //     { label: "Archived", value: "archived" },
-    //   ],
-    //   placeholder: "Filter by status",
-    // },
-    // difficultyLevel: {
-    //   type: "select",
-    //   grid: 3,
-    //   options: [
-    //     { label: "Beginner", value: "BEGINNER" },
-    //     { label: "Intermediate", value: "INTERMEDIATE" },
-    //     { label: "Advanced", value: "ADVANCED" },
-    //     { label: "Expert", value: "EXPERT" },
-    //   ],
-    //   placeholder: "Filter by difficulty",
-    // },
 };
 
 export default FILTER_OPTIONS;

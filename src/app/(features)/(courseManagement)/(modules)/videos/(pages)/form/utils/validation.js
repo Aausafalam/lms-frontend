@@ -20,13 +20,9 @@ export const validateRequiredFields = (formData) => {
         errors.summary = "Video summary is required";
     }
 
-    if (!formData.duration || formData.duration < 1) {
-        errors.duration = "Duration is required and must be at least 1 hour";
-    }
-
-    if (!formData.description?.trim()) {
-        errors.description = "Description is required";
-    }
+    // if (!formData.description?.trim()) {
+    //     errors.description = "Description is required";
+    // }
 
     return errors;
 };
@@ -42,6 +38,9 @@ export const validateMediaFields = (formData) => {
     if (!formData.id) {
         if (!formData.thumbnailUrl?.fileId?.trim()) {
             errors.thumbnailUrl = "Thumbnail is required";
+        }
+        if (!formData.videoUrl?.fileId?.trim()) {
+            errors.videoUrl = "video  is required";
         }
     }
 
@@ -64,19 +63,6 @@ export const validateArrayFields = (formData) => {
 };
 
 /**
- * Validates features/skills
- * @param {Array} features - Features array to validate
- * @returns {string|null} Error message or null
- */
-export const validateFeatures = (features) => {
-    if (!Array.isArray(features)) return null;
-
-    const hasIncompleteFeature = features.filter((f) => f.name?.trim() || f.level?.trim()).some((f) => !f.name?.trim() || !f.level?.trim());
-
-    return hasIncompleteFeature ? "Each skill must have both name and level" : null;
-};
-
-/**
  * Validates attachments
  * @param {Array} attachments - Attachments array to validate
  * @returns {string|null} Error message or null
@@ -87,19 +73,6 @@ export const validateAttachments = (attachments) => {
     const hasIncompleteAttachment = attachments.filter((a) => a.title?.trim() || a.description?.trim() || a.file?.trim()).some((a) => !a.title?.trim() || !a.description?.trim() || !a.file?.trim());
 
     return hasIncompleteAttachment ? "Each attachment must have title, description, and file" : null;
-};
-
-/**
- * Validates attachments
- * @param {Array} attachments - Attachments array to validate
- * @returns {string|null} Error message or null
- */
-export const validateResources = (resources) => {
-    if (!Array.isArray(resources)) return null;
-
-    const hasIncompleteResources = resources.filter((a) => a.title?.trim() || a.url?.trim()).some((a) => !a.title?.trim() || !a.url?.trim());
-
-    return hasIncompleteResources ? "Each resources must have title, url" : null;
 };
 
 /**
@@ -114,22 +87,10 @@ export const validateVideoForm = (formData) => {
         ...validateArrayFields(formData),
     };
 
-    // Validate features
-    const featuresError = validateFeatures(formData.features);
-    if (featuresError) {
-        errors.features = featuresError;
-    }
-
     // Validate attachments
     const attachmentsError = validateAttachments(formData.attachments);
     if (attachmentsError) {
         errors.attachments = attachmentsError;
-    }
-
-    // Validate attachments
-    const resourcesError = validateResources(formData.resources);
-    if (resourcesError) {
-        errors.resources = resourcesError;
     }
 
     return errors;

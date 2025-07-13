@@ -3,12 +3,12 @@ import * as React from "react";
 import GlobalUtils from "@/lib/utils";
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-    <div ref={ref} className={GlobalUtils.cn("rounded-lg border bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 text-card-foreground shadow-sm", className)} {...props} />
+    <div ref={ref} className={GlobalUtils.cn("rounded-lg border border-white bg-white dark:bg-gray-900  dark:border-gray-800 text-card-foreground shadow-sm", className)} {...props} />
 ));
 Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-    <div ref={ref} className={GlobalUtils.cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
+    <div ref={ref} className={GlobalUtils.cn("flex flex-col space-y-1.5 p-5", className)} {...props} />
 ));
 CardHeader.displayName = "CardHeader";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, Suspense } from "react";
 import { LayoutDashboard, Package, Plus, School } from "lucide-react";
 import Table from "@/components/table";
 import VideosTableUtils from "./utils";
@@ -23,7 +23,7 @@ const VideosTable = ({ setSelectedVideo, setModalState, refreshTable }) => {
     const { navigate } = useNavigation();
     const [isMobile, setIsMobile] = useState(false);
     const { lessonId } = useParams();
-    const { courseId, moduleId } = useQueryParams();
+    const { courseId, moduleId, isReady } = useQueryParams();
 
     useEffect(() => {
         const checkMobile = () => {
@@ -91,13 +91,23 @@ const VideosTable = ({ setSelectedVideo, setModalState, refreshTable }) => {
         ),
     });
 
-    const tableData = useMemo(() => formatTableData({}), [refreshTable, isMobile, courseId, moduleId]);
+    console.log("courseId, moduleId, lessonId", courseId, moduleId, lessonId);
+
+    // Fixed: Added courseId, moduleId, lessonId to dependency array
+    // Only create tableData when all required params are available
+    const tableData = useMemo(() => {
+        // Guard: Don't create table data until all required params are ready
+        if (!isReady || !courseId || !moduleId || !lessonId) {
+            return null;
+        }
+        return formatTableData({});
+    }, [refreshTable, isMobile, isReady, courseId, moduleId, lessonId]);
 
     return (
         <ErrorBoundary>
-            <div className="videos-table-container">
-                <Table tableData={tableData} />
-            </div>
+            <Suspense fallback={<div>Loading...</div>}>
+                <div className="videos-table-container">{tableData ? <Table tableData={tableData} /> : <div>Loading...</div>}</div>
+            </Suspense>
         </ErrorBoundary>
     );
 };

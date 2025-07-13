@@ -107,6 +107,18 @@ export const MediaSection = memo(function MediaSection({ formData = {}, sectionR
                             showPreview={false}
                             uploadPath={`/course/${courseId}/module/${moduleId}/lesson/${lessonId}/video/source/upload`}
                             acceptedFormats={["mp4", "webm", "ogg", "mov", "avi", "mkv"]}
+                            defaultFiles={
+                                formData.videoUrl && !formData.videoUrl?.isDeleted && !formData.videoUrl?.fileId && formData.id
+                                    ? [
+                                          {
+                                              ...formData.videoUrl,
+                                              url: `${apiConstants.BACKEND_API_BASE_URL}/course/${courseId}/module/${moduleId}/lesson/${lessonId}/video/${
+                                                  formData.id
+                                              }/getImage?type=videoUrl&token=${ApiUtils.getAuthToken()}`,
+                                          },
+                                      ]
+                                    : []
+                            }
                         />
 
                         {/* Video File Preview */}

@@ -245,11 +245,6 @@ export default function VideoCard({ data, view, onEdit, onDelete, onView }) {
                                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{videoData.duration || 0}</span>
                                     <span className="text-xs text-gray-500 dark:text-gray-400">Hours</span>
                                 </div>
-                                <div className="flex items-center space-x-1">
-                                    <BookOpen className="h-3 w-3 text-blue-600 dark:text-blue-400" />
-                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{videoData.videoCount || 0}</span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400">Videos</span>
-                                </div>
                             </div>
 
                             {/* Actions */}

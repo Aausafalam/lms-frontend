@@ -26,7 +26,7 @@ const PrivilegeGroupsTable = ({ setSelectedPrivilegeGroup, setModalState, refres
         checkbox: true,
         refreshTable: refreshTable || false,
         formatTableData,
-        initialView: "grid",
+        initialView: "table",
         multiView: true,
         grid: {
             column: 4,

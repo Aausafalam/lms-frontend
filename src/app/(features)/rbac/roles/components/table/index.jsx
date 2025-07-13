@@ -26,7 +26,7 @@ const RolesTable = ({ setSelectedRole, setModalState, refreshTable }) => {
         checkbox: true,
         refreshTable: refreshTable || false,
         formatTableData,
-        initialView: "grid",
+        initialView: "table",
         multiView: true,
         grid: {
             column: 3,

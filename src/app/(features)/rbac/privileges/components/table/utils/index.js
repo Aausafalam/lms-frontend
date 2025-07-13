@@ -3,7 +3,7 @@ import TableIcon from "@/components/table/utils/icon";
 import privilegesTableConstants from "./constants";
 
 class PrivilegesTableUtils {
-    static getTableHeader({ data, setModalState, navigate }) {
+    static getTableHeader({ data, setModalState, navigate, onPrivilegeGroupClick }) {
         const autoSuggestions = TableUtils.formatDataForAutoSuggestion(data?.records || [], ["name"]);
 
         return {
@@ -13,7 +13,7 @@ class PrivilegesTableUtils {
                 {
                     icon: TableIcon.PLUS,
                     label: "Add Privilege",
-                    onClick: () => navigate("/rbac/privileges/form/add"),
+                    onClick: () => navigate(`/rbac/privileges/form/add/?onPrivilegeGroupClick=${onPrivilegeGroupClick || ""}`),
                 },
                 TableUtils.getExportButton({ url: "/rbac/privileges" }),
             ],
