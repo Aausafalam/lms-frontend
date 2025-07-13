@@ -105,9 +105,7 @@ const VideosTable = ({ setSelectedVideo, setModalState, refreshTable }) => {
 
     return (
         <ErrorBoundary>
-            <Suspense fallback={<div>Loading...</div>}>
-                <div className="videos-table-container">{tableData ? <Table tableData={tableData} /> : <div>Loading...</div>}</div>
-            </Suspense>
+            <div className="videos-table-container">{tableData ? <Table tableData={tableData} /> : <div>Loading...</div>}</div>
         </ErrorBoundary>
     );
 };
