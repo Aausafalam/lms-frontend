@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ExamDetailPreview } from "../../../../../exam-pattern/(pages)/form/components/preview/exam-detail-preview";
-import { sampleExamPatternData } from "@/app/(features)/(courseManagement)/(modules)/exam-pattern/(pages)/form/utils/seeds";
-import ExamPatternFormBase from "@/app/(features)/(courseManagement)/(modules)/exam-pattern/(pages)/form";
+import { ExamDetailPreview } from "../../../../../exam-patterns/(pages)/form/components/preview/exam-detail-preview";
+import { sampleExamPatternData } from "@/app/(features)/(courseManagement)/(modules)/exam-patterns/(pages)/form/utils/seeds";
+import ExamPatternFormBase from "@/app/(features)/(courseManagement)/(modules)/exam-patterns/(pages)/form";
 
 export const ExamPatternSection = memo(function ExamPatternSection({ sectionRef, isActive, formData = {}, handlers = {} }) {
     const { handleExamPatternSelect, handleInputChange } = handlers;
