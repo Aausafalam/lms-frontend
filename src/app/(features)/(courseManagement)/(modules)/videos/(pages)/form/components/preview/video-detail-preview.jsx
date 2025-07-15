@@ -109,14 +109,14 @@ export function VideoDetailPreview({ initialData, onDetailsPage, viewPort }) {
             className: "bg-blue-50 text-blue-700 border-blue-200",
         },
     ];
-    const handleBack = () => navigate(`/courses/details/${courseId}`);
+    const handleBack = () => navigate(`/lessons/details/${lessonId}?courseId=${courseId}&moduleId=${moduleId}`);
     const handleEdit = () => navigate(`/videos/form/${params.videoDetails}?courseId=${courseId}&moduleId=${moduleId}&lessonId=${lessonId}`);
     const handleDuplicate = () => console.log("Duplicate clicked");
     const handleDelete = () => console.log("Delete clicked");
     const instructors = instructorList.data?.data?.records?.filter((item) => data.instructorIds?.includes(item.id)) || [];
 
     return (
-        <div className={`w-full ${(isTablet || isMobile) && !viewPort ? "" : onDetailsPage ? "max-h-[86vh] overflow-scroll" : "max-h-[75vh] overflow-scroll"} max-w-[1200px]`}>
+        <div className={`w-full m-auto ${(isTablet || isMobile) && !viewPort ? "" : onDetailsPage ? "max-h-[86vh] overflow-scroll" : "max-h-[75vh] overflow-scroll"} max-w-[1200px]`}>
             <Header isMobile={isMobile} data={{ ...data, number: "Video 1" }} badges={customBadges} onBack={handleBack} onEdit={handleEdit} onDuplicate={handleDuplicate} onDelete={handleDelete} />
             {/* Hero Section */}
             <VideoHeroSection data={data} isMobile={isMobile} isTablet={isTablet} isDesktop={isDesktop} />

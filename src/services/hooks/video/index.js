@@ -111,8 +111,15 @@ export const useVideoGetDetails = () => {
             const controller = new AbortController();
 
             try {
-                const data = await videoApiService.getDetails(dynamicRoute, params, controller.signal);
-                setDetails(data.data);
+                let data = await videoApiService.getDetails(dynamicRoute, params, controller.signal);
+                data = {
+                    ...data,
+                    data: {
+                        ...data.data,
+                        instructorIds: data?.data?.instructors?.map((item) => item.id?.toString()) || [],
+                    },
+                };
+                setDetails(data);
                 onSuccess?.(data);
             } catch (error) {
                 showErrorNotification({

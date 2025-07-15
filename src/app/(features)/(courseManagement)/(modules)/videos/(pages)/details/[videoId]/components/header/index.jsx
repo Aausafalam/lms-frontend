@@ -33,17 +33,17 @@ const VideoDetailsHeader = ({ videoId }) => {
         },
         {
             title: "Module Details",
-            href: `/modules/details/${moduleId}?course=${courseId}`,
+            href: `/modules/details/${moduleId}?courseId=${courseId}`,
             icon: <LayoutDashboard className="h-3.5 w-3.5" />,
         },
         {
             title: "Lesson Details",
-            href: `/lessons/details/${lessonId}?course=${courseId}&module=${moduleId}`,
+            href: `/lessons/details/${lessonId}?courseId=${courseId}&module=${moduleId}`,
             icon: <LayoutDashboard className="h-3.5 w-3.5" />,
         },
         {
             title: "Video details",
-            href: `/videos/details/${videoId}?course=${courseId}&moduleId=${moduleId}`,
+            href: `/videos/details/${videoId}?courseId=${courseId}&moduleId=${moduleId}`,
             icon: <LayoutDashboard className="h-3.5 w-3.5" />,
         },
     ];

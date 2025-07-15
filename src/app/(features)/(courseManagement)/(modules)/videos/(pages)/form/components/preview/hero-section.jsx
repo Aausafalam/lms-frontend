@@ -19,7 +19,7 @@ export function VideoHeroSection({ data, isMobile, isTablet, isDesktop }) {
     };
 
     return (
-        <div className={`w-full overflow-hidden  ${isDesktop ? "rounded-xl" : ""}`}>
+        <div className={`w-full mt-2 overflow-hidden  ${isDesktop ? "rounded-xl" : ""}`}>
             {/* Premium Video Player Section */}
             <div className="relative group">
                 <div
@@ -68,7 +68,11 @@ export function VideoHeroSection({ data, isMobile, isTablet, isDesktop }) {
                         // Video Player
                         <div className="relative w-full h-full">
                             <video
-                                src={data.videoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"}
+                                src={
+                                    `${apiConstants.BACKEND_API_BASE_URL}/course/${courseId}/module/${moduleId}/lesson/${lessonId}/video/${
+                                        data.id
+                                    }/getVideo?type=videoUrl&token=${ApiUtils.getAuthToken()}` || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                }
                                 className="w-full h-full object-cover"
                                 controls
                                 autoPlay

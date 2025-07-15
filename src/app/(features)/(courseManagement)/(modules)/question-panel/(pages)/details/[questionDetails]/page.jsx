@@ -27,12 +27,12 @@ export default function QuestionDetailsPage({}) {
         },
         {
             title: "Exam Details",
-            href: `/exam/details/${questionId}?course=${courseId}`,
+            href: `/exam/details/${questionId}?courseId=${courseId}`,
             icon: <Settings className="h-3.5 w-3.5" />,
         },
         {
             title: "Question Bank",
-            href: `/exam/details/${questionId}?course=${courseId}`,
+            href: `/exam/details/${questionId}?courseId=${courseId}`,
             icon: <HelpCircle className="h-3.5 w-3.5" />,
         },
         {
