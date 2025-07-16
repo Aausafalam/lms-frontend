@@ -105,7 +105,7 @@ const getInitialFormData = () => ({
  * @param {Object} params.initialData - Initial examPattern data
  * @returns {Object} Form state and handlers
  */
-export function useExamPatternFormData({ initialData }) {
+export function useExamPatternFormData({ initialData, onExamPage }) {
     const [formData, setFormData] = useState(getInitialFormData());
     const [isSaving, setIsSaving] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
@@ -124,6 +124,10 @@ export function useExamPatternFormData({ initialData }) {
             }));
         }
     }, [initialData]);
+
+    useEffect(() => {
+        onExamPage && onExamPage?.({ target: "examPattern", formData });
+    }, [formData]);
 
     // Generic input change handler
     const handleInputChange = (e) => {

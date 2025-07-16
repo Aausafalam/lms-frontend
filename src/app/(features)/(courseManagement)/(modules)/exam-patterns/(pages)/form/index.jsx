@@ -16,8 +16,8 @@ import { hasValidationErrors } from "./utils/validation";
  * ExamPattern Form Base Component
  * @description Main container for examPattern creation/editing form with improved responsiveness
  */
-const ExamPatternFormBase = ({ initialData = {}, examPatternId = null }) => {
-    const { isSaving, handleSave, formData, handlers, validationErrors } = useExamPatternFormData({ initialData });
+const ExamPatternFormBase = ({ initialData = {}, examPatternId = null, onExamPage }) => {
+    const { isSaving, handleSave, formData, handlers, validationErrors } = useExamPatternFormData({ initialData, onExamPage });
 
     const [previewVisible, setPreviewVisible] = useState(true);
     const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -136,6 +136,70 @@ const ExamPatternFormBase = ({ initialData = {}, examPatternId = null }) => {
     };
 
     const layoutClasses = getLayoutClasses();
+
+    if (onExamPage) {
+        return (
+            <ErrorBoundary>
+                {/* Main Content */}
+                <div className={`${layoutClasses.main} transition-all duration-300 ease-in-out`}>
+                    <ScrollArea className={`${isMobile || isTablet ? "h-auto" : "h-[85vh]"}`}>
+                        <div className="pr-2 sm:pr-4">
+                            {/* Validation Error Summary */}
+                            {hasErrors && (
+                                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-lg">
+                                    <div className="flex items-center mb-2">
+                                        <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-600 dark:text-red-400 mr-2" />
+                                        <h3 className="text-red-800 dark:text-red-400 font-semibold text-sm sm:text-base">Please fix the following errors:</h3>
+                                    </div>
+                                    <ul className="list-disc list-inside text-red-700 dark:text-red-300 text-xs sm:text-sm space-y-1">
+                                        {Object.entries(validationErrors).map(([field, error]) => (
+                                            <li key={field}>{error}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            {/* Form Sections */}
+                            <FormSections handlers={handlers} formData={formData} sectionRefs={sectionRefs} activeSection={activeSection} validationErrors={validationErrors} />
+                            {/* Save Button */}
+                            {!onExamPage && (
+                                <div className="sticky bottom-0 pt-4 sm:pt-6 pb-4 bg-gradient-to-t from-gray-50 dark:from-gray-950 to-transparent">
+                                    <div className="flex justify-end">
+                                        <Button
+                                            className={`px-6 sm:px-8 py-2 sm:py-3 font-semibold transition-all duration-300 text-sm sm:text-base ${
+                                                hasErrors
+                                                    ? "bg-gray-400 hover:bg-gray-500 cursor-not-allowed"
+                                                    : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                            } text-white`}
+                                            disabled={isSaving || hasErrors}
+                                            onClick={handleSave}
+                                        >
+                                            {isSaving ? (
+                                                <>
+                                                    <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin mr-2" />
+                                                    Saving Exam Pattern...
+                                                </>
+                                            ) : hasErrors ? (
+                                                <>
+                                                    <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                                                    Fix Errors to Save
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                                                    Save Exam Pattern
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </ScrollArea>
+                </div>
+            </ErrorBoundary>
+        );
+    }
 
     return (
         <ErrorBoundary>
