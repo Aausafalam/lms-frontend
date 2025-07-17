@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { ModuleDetailPreview } from "../../../../form/components/preview/module-detail-preview";
 import ExamPattern from "@/app/(features)/(courseManagement)/(modules)/exam-patterns/page";
-import Exam from "@/app/(features)/(courseManagement)/(modules)/exam/page";
+import Exam from "@/app/(features)/(courseManagement)/(modules)/exams/page";
 import { sampleModuleData } from "../../../../form/utils/seeds";
 import Lessons from "@/app/(features)/(courseManagement)/(modules)/lessons/page";
 

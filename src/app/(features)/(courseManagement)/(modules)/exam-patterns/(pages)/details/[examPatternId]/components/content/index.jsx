@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { ExamPatternDetailPreview } from "../../../../form/components/preview/exam-pattern-detail-preview";
 import { sampleExamPatternData } from "../../../../form/utils/seeds";
-import Exam from "@/app/(features)/(courseManagement)/(modules)/exam/page";
+import Exam from "@/app/(features)/(courseManagement)/(modules)/exams/page";
 
 /**
  * ExamPattern Details Content Component

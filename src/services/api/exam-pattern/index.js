@@ -67,6 +67,17 @@ class ExamPatternApiService {
         const response = await this._apiClient.get(endpoints.GET_COURSE_STATS, { params, signal });
         return response.data;
     }
+
+    /**
+     * Retrieve examPattern stats
+     * @param {Object} [params] - Query params
+     * @param {AbortSignal} [signal] - Request cancellation
+     * @returns {Promise<Object>} ExamPattern statistics
+     */
+    async list(dynamicRoute, params, signal) {
+        const response = await this._apiClient.get(dynamicRoute, { params, signal });
+        return response.data;
+    }
 }
 
 export const examPatternApiService = new ExamPatternApiService();

@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { useExamPatternCreate, useExamPatternDelete, useExamPatternGetDetails, useExamPatternGetStats, useExamPatternUpdate } from "../hooks/exam-pattern";
+import { useExamPatternCreate, useExamPatternDelete, useExamPatternGetDetails, useExamPatternGetStats, useExamPatternList, useExamPatternUpdate } from "../hooks/exam-pattern";
 
 const ExamPatternContext = createContext(null);
 
@@ -11,6 +11,7 @@ export const ExamPatternProvider = ({ children, initialData = { examPatternList:
     const useExamPatternGetDetailsState = useExamPatternGetDetails();
     const useExamPatternDeleteState = useExamPatternDelete();
     const useExamPatternGetStatsState = useExamPatternGetStats();
+    const useExamPatternListState = useExamPatternList();
 
     return (
         <ExamPatternContext.Provider
@@ -20,6 +21,7 @@ export const ExamPatternProvider = ({ children, initialData = { examPatternList:
                 ...useExamPatternGetDetailsState,
                 ...useExamPatternDeleteState,
                 ...useExamPatternGetStatsState,
+                ...useExamPatternListState,
             }}
         >
             {children}

@@ -18,7 +18,7 @@ import ProctoringSidebar from "./components/ProctoringSidebar";
 import QuestionPaperWidget from "./components/QuestionPaperWidget";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import ExamDetails from "./components/exam-details";
-import { sampleExamData } from "../../exam/(pages)/form/utils/seeds";
+import { sampleExamData } from "../../exams/(pages)/form/utils/seeds";
 import "./styles/index.css";
 /**
  * Mock exam data with comprehensive question types and proctoring settings
@@ -1203,7 +1203,7 @@ const mockExam = {
             maxWords: 100,
             timeEstimate: 5,
         },
-         {
+        {
             id: 33,
             section: "calculus",
             type: "subjective",
@@ -1214,117 +1214,7 @@ const mockExam = {
             maxWords: 100,
             timeEstimate: 5,
         },
-         {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
-            id: 33,
-            section: "calculus",
-            type: "subjective",
-            difficulty: "hard",
-            points: 4,
-            question: "Explain L'Hôpital's Rule and its application.",
-            explanation: "Used for limits of indeterminate forms",
-            maxWords: 100,
-            timeEstimate: 5,
-        }, {
+        {
             id: 33,
             section: "calculus",
             type: "subjective",
@@ -1335,7 +1225,7 @@ const mockExam = {
             maxWords: 100,
             timeEstimate: 5,
         },
-         {
+        {
             id: 33,
             section: "calculus",
             type: "subjective",
@@ -1346,7 +1236,7 @@ const mockExam = {
             maxWords: 100,
             timeEstimate: 5,
         },
-         {
+        {
             id: 33,
             section: "calculus",
             type: "subjective",
@@ -1356,7 +1246,8 @@ const mockExam = {
             explanation: "Used for limits of indeterminate forms",
             maxWords: 100,
             timeEstimate: 5,
-        }, {
+        },
+        {
             id: 33,
             section: "calculus",
             type: "subjective",
@@ -1366,7 +1257,8 @@ const mockExam = {
             explanation: "Used for limits of indeterminate forms",
             maxWords: 100,
             timeEstimate: 5,
-        }, {
+        },
+        {
             id: 33,
             section: "calculus",
             type: "subjective",
@@ -1376,7 +1268,8 @@ const mockExam = {
             explanation: "Used for limits of indeterminate forms",
             maxWords: 100,
             timeEstimate: 5,
-        }, {
+        },
+        {
             id: 33,
             section: "calculus",
             type: "subjective",
@@ -1386,7 +1279,8 @@ const mockExam = {
             explanation: "Used for limits of indeterminate forms",
             maxWords: 100,
             timeEstimate: 5,
-        }, {
+        },
+        {
             id: 33,
             section: "calculus",
             type: "subjective",
@@ -1396,7 +1290,129 @@ const mockExam = {
             explanation: "Used for limits of indeterminate forms",
             maxWords: 100,
             timeEstimate: 5,
-        }, {
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
+            id: 33,
+            section: "calculus",
+            type: "subjective",
+            difficulty: "hard",
+            points: 4,
+            question: "Explain L'Hôpital's Rule and its application.",
+            explanation: "Used for limits of indeterminate forms",
+            maxWords: 100,
+            timeEstimate: 5,
+        },
+        {
             id: 33,
             section: "calculus",
             type: "subjective",
@@ -1534,7 +1550,8 @@ export default function ExamInterface() {
      */
     useEffect(() => {
         const enterFullscreen = async () => {
-            try {3000
+            try {
+                3000;
                 if (document.documentElement.requestFullscreen) {
                     await document.documentElement.requestFullscreen();
                     setIsFullscreen(true);
