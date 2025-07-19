@@ -126,7 +126,7 @@ export function useExamPatternFormData({ initialData, onExamPage }) {
     }, [initialData]);
 
     useEffect(() => {
-        onExamPage && onExamPage?.({ target: "examPattern", formData });
+        onExamPage && onExamPage?.({ target: { name: "examPattern", value: formData } });
     }, [formData]);
 
     // Generic input change handler

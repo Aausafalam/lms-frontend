@@ -19,9 +19,9 @@ export const ExamPatternSection = memo(function ExamPatternSection({ sectionRef,
     const { examPatternList } = useExamPattern();
     const { courseId } = useQueryParams();
     useEffect(() => {
-        examPatternList.fetch?.({ dynamicRoute: `/${courseId}/exam-pattern` });
+        courseId && examPatternList.fetch?.({ dynamicRoute: `/${courseId}/exam-pattern` });
     }, [courseId]);
-
+    console.log(selectedPattern, "selectedPattern");
     // // Mock data for available exam patterns
     // useEffect(() => {
     //     // In a real app, you would fetch from an API
@@ -98,9 +98,10 @@ export const ExamPatternSection = memo(function ExamPatternSection({ sectionRef,
     //     setAvailablePatterns(mockPatterns);
     // }, []);
 
-    const availablePatterns = examPatternList.data?.data?.records || [];
-
-    const filteredPatterns = availablePatterns.filter(
+    const availablePatterns = examPatternList.data?.data?.records;
+    console.log(availablePatterns, "availablePatterns");
+    console.log(formData.examPattern, "formData.examPattern");
+    const filteredPatterns = availablePatterns?.filter(
         (pattern) => pattern.name.toLowerCase().includes(searchTerm.toLowerCase()) || pattern.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -149,7 +150,7 @@ export const ExamPatternSection = memo(function ExamPatternSection({ sectionRef,
 
                 {/* Pattern Selection Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {filteredPatterns.map((pattern) => (
+                    {filteredPatterns?.map((pattern) => (
                         <Card
                             key={pattern.id}
                             className={`cursor-pointer transition-all duration-200 hover:shadow-lg shadow-md  border-2 ${
@@ -199,14 +200,14 @@ export const ExamPatternSection = memo(function ExamPatternSection({ sectionRef,
                                 <p className="text-sm text-gray-600 dark:text-gray-400">You can customize this pattern below. Changes will be saved with your exam.</p>
                             </div>
                             <div className="p-2 bg-gray-50 dark:bg-gray-900">
-                                <ExamPatternFormBase initialData={selectedPattern || formData.examPattern} onExamPage={handleInputChange} />
+                                <ExamPatternFormBase initialData={selectedPattern} onExamPage={handleInputChange} />
                             </div>
                         </div>
                     </div>
                 )}
 
                 {/* Empty State */}
-                {filteredPatterns.length === 0 && (
+                {filteredPatterns?.length === 0 && (
                     <div className="text-center py-8 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50/50 dark:bg-gray-800/50">
                         <Layers className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
                         <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-1">No Patterns Found</h3>

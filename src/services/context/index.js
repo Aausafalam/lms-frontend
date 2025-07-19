@@ -15,6 +15,7 @@ import { LessonProvider } from "./lesson";
 import { VideoProvider } from "./video";
 import { ExamPatternProvider } from "./exam-pattern";
 import { ExamProvider } from "./exam";
+import { QuestionProvider } from "./question";
 
 const ContextProviders = ({ children }) => {
     return (
@@ -34,7 +35,9 @@ const ContextProviders = ({ children }) => {
                                                             <LessonProvider>
                                                                 <ExamPatternProvider>
                                                                     <ExamProvider>
-                                                                        <VideoProvider>{children}</VideoProvider>
+                                                                        <QuestionProvider>
+                                                                            <VideoProvider>{children}</VideoProvider>
+                                                                        </QuestionProvider>
                                                                     </ExamProvider>
                                                                 </ExamPatternProvider>
                                                             </LessonProvider>

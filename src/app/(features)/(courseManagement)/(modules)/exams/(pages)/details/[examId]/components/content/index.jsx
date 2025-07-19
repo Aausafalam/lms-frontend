@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { ExamDetailPreview } from "../../../../form/components/preview/exam-detail-preview";
 import { sampleExamData } from "../../../../form/utils/seeds";
-import QuestionPanel from "@/app/(features)/(courseManagement)/(modules)/question-panel/page";
+import QuestionPanel from "@/app/(features)/(courseManagement)/(modules)/questions/page";
 
 /**
  * Exam Details Content Component
