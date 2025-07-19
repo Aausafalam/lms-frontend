@@ -30,7 +30,7 @@ export const validateRequiredFields = (formData) => {
 
     // Question type specific validation
     if (formData.type === "MCQ") {
-        const hasCorrectOption = formData.options?.some((opt) => opt.isCorrect);
+        const hasCorrectOption = formData.answer?.correctOption;
         if (!hasCorrectOption) {
             errors.options = "At least one correct option is required";
         }

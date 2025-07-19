@@ -1789,7 +1789,7 @@ export default function ExamInterface() {
         }
     };
     useEffect(() => {
-        handleStartExam?.();
+        // handleStartExam?.();
     }, []);
     // Calculate statistics
     const currentQ = mockExam.questions[currentQuestion];

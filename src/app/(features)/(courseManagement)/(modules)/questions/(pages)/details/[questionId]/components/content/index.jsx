@@ -3,7 +3,6 @@
 import { useParams } from "next/navigation";
 import { QuestionDetailPreview } from "../../../../form/components/preview/components/question-detail-preview";
 import { sampleQuestionData } from "../../../../form/utils/seeds";
-import CourseVideos from "@/app/(features)/(courseManagement)/(exams)/videos/page";
 
 /**
  * Question Details Content Component
@@ -15,11 +14,9 @@ const QuestionDetailsContent = ({ activeTab }) => {
     const renderContent = () => {
         switch (activeTab) {
             case "overview":
-                return <QuestionDetailPreview initialData={sampleQuestionData} onDetailsPage={true} />;
-            case "video":
-                return <CourseVideos />;
+                return <QuestionDetailPreview viewPort={"desktop"} initialData={sampleQuestionData} onDetailsPage={true} />;
             default:
-                return <QuestionDetailPreview initialData={sampleQuestionData} onDetailsPage={true} />;
+                return <QuestionDetailPreview  viewPort={"desktop"} initialData={sampleQuestionData} onDetailsPage={true} />;
         }
     };
 

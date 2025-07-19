@@ -33,19 +33,6 @@ const QuestionsTable = ({ setSelectedQuestion, setModalState, refreshTable }) =>
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
 
-    const breadcrumbItems = [
-        {
-            title: "Courses",
-            href: "/courses",
-            icon: <Package className="h-3.5 w-3.5" />,
-        },
-        {
-            title: "Questions",
-            href: `/courses/details/${courseId}`,
-            icon: <LayoutDashboard className="h-3.5 w-3.5" />,
-        },
-    ];
-
     /**
      * Format data for table configuration
      */
@@ -79,13 +66,7 @@ const QuestionsTable = ({ setSelectedQuestion, setModalState, refreshTable }) =>
         grid: {
             column: isMobile ? 1 : 4,
             card: (row, view) => (
-                <QuestionCard
-                    data={row}
-                    view={view}
-                    onEdit={(id) => navigate(`/questions/form/${id}?courseId=${courseId}&examId=${examId}`)}
-                    onDelete={(id) => setModalState("delete", id)}
-                    onView={(id) => navigate(`/questions/details/${id}?courseId=${courseId}&examId=${examId}`)}
-                />
+                <QuestionCard data={row} view={view} onEdit={(id) => navigate(`/questions/form/${id}?courseId=${courseId}&examId=${examId}`)} onDelete={(id) => setModalState("delete", id)} />
             ),
         },
         emptyStateComponent: () => (
@@ -105,9 +86,7 @@ const QuestionsTable = ({ setSelectedQuestion, setModalState, refreshTable }) =>
 
     return (
         <ErrorBoundary>
-            <div className="questions-table-container">
-                <Table tableData={tableData} />
-            </div>
+            <div className="questions-table-container">{courseId && <Table tableData={tableData} />}</div>
         </ErrorBoundary>
     );
 };

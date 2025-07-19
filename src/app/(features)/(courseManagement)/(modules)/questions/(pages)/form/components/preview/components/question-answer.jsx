@@ -23,7 +23,9 @@ export function QuestionAnswer({ data, isMobile }) {
                         <div
                             key={option.id}
                             className={`border rounded-lg transition-all ${
-                                option.isCorrect ? "border-green-400 bg-green-50 dark:bg-green-950/20" : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50"
+                                option.isCorrect || data?.answer?.correctOption === option.id
+                                    ? "border-green-400 bg-green-50 dark:bg-green-950/20"
+                                    : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50"
                             }`}
                         >
                             <div className={isMobile ? "p-3" : "p-4"}>

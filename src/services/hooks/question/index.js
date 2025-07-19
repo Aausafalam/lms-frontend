@@ -112,7 +112,9 @@ export const useQuestionGetDetails = () => {
 
             try {
                 const data = await questionApiService.getDetails(dynamicRoute, params, controller.signal);
-                setDetails(data);
+                const question = data.data.question;
+                delete question.id;
+                setDetails({ data: { ...question, id: data.data.id } });
                 onSuccess?.(data);
             } catch (error) {
                 showErrorNotification({
@@ -128,7 +130,7 @@ export const useQuestionGetDetails = () => {
     );
 
     return {
-        questionDetail: {
+        questionDetails: {
             data: details,
             fetch: fetchDetails,
             isLoading: isLoading(GET_COURSE_DETAILS_KEY),

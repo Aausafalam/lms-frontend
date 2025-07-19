@@ -106,6 +106,15 @@ export function useQuestionFormData({ initialData }) {
         } else {
             setFormData((prev) => ({ ...prev, [name]: checked }));
         }
+        // Clear validation errors for this field
+        if (validationErrors[name] || validationErrors?.serverError) {
+            setValidationErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors.serverError;
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
     }, []);
 
     /**
