@@ -2,8 +2,12 @@
 
 import { Sparkles, BookOpen } from "lucide-react";
 import { QuestionAnswer } from "./question-answer";
+import apiConstants from "@/services/utils/constants";
+import { useQueryParams } from "@/lib/hooks/useQuery";
+import ApiUtils from "@/services/utils";
 
 export function QuestionContent({ data, isMobile }) {
+    const { courseId, examId } = useQueryParams();
     return (
         <div className={`space-y-${isMobile ? "4" : "6"}`}>
             {/* Question Card */}
@@ -25,7 +29,14 @@ export function QuestionContent({ data, isMobile }) {
                 {data.image && (
                     <div className={isMobile ? "mb-4" : "mb-6"}>
                         <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-                            <img src={data.image || "/placeholder.svg?height=200&width=400"} alt="Question illustration" className="w-full h-auto" />
+                            <img
+                                src={
+                                    `${apiConstants.BACKEND_API_BASE_URL}/course/${courseId}/exam/${examId}/question/${data.id}/getImage?type=image&token=${ApiUtils.getAuthToken()}` ||
+                                    "/placeholder.svg?height=200&width=400"
+                                }
+                                alt="Question illustration"
+                                className="w-full h-auto"
+                            />
                         </div>
                     </div>
                 )}
