@@ -3,8 +3,12 @@
 import { Star, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import apiConstants from "@/services/utils/constants";
+import { useQueryParams } from "@/lib/hooks/useQuery";
+import ApiUtils from "@/services/utils";
 
 export function QuestionAnswer({ data, isMobile }) {
+    const { courseId, examId } = useQueryParams();
     if (!data.type) return null;
 
     return (
@@ -48,7 +52,11 @@ export function QuestionAnswer({ data, isMobile }) {
                                 {option.image && (
                                     <div className={`${isMobile ? "mt-2 ml-11" : "mt-3 ml-13"}`}>
                                         <img
-                                            src={option.image || "/placeholder.svg?height=150&width=200"}
+                                            src={
+                                                `${apiConstants.BACKEND_API_BASE_URL}/course/${courseId}/exam/${examId}/question/${data.id}/getImage?type=option${
+                                                    option.id
+                                                }Image&token=${ApiUtils.getAuthToken()}` || "/placeholder.svg?height=200&width=400"
+                                            }
                                             alt={`Option ${option.id.toUpperCase()}`}
                                             className={`${isMobile ? "max-w-full" : "max-w-sm"} h-auto rounded-lg border border-gray-200 dark:border-gray-700`}
                                         />
