@@ -175,49 +175,6 @@ export function VideoHeroSection({ data, isMobile, isTablet, isDesktop }) {
                             </div>
                             {/* )} */}
                         </div>
-
-                        {/* Right Content - Instructors */}
-                        {/* {data.instructors && data.instructors.length > 0 && (
-                            <div className="lg:w-80">
-                                <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-xl">
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                                        <Users className="h-5 w-5 mr-2 text-orange-500" />
-                                        Expert Instructors
-                                    </h3>
-
-                                    <div className="space-y-4">
-                                        {data.instructors.slice(0, 2).map((instructor, index) => (
-                                            <div
-                                                key={index}
-                                                className="flex items-center space-x-4 p-3 rounded-xl bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 border border-orange-100 dark:border-orange-900/30 hover:shadow-md transition-all duration-300"
-                                            >
-                                                <Avatar className="h-12 w-12 border-2 border-orange-200 dark:border-orange-800 shadow-lg">
-                                                    <AvatarImage
-                                                        src={instructor.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" || "/placeholder.svg"}
-                                                        alt={instructor.name}
-                                                    />
-                                                    <AvatarFallback className="bg-gradient-to-br from-orange-500 to-red-500 text-white font-bold">
-                                                        {instructor.name
-                                                            ?.split(" ")
-                                                            .map((n) => n[0])
-                                                            .join("") || "IN"}
-                                                    </AvatarFallback>
-                                                </Avatar>
-
-                                                <div className="flex-1">
-                                                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">{instructor.name || "Dr. Sarah Johnson"}</h4>
-                                                    <p className="text-orange-600 dark:text-orange-400 text-xs font-medium">{instructor.designation || "Physics Professor"}</p>
-                                                    <div className="flex items-center mt-1">
-                                                        <Star className="h-3 w-3 text-yellow-500 mr-1" fill="currentColor" />
-                                                        <span className="text-xs text-gray-600 dark:text-gray-400">4.9 • 15k students</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        )} */}
                     </div>
                 </div>
             </div>

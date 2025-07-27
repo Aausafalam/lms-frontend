@@ -34,6 +34,7 @@ export const CoursesSection = memo(function CoursesSection({ handlers = {}, form
             description: "Analyze data and build ML models",
         },
     ];
+    console.log(courseList.data);
 
     console.log(availableCourses, "availableCourses");
 
@@ -72,7 +73,11 @@ export const CoursesSection = memo(function CoursesSection({ handlers = {}, form
                             addCourse(e.target.value);
                         }
                     }}
-                    options={availableCourses.filter((course) => !selectedCourses.includes(course.id))?.map((item) => ({ label: item.name, value: item.id }))}
+                    optionsUrl={{
+                        url: "/course?responseType=dropdown",
+                        labelKey: "name",
+                    }}
+                    // options={availableCourses.filter((course) => ({ label: course.name, value: course.id }))}
                     helperText="Select courses to include in this subscription plan"
                 />
 

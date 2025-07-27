@@ -507,3 +507,5 @@ export default function CourseCard({ data, view, onEdit, onDelete, onView }) {
     </div>
   )
 }
+
+
